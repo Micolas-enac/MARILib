@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.aircraft_data.operational_performances module &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="marilib.aircraft_data.physical_performances module" href="marilib.aircraft_data.physical_performances.html" />
+    <link rel="prev" title="marilib.aircraft_data.aircraft_description module" href="marilib.aircraft_data.aircraft_description.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="marilib.aircraft_data.physical_performances.html" title="marilib.aircraft_data.physical_performances module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="marilib.aircraft_data.aircraft_description.html" title="marilib.aircraft_data.aircraft_description module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="marilib.html" >marilib package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="marilib.aircraft_data.html" accesskey="U">marilib.aircraft_data package</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/marilib.aircraft_data.operational_performances.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-marilib.aircraft_data.operational_performances">
+<span id="marilib-aircraft-data-operational-performances-module"></span><h1>marilib.aircraft_data.operational_performances module<a class="headerlink" href="#module-marilib.aircraft_data.operational_performances" title="Permalink to this headline">¶</a></h1>
+<p>Created on Thu Jan 24 23:22:21 2019</p>
+<p><em>Module author: DRUOT Thierry : original Scilab implementation</em></p>
+<p><em>Module author: PETEILH Nicolas : portage to Python</em></p>
+<dl class="class">
+<dt id="marilib.aircraft_data.operational_performances.CostMission">
+<em class="property">class </em><code class="sig-prename descclassname">marilib.aircraft_data.operational_performances.</code><code class="sig-name descname">CostMission</code><span class="sig-paren">(</span><em class="sig-param">disa=None</em>, <em class="sig-param">range=None</em>, <em class="sig-param">payload=None</em>, <em class="sig-param">tow=None</em>, <em class="sig-param">total_fuel=None</em>, <em class="sig-param">block_fuel=None</em>, <em class="sig-param">block_time=None</em>, <em class="sig-param">block_enrg=None</em>, <em class="sig-param">total_enrg=None</em>, <em class="sig-param">req_battery_mass=None</em>, <em class="sig-param">block_CO2=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/aircraft_data/operational_performances.html#CostMission"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.aircraft_data.operational_performances.CostMission" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Mission data for cost evaluation</p>
+<dl class="attribute">
+<dt id="marilib.aircraft_data.operational_performances.CostMission.INFO">
+<code class="sig-name descname">INFO</code><em class="property"> = {'block_CO2': {'om': 10000.0, 'txt': 'Mass of carbon dioxide emitted during the mission', 'unit': 'kg'}, 'block_enrg': {'om': 10.0, 'txt': 'Block energy of the cost evaluation mission', 'unit': 'MWh'}, 'block_fuel': {'om': 10000.0, 'txt': 'Block fuel of the cost evaluation mission', 'unit': 'kg'}, 'block_time': {'om': 10.0, 'txt': 'Block time of the cost evaluation mission', 'unit': 'h'}, 'disa': {'om': 10.0, 'txt': 'Temperature shift of the cost evaluation mission', 'unit': 'degK'}, 'payload': {'om': 10000.0, 'txt': 'Payload of the cost evaluation mission', 'unit': 'kg'}, 'range': {'om': 1000.0, 'txt': 'Range of the cost evaluation mission', 'unit': 'NM'}, 'req_battery_mass': {'om': 1000.0, 'txt': 'Required battery mass of the cost evaluation mission', 'unit': 'kg'}, 'total_enrg': {'om': 10.0, 'txt': 'Total energy of the cost evaluation mission', 'unit': 'MWh'}, 'total_fuel': {'om': 10000.0, 'txt': 'Total fuel of the cost evaluation mission', 'unit': 'kg'}, 'tow': {'om': 10000.0, 'txt': 'Take off weight of the cost evaluation mission', 'unit': 'kg'}}</em><a class="headerlink" href="#marilib.aircraft_data.operational_performances.CostMission.INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="marilib.aircraft_data.operational_performances.DesignDriver">
+<em class="property">class </em><code class="sig-prename descclassname">marilib.aircraft_data.operational_performances.</code><code class="sig-name descname">DesignDriver</code><span class="sig-paren">(</span><em class="sig-param">design_range=None</em>, <em class="sig-param">cruise_mach=None</em>, <em class="sig-param">ref_cruise_altp=None</em>, <em class="sig-param">top_of_climb_altp=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/aircraft_data/operational_performances.html#DesignDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.aircraft_data.operational_performances.DesignDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Top level design drivers</p>
+<dl class="attribute">
+<dt id="marilib.aircraft_data.operational_performances.DesignDriver.INFO">
+<code class="sig-name descname">INFO</code><em class="property"> = {'cruise_mach': {'om': 1.0, 'txt': 'Nominal cruise Mach number', 'unit': 'mach'}, 'design_range': {'om': 1000.0, 'txt': 'Range of design mission', 'unit': 'NM'}, 'ref_cruise_altp': {'om': 10000.0, 'txt': 'Reference cruise altitude (generally 35000ft)', 'unit': 'ft'}, 'top_of_climb_altp': {'om': 10000.0, 'txt': 'Top of climb altitude (may be lower or equal to reference cruise altitude', 'unit': 'ft'}}</em><a class="headerlink" href="#marilib.aircraft_data.operational_performances.DesignDriver.INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="marilib.aircraft_data.operational_performances.Economics">
+<em class="property">class </em><code class="sig-prename descclassname">marilib.aircraft_data.operational_performances.</code><code class="sig-name descname">Economics</code><span class="sig-paren">(</span><em class="sig-param">gear_price=None</em>, <em class="sig-param">engine_price=None</em>, <em class="sig-param">airplane_price=None</em>, <em class="sig-param">battery_price=None</em>, <em class="sig-param">battery_mass_price=None</em>, <em class="sig-param">fuel_price=None</em>, <em class="sig-param">elec_price=None</em>, <em class="sig-param">labor_cost=None</em>, <em class="sig-param">irp=None</em>, <em class="sig-param">period=None</em>, <em class="sig-param">interest_rate=None</em>, <em class="sig-param">utilisation=None</em>, <em class="sig-param">cockpit_crew_cost=None</em>, <em class="sig-param">cabin_crew_cost=None</em>, <em class="sig-param">fuel_cost=None</em>, <em class="sig-param">elec_cost=None</em>, <em class="sig-param">landing_fees=None</em>, <em class="sig-param">navigation_fees=None</em>, <em class="sig-param">catering_cost=None</em>, <em class="sig-param">pax_handling_cost=None</em>, <em class="sig-param">ramp_handling_cost=None</em>, <em class="sig-param">standard_operating_cost=None</em>, <em class="sig-param">cash_operating_cost=None</em>, <em class="sig-param">total_investment=None</em>, <em class="sig-param">interest=None</em>, <em class="sig-param">insurance=None</em>, <em class="sig-param">depreciation=None</em>, <em class="sig-param">direct_operating_cost=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/aircraft_data/operational_performances.html#Economics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.aircraft_data.operational_performances.Economics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Cost data</p>
+<dl class="attribute">
+<dt id="marilib.aircraft_data.operational_performances.Economics.INFO">
+<code class="sig-name descname">INFO</code><em class="property"> = {'airplane_price': {'om': 10.0, 'txt': 'Price of the airplane', 'unit': 'M$'}, 'battery_mass_price': {'om': 10.0, 'txt': 'Mass price of battery (eventual)', 'unit': '$/kg'}, 'battery_price': {'om': 10.0, 'txt': 'Total price of the battery (eventual)', 'unit': 'k$'}, 'cabin_crew_cost': {'om': 1000.0, 'txt': 'Cabin crew cost', 'unit': '$/trip'}, 'cash_operating_cost': {'om': 10000.0, 'txt': 'Cash operating cost', 'unit': '$/trip'}, 'catering_cost': {'om': 1000.0, 'txt': 'Catering cost', 'unit': '$/trip'}, 'cockpit_crew_cost': {'om': 1000.0, 'txt': 'Cockpit crew cost', 'unit': '$/trip'}, 'depreciation': {'om': 1000.0, 'txt': 'Depreciation', 'unit': '$/trip'}, 'direct_operating_cost': {'om': 10000.0, 'txt': 'Direct operating cost', 'unit': '$/trip'}, 'elec_cost': {'om': 1000.0, 'txt': 'Cost of electricity', 'unit': '$/trip'}, 'elec_price': {'om': 0.1, 'txt': 'Price of electricity', 'unit': '$/kWh'}, 'engine_price': {'om': 10.0, 'txt': 'Price of one engine', 'unit': 'M$'}, 'fuel_cost': {'om': 1000.0, 'txt': 'Fuel cost', 'unit': '$/trip'}, 'fuel_price': {'om': 10.0, 'txt': 'Fuel price', 'unit': '$/gal'}, 'gear_price': {'om': 10.0, 'txt': 'Price of landing gears', 'unit': 'M$'}, 'insurance': {'om': 1000.0, 'txt': 'Insurance', 'unit': '$/trip'}, 'interest': {'om': 1000.0, 'txt': 'Interest', 'unit': '$/trip'}, 'interest_rate': {'om': 10.0, 'txt': 'Interest rate', 'unit': '%'}, 'irp': {'om': 10.0, 'txt': 'Interest recovery period', 'unit': 'year'}, 'labor_cost': {'om': 10.0, 'txt': 'Labor cost', 'unit': '$/h'}, 'landing_fees': {'om': 1000.0, 'txt': 'Landing fees', 'unit': '$/trip'}, 'navigation_fees': {'om': 1000.0, 'txt': 'Navigation fees', 'unit': '$/trip'}, 'pax_handling_cost': {'om': 1000.0, 'txt': 'Pax handling cost', 'unit': '$/trip'}, 'period': {'om': 10.0, 'txt': 'Utilisation period', 'unit': 'year'}, 'ramp_handling_cost': {'om': 1000.0, 'txt': 'Ramp handling cost', 'unit': '$/trip'}, 'standard_operating_cost': {'om': 10000.0, 'txt': 'Standard operating cost', 'unit': '$/trip'}, 'total_investment': {'om': 1000.0, 'txt': 'Total investment', 'unit': '$'}, 'utilisation': {'om': 1000.0, 'txt': 'Number of flights per year', 'unit': 'int'}}</em><a class="headerlink" href="#marilib.aircraft_data.operational_performances.Economics.INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="marilib.aircraft_data.operational_performances.Environmental_Impact">
+<em class="property">class </em><code class="sig-prename descclassname">marilib.aircraft_data.operational_performances.</code><code class="sig-name descname">Environmental_Impact</code><span class="sig-paren">(</span><em class="sig-param">rgf=None</em>, <em class="sig-param">CO2_metric=None</em>, <em class="sig-param">CO2_index=None</em>, <em class="sig-param">H2O_index=None</em>, <em class="sig-param">SO2_index=None</em>, <em class="sig-param">NOx_index=None</em>, <em class="sig-param">CO_index=None</em>, <em class="sig-param">HC_index=None</em>, <em class="sig-param">sulfuric_acid_index=None</em>, <em class="sig-param">nitrous_acid_index=None</em>, <em class="sig-param">nitric_acid_index=None</em>, <em class="sig-param">soot_index=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/aircraft_data/operational_performances.html#Environmental_Impact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.aircraft_data.operational_performances.Environmental_Impact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Environmental impact data</p>
+<dl class="attribute">
+<dt id="marilib.aircraft_data.operational_performances.Environmental_Impact.INFO">
+<code class="sig-name descname">INFO</code><em class="property"> = {'CO2_index': {'om': 1000.0, 'txt': 'Mass of carbon dioxide emitted per kg of fuel', 'unit': 'g/kg'}, 'CO2_metric': {'om': 1.0, 'txt': 'Fuel efficiency metric', 'unit': 'kg/km/m0.48'}, 'CO_index': {'om': 1000.0, 'txt': 'Mass of carbon monoxide emitted per kg of fuel', 'unit': 'g/kg'}, 'H2O_index': {'om': 1000.0, 'txt': 'Mass of water emitted per kg of fuel', 'unit': 'g/kg'}, 'HC_index': {'om': 1000.0, 'txt': 'Mass of unburnt hydrocarbon emitted per kg of fuel', 'unit': 'g/kg'}, 'NOx_index': {'om': 1000.0, 'txt': 'Mass of nitrogen oxide emitted per kg of fuel', 'unit': 'g/kg'}, 'SO2_index': {'om': 1000.0, 'txt': 'Mass of sulfur dioxide emitted per kg of fuel', 'unit': 'g/kg'}, 'nitric_acid_index': {'om': 1000.0, 'txt': 'Mass of nitric acid emitted per kg of fuel', 'unit': 'g/kg'}, 'nitrous_acid_index': {'om': 1000.0, 'txt': 'Mass of nitrous acid emitted per kg of fuel', 'unit': 'g/kg'}, 'rgf': {'om': 100.0, 'txt': 'Reference Geometric Factor, close to cabin floor pressurized area (but higher)', 'unit': 'm2'}, 'soot_index': {'om': 1000000000000.0, 'txt': 'Number of soot particle emitted per kg of fuel', 'unit': 'int'}, 'sulfuric_acid_index': {'om': 1000.0, 'txt': 'Mass of sulfuric acid emitted per kg of fuel', 'unit': 'g/kg'}}</em><a class="headerlink" href="#marilib.aircraft_data.operational_performances.Environmental_Impact.INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="marilib.aircraft_data.operational_performances.HighSpeed">
+<em class="property">class </em><code class="sig-prename descclassname">marilib.aircraft_data.operational_performances.</code><code class="sig-name descname">HighSpeed</code><span class="sig-paren">(</span><em class="sig-param">disa_climb=None</em>, <em class="sig-param">req_vz_climb=None</em>, <em class="sig-param">eff_vz_climb=None</em>, <em class="sig-param">perfo_constraint_1=None</em>, <em class="sig-param">req_vz_cruise=None</em>, <em class="sig-param">eff_vz_cruise=None</em>, <em class="sig-param">perfo_constraint_2=None</em>, <em class="sig-param">req_toc_altp=None</em>, <em class="sig-param">cas1_ttc=None</em>, <em class="sig-param">cas2_ttc=None</em>, <em class="sig-param">req_ttc=None</em>, <em class="sig-param">eff_ttc=None</em>, <em class="sig-param">perfo_constraint_3=None</em>, <em class="sig-param">perfo_constraint_4=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/aircraft_data/operational_performances.html#HighSpeed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.aircraft_data.operational_performances.HighSpeed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>High speed performance data</p>
+<dl class="attribute">
+<dt id="marilib.aircraft_data.operational_performances.HighSpeed.INFO">
+<code class="sig-name descname">INFO</code><em class="property"> = {'cas1_ttc': {'om': 100.0, 'txt': 'Calibrated Air Speed (CAS) below 10000ft for TTC computation', 'unit': 'kt'}, 'cas2_ttc': {'om': 100.0, 'txt': 'Calibrated Air Speed (CAS) above 10000ft for TTC computation', 'unit': 'kt'}, 'disa_climb': {'om': 10.0, 'txt': 'Temperature shift for Maximum climb speed computation', 'unit': 'degK'}, 'eff_ttc': {'om': 10.0, 'txt': 'Effective Time To Climb', 'unit': 'min'}, 'eff_vz_climb': {'om': 100.0, 'txt': 'Effective climb speed at 97%MTOW, nominal initial cruise altitude and MCL rating', 'unit': 'ft/min'}, 'eff_vz_cruise': {'om': 100.0, 'txt': 'Effective climb speed at 97%MTOW, nominal initial cruise altitude and MCR rating', 'unit': 'ft/min'}, 'perfo_constraint_1': {'om': 1.0, 'txt': 'Constraint on climb performance with MCL rating, must be kept positive', 'unit': 'no_dim'}, 'perfo_constraint_2': {'om': 1.0, 'txt': 'Constraint on climb performance with MCR rating, must be kept positive', 'unit': 'no_dim'}, 'perfo_constraint_3': {'om': 1.0, 'txt': 'Constraint on time to climb, must be kept positive', 'unit': 'no_dim'}, 'perfo_constraint_4': {'om': 1.0, 'txt': 'Constraint on fuel capacity, must be kept positive', 'unit': 'no_dim'}, 'req_toc_altp': {'om': 10000.0, 'txt': 'Targeted Top Of Climb Altitude (TOC) for Time To Climb (TTC) computation', 'unit': 'ft'}, 'req_ttc': {'om': 10.0, 'txt': 'Required maximum Time To Climb', 'unit': 'min'}, 'req_vz_climb': {'om': 100.0, 'txt': 'Required minimum climb speed at 97%MTOW, nominal initial cruise altitude and MCL rating', 'unit': 'ft/min'}, 'req_vz_cruise': {'om': 100.0, 'txt': 'Required minimum climb speed at 97%MTOW, nominal initial cruise altitude and MCR rating', 'unit': 'ft/min'}}</em><a class="headerlink" href="#marilib.aircraft_data.operational_performances.HighSpeed.INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="marilib.aircraft_data.operational_performances.LowSpeed">
+<em class="property">class </em><code class="sig-prename descclassname">marilib.aircraft_data.operational_performances.</code><code class="sig-name descname">LowSpeed</code><span class="sig-paren">(</span><em class="sig-param">disa_tofl=None</em>, <em class="sig-param">altp_tofl=None</em>, <em class="sig-param">kvs1g_tofl=None</em>, <em class="sig-param">req_tofl=None</em>, <em class="sig-param">eff_tofl=None</em>, <em class="sig-param">eff_kvs1g=None</em>, <em class="sig-param">seg2_path=None</em>, <em class="sig-param">limitation=None</em>, <em class="sig-param">perfo_constraint_1=None</em>, <em class="sig-param">disa_app_speed=None</em>, <em class="sig-param">altp_app_speed=None</em>, <em class="sig-param">kvs1g_app_speed=None</em>, <em class="sig-param">req_app_speed=None</em>, <em class="sig-param">eff_app_speed=None</em>, <em class="sig-param">perfo_constraint_2=None</em>, <em class="sig-param">disa_oei=None</em>, <em class="sig-param">req_oei_altp=None</em>, <em class="sig-param">req_oei_path=None</em>, <em class="sig-param">eff_oei_path=None</em>, <em class="sig-param">oei_best_speed=None</em>, <em class="sig-param">perfo_constraint_3=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/aircraft_data/operational_performances.html#LowSpeed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.aircraft_data.operational_performances.LowSpeed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Low speed performance data</p>
+<dl class="attribute">
+<dt id="marilib.aircraft_data.operational_performances.LowSpeed.INFO">
+<code class="sig-name descname">INFO</code><em class="property"> = {'altp_app_speed': {'om': 1000.0, 'txt': 'Altitude for approach speed computation', 'unit': 'ft'}, 'altp_tofl': {'om': 10000.0, 'txt': 'Altitude for take off field length computation', 'unit': 'ft'}, 'disa_app_speed': {'om': 10.0, 'txt': 'Temperature shift for approach speed computation', 'unit': 'degK'}, 'disa_oei': {'om': 10.0, 'txt': 'Temperature shift for One Engine Inoperative (OEI)', 'unit': 'degK'}, 'disa_tofl': {'om': 10.0, 'txt': 'Temperature shift for take off field length computation', 'unit': 'degK'}, 'eff_app_speed': {'om': 100.0, 'txt': 'Effective approach speed at MLW and given condition', 'unit': 'kt'}, 'eff_kvs1g': {'om': 1.0, 'txt': 'Effective stall speed margin at take off', 'unit': 'no_dim'}, 'eff_oei_path': {'om': 0.1, 'txt': 'Effective slope OEI at 95%MTOW, required altitude and MCN rating', 'unit': '%'}, 'eff_tofl': {'om': 1000.0, 'txt': 'Effective take off field length at MTOW and given condition', 'unit': 'm'}, 'kvs1g_app_speed': {'om': 1.0, 'txt': 'Minimum allowed stall speed margin at landing', 'unit': 'no_dim'}, 'kvs1g_tofl': {'om': 1.0, 'txt': 'Minimum allowed stall speed margin at take off', 'unit': 'no_dim'}, 'limitation': {'om': 1.0, 'txt': 'Active limitation, 0: error, 1: field length, 2: min climb path', 'unit': 'int'}, 'oei_best_speed': {'om': 100.0, 'txt': 'Calibrated Air Speed (CAS) at which slope is maximum in given conditions', 'unit': 'kt'}, 'perfo_constraint_1': {'om': 1.0, 'txt': 'Constraint on Take Off Field Length, must be kept positive', 'unit': 'no_dim'}, 'perfo_constraint_2': {'om': 1.0, 'txt': 'Constraint on Approach Speed, must be kept positive', 'unit': 'no_dim'}, 'perfo_constraint_3': {'om': 1.0, 'txt': 'Constraint on One Engine Inoperative performance, must be kept positive', 'unit': 'no_dim'}, 'req_app_speed': {'om': 100.0, 'txt': 'Maximum approach speed at MLW and given conditions', 'unit': 'kt'}, 'req_oei_altp': {'om': 10000.0, 'txt': 'Required One Engine Inoperative (OEI) minimum altitude', 'unit': 'ft'}, 'req_oei_path': {'om': 0.1, 'txt': 'Required minimum slope OEI at 95%MTOW, required altitude and MCN rating', 'unit': '%'}, 'req_tofl': {'om': 1000.0, 'txt': 'Maximum take off field length at MTOW and given conditions', 'unit': 'm'}, 'seg2_path': {'om': 0.1, 'txt': 'Air path at 35 ft at take off', 'unit': 'no_dim'}}</em><a class="headerlink" href="#marilib.aircraft_data.operational_performances.LowSpeed.INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="marilib.aircraft_data.operational_performances.MaxFuelMission">
+<em class="property">class </em><code class="sig-prename descclassname">marilib.aircraft_data.operational_performances.</code><code class="sig-name descname">MaxFuelMission</code><span class="sig-paren">(</span><em class="sig-param">range=None</em>, <em class="sig-param">payload=None</em>, <em class="sig-param">tow=None</em>, <em class="sig-param">total_fuel=None</em>, <em class="sig-param">block_fuel=None</em>, <em class="sig-param">block_time=None</em>, <em class="sig-param">block_enrg=None</em>, <em class="sig-param">total_enrg=None</em>, <em class="sig-param">req_battery_mass=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/aircraft_data/operational_performances.html#MaxFuelMission"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.aircraft_data.operational_performances.MaxFuelMission" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Max fuel mission data</p>
+<dl class="attribute">
+<dt id="marilib.aircraft_data.operational_performances.MaxFuelMission.INFO">
+<code class="sig-name descname">INFO</code><em class="property"> = {'block_enrg': {'om': 10.0, 'txt': 'Block energy of the max fuel mission', 'unit': 'MWh'}, 'block_fuel': {'om': 10000.0, 'txt': 'Block fuel of the max fuel mission', 'unit': 'kg'}, 'block_time': {'om': 10.0, 'txt': 'Block time of the max fuel mission', 'unit': 'h'}, 'payload': {'om': 10000.0, 'txt': 'Payload of the max fuel mission', 'unit': 'kg'}, 'range': {'om': 1000.0, 'txt': 'Range of the max fuel mission', 'unit': 'NM'}, 'req_battery_mass': {'om': 1000.0, 'txt': 'Required battery mass of the max fuel mission', 'unit': 'kg'}, 'total_enrg': {'om': 10.0, 'txt': 'Total energy of the max fuel mission', 'unit': 'MWh'}, 'total_fuel': {'om': 10000.0, 'txt': 'Total fuel of the max fuel mission', 'unit': 'kg'}, 'tow': {'om': 10000.0, 'txt': 'Take off weight of the max fuel mission', 'unit': 'kg'}}</em><a class="headerlink" href="#marilib.aircraft_data.operational_performances.MaxFuelMission.INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="marilib.aircraft_data.operational_performances.MaxPayloadMission">
+<em class="property">class </em><code class="sig-prename descclassname">marilib.aircraft_data.operational_performances.</code><code class="sig-name descname">MaxPayloadMission</code><span class="sig-paren">(</span><em class="sig-param">range=None</em>, <em class="sig-param">payload=None</em>, <em class="sig-param">tow=None</em>, <em class="sig-param">total_fuel=None</em>, <em class="sig-param">block_fuel=None</em>, <em class="sig-param">block_time=None</em>, <em class="sig-param">block_enrg=None</em>, <em class="sig-param">total_enrg=None</em>, <em class="sig-param">req_battery_mass=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/aircraft_data/operational_performances.html#MaxPayloadMission"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.aircraft_data.operational_performances.MaxPayloadMission" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Max payload mission data</p>
+<dl class="attribute">
+<dt id="marilib.aircraft_data.operational_performances.MaxPayloadMission.INFO">
+<code class="sig-name descname">INFO</code><em class="property"> = {'block_enrg': {'om': 10.0, 'txt': 'Block energy of the max payload mission', 'unit': 'MWh'}, 'block_fuel': {'om': 10000.0, 'txt': 'Block fuel of the max payload mission', 'unit': 'kg'}, 'block_time': {'om': 10.0, 'txt': 'Block time of the max payload mission', 'unit': 'h'}, 'payload': {'om': 10000.0, 'txt': 'Payload of the max payload mission', 'unit': 'kg'}, 'range': {'om': 1000.0, 'txt': 'Range of the max payload mission', 'unit': 'NM'}, 'req_battery_mass': {'om': 1000.0, 'txt': 'Required battery mass of the max payload mission', 'unit': 'kg'}, 'total_enrg': {'om': 10.0, 'txt': 'Total energy of the max payload mission', 'unit': 'MWh'}, 'total_fuel': {'om': 10000.0, 'txt': 'Total fuel of the max payload mission', 'unit': 'kg'}, 'tow': {'om': 10000.0, 'txt': 'Take off weight of the max payload mission', 'unit': 'kg'}}</em><a class="headerlink" href="#marilib.aircraft_data.operational_performances.MaxPayloadMission.INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="marilib.aircraft_data.operational_performances.NominalMission">
+<em class="property">class </em><code class="sig-prename descclassname">marilib.aircraft_data.operational_performances.</code><code class="sig-name descname">NominalMission</code><span class="sig-paren">(</span><em class="sig-param">range=None</em>, <em class="sig-param">payload=None</em>, <em class="sig-param">nominal_cruise_mach=None</em>, <em class="sig-param">nominal_cruise_altp=None</em>, <em class="sig-param">vz_cruise_margin=None</em>, <em class="sig-param">vz_climb_margin=None</em>, <em class="sig-param">tow=None</em>, <em class="sig-param">total_fuel=None</em>, <em class="sig-param">block_fuel=None</em>, <em class="sig-param">block_time=None</em>, <em class="sig-param">block_enrg=None</em>, <em class="sig-param">total_enrg=None</em>, <em class="sig-param">unified_sar=None</em>, <em class="sig-param">req_battery_mass=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/aircraft_data/operational_performances.html#NominalMission"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.aircraft_data.operational_performances.NominalMission" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Nominal mission data</p>
+<dl class="attribute">
+<dt id="marilib.aircraft_data.operational_performances.NominalMission.INFO">
+<code class="sig-name descname">INFO</code><em class="property"> = {'block_enrg': {'om': 10.0, 'txt': 'Block energy of the nominal mission', 'unit': 'MWh'}, 'block_fuel': {'om': 10000.0, 'txt': 'Block fuel of the nominal mission', 'unit': 'kg'}, 'block_time': {'om': 10.0, 'txt': 'Block time of the nominal mission', 'unit': 'h'}, 'fuel_margin': {'om': 10.0, 'txt': 'Remainin storage capacity for the nominal mission', 'unit': 'm3'}, 'nominal_cruise_altp': {'om': 1.0, 'txt': 'Cruise altitude of nominal mission', 'unit': 'ft'}, 'nominal_cruise_mach': {'om': 1.0, 'txt': 'Cruise mach of nominal mission', 'unit': 'mach'}, 'payload': {'om': 10000.0, 'txt': 'Payload of the nominal mission', 'unit': 'kg'}, 'range': {'om': 1000.0, 'txt': 'Range of the nominal mission', 'unit': 'NM'}, 'req_battery_mass': {'om': 1000.0, 'txt': 'Required battery mass of the nominal mission', 'unit': 'kg'}, 'total_enrg': {'om': 10.0, 'txt': 'Total energy of the nominal mission', 'unit': 'MWh'}, 'total_fuel': {'om': 10000.0, 'txt': 'Total fuel of the nominal mission', 'unit': 'kg'}, 'tow': {'om': 10000.0, 'txt': 'Take off weight of the nominal mission', 'unit': 'kg'}, 'unified_sar': {'om': 1.0, 'txt': 'Specific Air Range in meter per Joule (SAR/FLHV for fuelled airplanes)', 'unit': 'm/J'}, 'vz_climb_margin': {'om': 100.0, 'txt': 'Margin versus required climb speed at 97%MTOW, nominal cruise altitude and MCL rating', 'unit': 'ft/min'}, 'vz_cruise_margin': {'om': 100.0, 'txt': 'Margin versus required climb speed at 97%MTOW, nominal cruise altitude and MCR rating', 'unit': 'ft/min'}}</em><a class="headerlink" href="#marilib.aircraft_data.operational_performances.NominalMission.INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="marilib.aircraft_data.operational_performances.ZeroPayloadMission">
+<em class="property">class </em><code class="sig-prename descclassname">marilib.aircraft_data.operational_performances.</code><code class="sig-name descname">ZeroPayloadMission</code><span class="sig-paren">(</span><em class="sig-param">range=None</em>, <em class="sig-param">tow=None</em>, <em class="sig-param">total_fuel=None</em>, <em class="sig-param">block_fuel=None</em>, <em class="sig-param">block_time=None</em>, <em class="sig-param">block_enrg=None</em>, <em class="sig-param">total_enrg=None</em>, <em class="sig-param">req_battery_mass=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/aircraft_data/operational_performances.html#ZeroPayloadMission"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.aircraft_data.operational_performances.ZeroPayloadMission" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Zero payload mission data</p>
+<dl class="attribute">
+<dt id="marilib.aircraft_data.operational_performances.ZeroPayloadMission.INFO">
+<code class="sig-name descname">INFO</code><em class="property"> = {'block_enrg': {'om': 10.0, 'txt': 'Block energy of the zero payload mission', 'unit': 'MWh'}, 'block_fuel': {'om': 10000.0, 'txt': 'Block fuel of the zero payload mission', 'unit': 'kg'}, 'block_time': {'om': 10.0, 'txt': 'Block time of the zero payload mission', 'unit': 'h'}, 'range': {'om': 1000.0, 'txt': 'Range of the zero payload mission', 'unit': 'NM'}, 'req_battery_mass': {'om': 1000.0, 'txt': 'Required battery mass of the zero payload mission', 'unit': 'kg'}, 'total_enrg': {'om': 10.0, 'txt': 'Total energy of the zero payload mission', 'unit': 'MWh'}, 'total_fuel': {'om': 10000.0, 'txt': 'Total fuel of the zero payload mission', 'unit': 'kg'}, 'tow': {'om': 10000.0, 'txt': 'Take off weight of the zero payload mission', 'unit': 'kg'}}</em><a class="headerlink" href="#marilib.aircraft_data.operational_performances.ZeroPayloadMission.INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="marilib.aircraft_data.physical_performances.html" title="marilib.aircraft_data.physical_performances module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="marilib.aircraft_data.aircraft_description.html" title="marilib.aircraft_data.aircraft_description module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="marilib.html" >marilib package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="marilib.aircraft_data.html" >marilib.aircraft_data package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

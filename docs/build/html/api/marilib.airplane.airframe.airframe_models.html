@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.airplane.airframe.airframe_models module &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="marilib.airplane.propulsion package" href="marilib.airplane.propulsion.html" />
+    <link rel="prev" title="marilib.airplane.airframe.airframe_design module" href="marilib.airplane.airframe.airframe_design.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="marilib.airplane.propulsion.html" title="marilib.airplane.propulsion package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="marilib.airplane.airframe.airframe_design.html" title="marilib.airplane.airframe.airframe_design module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="marilib.html" >marilib package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="marilib.airplane.html" >marilib.airplane package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="marilib.airplane.airframe.html" accesskey="U">marilib.airplane.airframe package</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/marilib.airplane.airframe.airframe_models.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-marilib.airplane.airframe.airframe_models">
+<span id="marilib-airplane-airframe-airframe-models-module"></span><h1>marilib.airplane.airframe.airframe_models module<a class="headerlink" href="#module-marilib.airplane.airframe.airframe_models" title="Permalink to this headline">¶</a></h1>
+<p>Created on Thu Jan 24 23:22:21 2019</p>
+<dl class="simple">
+<dt>&#64;author: DRUOT Thierry<span class="classifier">original Scilab implementation</span></dt><dd><p>PETEILH Nicolas : portage to Python</p>
+</dd>
+</dl>
+<dl class="function">
+<dt id="marilib.airplane.airframe.airframe_models.cza_wo_htp">
+<code class="sig-prename descclassname">marilib.airplane.airframe.airframe_models.</code><code class="sig-name descname">cza_wo_htp</code><span class="sig-paren">(</span><em class="sig-param">mach</em>, <em class="sig-param">fuselage_width</em>, <em class="sig-param">aspect_ratio</em>, <em class="sig-param">span</em>, <em class="sig-param">sweep</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/airframe/airframe_models.html#cza_wo_htp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.airframe.airframe_models.cza_wo_htp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Polhamus formula</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.airplane.airframe.airframe_models.htp_aero_data">
+<code class="sig-prename descclassname">marilib.airplane.airframe.airframe_models.</code><code class="sig-name descname">htp_aero_data</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/airframe/airframe_models.html#htp_aero_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.airframe.airframe_models.htp_aero_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>WARNING : output values are in Wing reference area</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.airplane.airframe.airframe_models.vtp_aero_data">
+<code class="sig-prename descclassname">marilib.airplane.airframe.airframe_models.</code><code class="sig-name descname">vtp_aero_data</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/airframe/airframe_models.html#vtp_aero_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.airframe.airframe_models.vtp_aero_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>WARNING : output values are in Wing reference area</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.airplane.airframe.airframe_models.vtp_lift_gradiant">
+<code class="sig-prename descclassname">marilib.airplane.airframe.airframe_models.</code><code class="sig-name descname">vtp_lift_gradiant</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/airframe/airframe_models.html#vtp_lift_gradiant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.airframe.airframe_models.vtp_lift_gradiant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lift curve slope of the vertical tail versus angle of attack
+WARNING : output value is in Wing reference area</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.airplane.airframe.airframe_models.wing_aero_data">
+<code class="sig-prename descclassname">marilib.airplane.airframe.airframe_models.</code><code class="sig-name descname">wing_aero_data</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em>, <em class="sig-param">mach</em>, <em class="sig-param">hld_conf</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/airframe/airframe_models.html#wing_aero_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.airframe.airframe_models.wing_aero_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="marilib.airplane.airframe.airframe_models.wing_downwash">
+<code class="sig-prename descclassname">marilib.airplane.airframe.airframe_models.</code><code class="sig-name descname">wing_downwash</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em>, <em class="sig-param">cz_wing</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/airframe/airframe_models.html#wing_downwash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.airframe.airframe_models.wing_downwash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downwash angle generated behind the wing</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.airplane.airframe.airframe_models.wing_induced_factor">
+<code class="sig-prename descclassname">marilib.airplane.airframe.airframe_models.</code><code class="sig-name descname">wing_induced_factor</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/airframe/airframe_models.html#wing_induced_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.airframe.airframe_models.wing_induced_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Induced drag coefficient of wing + fuselage</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="marilib.airplane.propulsion.html" title="marilib.airplane.propulsion package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="marilib.airplane.airframe.airframe_design.html" title="marilib.airplane.airframe.airframe_design module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="marilib.html" >marilib package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="marilib.airplane.html" >marilib.airplane package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="marilib.airplane.airframe.html" >marilib.airplane.airframe package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

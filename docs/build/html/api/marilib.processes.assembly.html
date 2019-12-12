@@ -1,0 +1,256 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.processes.assembly module &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="marilib.processes.component module" href="marilib.processes.component.html" />
+    <link rel="prev" title="marilib.processes package" href="marilib.processes.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="marilib.processes.component.html" title="marilib.processes.component module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="marilib.processes.html" title="marilib.processes package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="marilib.html" >marilib package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="marilib.processes.html" accesskey="U">marilib.processes package</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/marilib.processes.assembly.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-marilib.processes.assembly">
+<span id="marilib-processes-assembly-module"></span><h1>marilib.processes.assembly module<a class="headerlink" href="#module-marilib.processes.assembly" title="Permalink to this headline">¶</a></h1>
+<p>Created on Thu Jan 24 23:22:21 2019
+&#64;author: DRUOT Thierry
+Changed name from “design.py” to “assembly.py” on 21:05:2019</p>
+<dl class="function">
+<dt id="marilib.processes.assembly.aircraft_initialize">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">aircraft_initialize</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em>, <em class="sig-param">n_pax_ref</em>, <em class="sig-param">design_range</em>, <em class="sig-param">cruise_mach</em>, <em class="sig-param">propu_config</em>, <em class="sig-param">n_engine</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#aircraft_initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.aircraft_initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a generic aircraft</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.eval_aircraft_pre_design">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">eval_aircraft_pre_design</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#eval_aircraft_pre_design"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.eval_aircraft_pre_design" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves the coupling carried by nacelle geometry only
+Do not perform tail area sizing</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.eval_aircraft_statistical_pre_design">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">eval_aircraft_statistical_pre_design</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#eval_aircraft_statistical_pre_design"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.eval_aircraft_statistical_pre_design" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform tail area sizing according to statistical rules on top of the coupling carried by nacelle geometry</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.eval_aircraft_statistical_pre_design_2">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">eval_aircraft_statistical_pre_design_2</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#eval_aircraft_statistical_pre_design_2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.eval_aircraft_statistical_pre_design_2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves the coupling carried by nacelle geometry on top of the statistical sizing of tail areas</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.eval_geometrical_analysis">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">eval_geometrical_analysis</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#eval_geometrical_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.eval_geometrical_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform geometrical analysis
+Do not solve any coupling</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.eval_handling_quality_analysis">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">eval_handling_quality_analysis</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#eval_handling_quality_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.eval_handling_quality_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute CG limits from handling qualities point of view</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.eval_hq0">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">eval_hq0</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#eval_hq0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.eval_hq0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform hq based empennage sizing without updating characteristic masses MTOW, MLW &amp; MZFW</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.eval_mass_breakdown">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">eval_mass_breakdown</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#eval_mass_breakdown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.eval_mass_breakdown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate mass and CGs of the airplane
+For burnable liquid fuel powered airplanes, takes MTOW, MZFW &amp; MLW as input
+For battery powered airplanes, takes only MTOW as input</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.eval_mass_estimation">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">eval_mass_estimation</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#eval_mass_estimation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.eval_mass_estimation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate mass and CGs of the airplane
+Takes MTOW as input but solves the coupling carried by MZFW and MLW</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.eval_mass_mission_adaptation">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">eval_mass_mission_adaptation</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#eval_mass_mission_adaptation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.eval_mass_mission_adaptation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform mass - mission adaptation and update mass and CGs
+Solve couplings carried by MTOW, MZFW and MLW</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.eval_mda">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">eval_mda</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em>, <em class="sig-param">mda_type</em>, <em class="sig-param">mda_allowed</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#eval_mda"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.eval_mda" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the requested design sequence</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.eval_mda0">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">eval_mda0</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#eval_mda0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.eval_mda0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the design sequence with statistical empennage sizing but without satisfying mass constraints</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.eval_mda1">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">eval_mda1</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#eval_mda1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.eval_mda1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the design sequence with statistical empennage sizing and local mass constraints satisfaction (mass_constraint_1&amp;2)
+but without mass-mission adaptation</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.eval_mda2">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">eval_mda2</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#eval_mda2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.eval_mda2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the design sequence with mass-mission adaptation (mass_constraint_1,2&amp;3) and statistical empennage sizing</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.eval_mda3">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">eval_mda3</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#eval_mda3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.eval_mda3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run full MDA design with mass-mission adaptation (mass_constraint_1,2&amp;3) and hq based empennage sizing</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.eval_optim_crt">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">eval_optim_crt</code><span class="sig-paren">(</span><em class="sig-param">x_in</em>, <em class="sig-param">aircraft</em>, <em class="sig-param">crit_index</em>, <em class="sig-param">crit_ref</em>, <em class="sig-param">mda_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#eval_optim_crt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.eval_optim_crt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retreve criteria</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.eval_optim_cst">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">eval_optim_cst</code><span class="sig-paren">(</span><em class="sig-param">x_in</em>, <em class="sig-param">aircraft</em>, <em class="sig-param">crit_index</em>, <em class="sig-param">crit_ref</em>, <em class="sig-param">mda_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#eval_optim_cst"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.eval_optim_cst" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve constraints</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.eval_optim_data">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">eval_optim_data</code><span class="sig-paren">(</span><em class="sig-param">x_in</em>, <em class="sig-param">ac</em>, <em class="sig-param">crit_index</em>, <em class="sig-param">crit_ref</em>, <em class="sig-param">mda_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#eval_optim_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.eval_optim_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute criterion and constraints</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.eval_payload_range_analysis">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">eval_payload_range_analysis</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#eval_payload_range_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.eval_payload_range_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute Payload - Range diagram corner points</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.eval_performance_analysis">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">eval_performance_analysis</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#eval_performance_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.eval_performance_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute operational performances</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.eval_tail_statistical_sizing">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">eval_tail_statistical_sizing</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#eval_tail_statistical_sizing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.eval_tail_statistical_sizing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform tail area sizing according to statistical rules
+Do not manage the coupling carried by nacelle geometry</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.explore_design_space">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">explore_design_space</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em>, <em class="sig-param">res</em>, <em class="sig-param">step</em>, <em class="sig-param">mda_type</em>, <em class="sig-param">file</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#explore_design_space"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.explore_design_space" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.mdf_process">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">mdf_process</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em>, <em class="sig-param">search_domain</em>, <em class="sig-param">criterion</em>, <em class="sig-param">mda_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#mdf_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.mdf_process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute criterion and constraints</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.processes.assembly.plot_mdf_process">
+<code class="sig-prename descclassname">marilib.processes.assembly.</code><code class="sig-name descname">plot_mdf_process</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em>, <em class="sig-param">search_domain</em>, <em class="sig-param">criterion</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/processes/assembly.html#plot_mdf_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.processes.assembly.plot_mdf_process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute criterion and constraints</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="marilib.processes.component.html" title="marilib.processes.component module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="marilib.processes.html" title="marilib.processes package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="marilib.html" >marilib package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="marilib.processes.html" >marilib.processes package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

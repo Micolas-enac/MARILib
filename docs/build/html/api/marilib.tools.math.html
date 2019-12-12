@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.tools.math module &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="marilib.tools.units module" href="marilib.tools.units.html" />
+    <link rel="prev" title="marilib.tools package" href="marilib.tools.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="marilib.tools.units.html" title="marilib.tools.units module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="marilib.tools.html" title="marilib.tools package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="marilib.html" >marilib package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="marilib.tools.html" accesskey="U">marilib.tools package</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/marilib.tools.math.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-marilib.tools.math">
+<span id="marilib-tools-math-module"></span><h1>marilib.tools.math module<a class="headerlink" href="#module-marilib.tools.math" title="Permalink to this headline">¶</a></h1>
+<p>Created on Thu Jan 24 23:22:21 2019</p>
+<p><em>Module author: DRUOT Thierry : original Scilab implementation</em></p>
+<p><em>Module author: ROCHES Pascal : portage to Python</em></p>
+<dl class="function">
+<dt id="marilib.tools.math.approx_jac">
+<code class="sig-prename descclassname">marilib.tools.math.</code><code class="sig-name descname">approx_jac</code><span class="sig-paren">(</span><em class="sig-param">res</em>, <em class="sig-param">y</em>, <em class="sig-param">args=()</em>, <em class="sig-param">step=1e-07</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/tools/math.html#approx_jac"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.tools.math.approx_jac" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="marilib.tools.math.get_jac_func">
+<code class="sig-prename descclassname">marilib.tools.math.</code><code class="sig-name descname">get_jac_func</code><span class="sig-paren">(</span><em class="sig-param">res</em>, <em class="sig-param">args=()</em>, <em class="sig-param">step=1e-06</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/tools/math.html#get_jac_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.tools.math.get_jac_func" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="marilib.tools.math.lin_interp_1d">
+<code class="sig-prename descclassname">marilib.tools.math.</code><code class="sig-name descname">lin_interp_1d</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">X</em>, <em class="sig-param">Y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/tools/math.html#lin_interp_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.tools.math.lin_interp_1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>linear interpolation without any control</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – current position</p></li>
+<li><p><strong>X</strong> – array of the abscissa of the known points</p></li>
+<li><p><strong>Y</strong> – array of the known values at given abscissa</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.tools.math.maximize_1d">
+<code class="sig-prename descclassname">marilib.tools.math.</code><code class="sig-name descname">maximize_1d</code><span class="sig-paren">(</span><em class="sig-param">xini</em>, <em class="sig-param">dx</em>, <em class="sig-param">*fct</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/tools/math.html#maximize_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.tools.math.maximize_1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optimize 1 single variable, no constraint</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xini</strong> – initial value of the variable</p></li>
+<li><p><strong>dx</strong> – fixed search step</p></li>
+<li><p><strong>fct</strong> – function with the signature : [‘function_name’,a1,a2,a3,…,an] and function_name(x,a1,a2,a3,…,an)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>xres, yres and rc</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.tools.math.newton_solve">
+<code class="sig-prename descclassname">marilib.tools.math.</code><code class="sig-name descname">newton_solve</code><span class="sig-paren">(</span><em class="sig-param">res_func</em>, <em class="sig-param">x0</em>, <em class="sig-param">dres_dy=None</em>, <em class="sig-param">args=()</em>, <em class="sig-param">res_max=1e-12</em>, <em class="sig-param">relax=0.995</em>, <em class="sig-param">max_iter=50</em>, <em class="sig-param">full_output=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/tools/math.html#newton_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.tools.math.newton_solve" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="marilib.tools.math.norm">
+<code class="sig-prename descclassname">marilib.tools.math.</code><code class="sig-name descname">norm</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/tools/math.html#norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.tools.math.norm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="marilib.tools.math.trinome">
+<code class="sig-prename descclassname">marilib.tools.math.</code><code class="sig-name descname">trinome</code><span class="sig-paren">(</span><em class="sig-param">A</em>, <em class="sig-param">Y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/tools/math.html#trinome"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.tools.math.trinome" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates trinome coefficients from 3 given points</p>
+<div class="math">
+<p><img src="../_images/math/4471408ce942fab9927cfc0de77f7b719bc0984c.png" alt="\mathbf{A} = [X2, X, 1]"/></p>
+</div><p>(Vandermonde matrix)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.tools.math.vander3">
+<code class="sig-prename descclassname">marilib.tools.math.</code><code class="sig-name descname">vander3</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/tools/math.html#vander3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.tools.math.vander3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the vandermonde matrix of a dim 3 array</p>
+<div class="math">
+<p><img src="../_images/math/be38575b9ba51d7496933b00c0b5ff34ea9987b6.png" alt="\mathbf{A} = [X^2, X, 1]"/></p>
+</div></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="marilib.tools.units.html" title="marilib.tools.units module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="marilib.tools.html" title="marilib.tools package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="marilib.html" >marilib package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="marilib.tools.html" >marilib.tools package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

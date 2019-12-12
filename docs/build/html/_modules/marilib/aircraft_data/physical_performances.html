@@ -1,0 +1,291 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.aircraft_data.physical_performances &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../marilib.html" accesskey="U">marilib</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for marilib.aircraft_data.physical_performances</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Thu Jan 24 23:22:21 2019</span>
+
+<span class="sd">.. moduleauthor:: DRUOT Thierry : original Scilab implementation</span>
+<span class="sd">.. moduleauthor:: PETEILH Nicolas : portage to Python</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1">#--------------------------------------------------------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="Aerodynamics"><a class="viewcode-back" href="../../../api/marilib.aircraft_data.physical_performances.html#marilib.aircraft_data.physical_performances.Aerodynamics">[docs]</a><span class="k">class</span> <span class="nc">Aerodynamics</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Aerodynamic data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">INFO</span> <span class="o">=</span> <span class="p">{</span>\
+    <span class="s2">&quot;cruise_lod_max&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;no_dim&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e1</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Maximum lift over drag ratio in cruise condition&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;cz_cruise_lod_max&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;no_dim&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Lift coefficient corresponding to maximum lift over drag&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;hld_conf_clean&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;no_dim&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;High lift device setting in clean configuration (0 by definition)&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;cz_max_clean&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;no_dim&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Maximum lift coefficient in clean wing configuration&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;hld_conf_to&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;no_dim&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;High lift device setting in take off configuration (0 &lt; hld_conf &lt; 0,6)&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;cz_max_to&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;no_dim&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Maximum lift coefficient in take off configuration&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;hld_conf_ld&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;no_dim&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;High lift device setting in landing configuration (nominal value is 1)&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;cz_max_ld&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;no_dim&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Maximum lift coefficient in landing configuration&quot;</span><span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cruise_lod_max</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">cz_cruise_lod_max</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">hld_conf_clean</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">cz_max_clean</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">hld_conf_to</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">cz_max_to</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">hld_conf_ld</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">cz_max_ld</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cruise_lod_max</span> <span class="o">=</span> <span class="n">cruise_lod_max</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cz_cruise_lod_max</span> <span class="o">=</span> <span class="n">cz_cruise_lod_max</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hld_conf_clean</span> <span class="o">=</span> <span class="n">hld_conf_clean</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cz_max_clean</span> <span class="o">=</span> <span class="n">cz_max_clean</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hld_conf_to</span> <span class="o">=</span> <span class="n">hld_conf_to</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cz_max_to</span> <span class="o">=</span> <span class="n">cz_max_to</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hld_conf_ld</span> <span class="o">=</span> <span class="n">hld_conf_ld</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cz_max_ld</span> <span class="o">=</span> <span class="n">cz_max_ld</span></div>
+
+<span class="c1">#--------------------------------------------------------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="Propulsion"><a class="viewcode-back" href="../../../api/marilib.aircraft_data.physical_performances.html#marilib.aircraft_data.physical_performances.Propulsion">[docs]</a><span class="k">class</span> <span class="nc">Propulsion</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Propulsion data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">INFO</span> <span class="o">=</span> <span class="p">{</span>\
+    <span class="s2">&quot;architecture&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Propulsion architecture, TF:turbofan, PTE1:partial turbo electric n°1, EF1, electric with batteries&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;n_engine&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;int&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Number of main engines&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;nacelle_attachment&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;int&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Main engine nacelle attachment (1= under wing, 2= rear fuselage)&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;fuel_type&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Type of fuel, Kerosene, Hydrogene, Methane, Battery&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;fuel_heat&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;J/kg&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e8</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Fuel heating value&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;battery_energy_density&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kWh/kg&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e3</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Battery energy density&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;reference_thrust&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;daN&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e5</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Reference_thrust that drives the engine size and assocoated systems&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;reference_thrust_effective&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;daN&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e5</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Effective reference_thrust computed as max thrust(Mach = 0.25, ISA+15, Sea Level) / 0.8&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;y_ext_nacelle&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e1</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Span wise position of the out most right engine nacelle&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;sfc_cruise_ref&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kg/daN/h&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Specific Fuel Consumption in cruise condition, isa, ref_cruise_altp, cruise_mach&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;sec_cruise_ref&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kW/daN/h&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Specific Energy Consumption of the electric chain (if any) in cruise condition, isa, ref_cruise_altp, cruise_mach&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;bli_effect&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;int&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;BLI effect switch, 0: without, 1: with&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;bli_r_thrust_factor&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;no_dim&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Thrust factor at constant power due to boundary layer ingestion of the e-fan in cruise condition&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;bli_thrust_factor&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;no_dim&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Thrust factor at constant power due to boundary layer ingestion of other fans in cruise condition&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;rating_code&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;int&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Array of rating codes [0:MTO, 1:MCN, 2:MCL, 3:MCR, 4:FID]&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;flight_data&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;dict&quot;</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Dictionary of flying conditions for each rating {&#39;disa&#39;:array, &#39;altp&#39;:array, &#39;mach&#39;:array, &#39;nei&#39;:array}&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;mto_thrust_ref&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;daN&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e4</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Turbofan thrust in take off rating (one engine), Sea Level, ISA+15, Mach 0,25&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;mcn_thrust_ref&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;daN&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e4</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Turbofan thrust in maxi continuous rating (one engine), Required ceiling altitude, ISA, cruise Mach&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;mcl_thrust_ref&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;daN&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e4</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Turbofan thrust in max climb rating (one engine), Required Top of Climb altitude, ISA, cruise Mach&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;mcr_thrust_ref&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;daN&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e4</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Turbofan thrust in max cruise rating (one engine), Reference cruise altitude, ISA, cruise Mach&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;fid_thrust_ref&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;daN&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e4</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Turbofan thrust in flight idle rating (one engine), Reference cruise altitude, ISA, cruise Mach&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;mass&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kg&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e3</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Total mass of the propulsion system (pylons, nacelles, engines, ...)&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;c_g&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e1</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Global CG position for the whole propulsion system (pylons, nacelles, engines, ...)&quot;</span><span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">architecture</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">n_engine</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">nacelle_attachment</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">fuel_type</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">fuel_heat</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">battery_energy_density</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">reference_thrust</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">reference_thrust_effective</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">y_ext_nacelle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">sfc_cruise_ref</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">sec_cruise_ref</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">bli_effect</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">bli_r_thrust_factor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">bli_thrust_factor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">rating_code</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">flight_data</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mto_thrust_ref</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mcn_thrust_ref</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mcl_thrust_ref</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mcr_thrust_ref</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">fid_thrust_ref</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mass</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">c_g</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">architecture</span> <span class="o">=</span> <span class="n">architecture</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_engine</span> <span class="o">=</span> <span class="n">n_engine</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nacelle_attachment</span> <span class="o">=</span> <span class="n">nacelle_attachment</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fuel_type</span> <span class="o">=</span> <span class="n">fuel_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fuel_heat</span> <span class="o">=</span> <span class="n">fuel_heat</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">battery_energy_density</span> <span class="o">=</span> <span class="n">battery_energy_density</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_thrust</span> <span class="o">=</span> <span class="n">reference_thrust</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_thrust_effective</span> <span class="o">=</span> <span class="n">reference_thrust_effective</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_ext_nacelle</span> <span class="o">=</span> <span class="n">y_ext_nacelle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sfc_cruise_ref</span> <span class="o">=</span> <span class="n">sfc_cruise_ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sec_cruise_ref</span> <span class="o">=</span> <span class="n">sec_cruise_ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bli_effect</span> <span class="o">=</span> <span class="n">bli_effect</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bli_r_thrust_factor</span> <span class="o">=</span> <span class="n">bli_r_thrust_factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bli_thrust_factor</span> <span class="o">=</span> <span class="n">bli_thrust_factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rating_code</span> <span class="o">=</span> <span class="n">rating_code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flight_data</span> <span class="o">=</span> <span class="n">flight_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mto_thrust_ref</span> <span class="o">=</span> <span class="n">mto_thrust_ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mcn_thrust_ref</span> <span class="o">=</span> <span class="n">mcn_thrust_ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mcl_thrust_ref</span> <span class="o">=</span> <span class="n">mcl_thrust_ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mcr_thrust_ref</span> <span class="o">=</span> <span class="n">mcr_thrust_ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fid_thrust_ref</span> <span class="o">=</span> <span class="n">fid_thrust_ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="n">mass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c_g</span> <span class="o">=</span> <span class="n">c_g</span></div>
+
+<span class="c1">#--------------------------------------------------------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="CharacteristicWeight"><a class="viewcode-back" href="../../../api/marilib.aircraft_data.physical_performances.html#marilib.aircraft_data.physical_performances.CharacteristicWeight">[docs]</a><span class="k">class</span> <span class="nc">CharacteristicWeight</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Aircraft characteristic weights</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">INFO</span> <span class="o">=</span> <span class="p">{</span>\
+    <span class="s2">&quot;mwe&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kg&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e4</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Manufacturer Weight Empty&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;owe&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kg&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e4</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Operating Weight Empty (= mwe + m_op_item + m_cont_pallet)&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;mzfw&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kg&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e4</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Maximum Zero Fuel Weight (= owe + n_pax_ref.m_pax_max)&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;mass_constraint_1&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;no_dim&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Constraint on MZFW, must be kept positive&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;mlw&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kg&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e4</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Maximum Landing Weight (close or equal to 1,07mzfw except for small aircraft where mlw = mtow)&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;mass_constraint_2&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;no_dim&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Constraint on MLW, must be kept positive&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;mtow&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kg&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e4</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Maximum Take Off Weight&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;mass_constraint_3&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;no_dim&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Constraint on MTOW, must be kept positive&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;mfw&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kg&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e4</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Maximum Fuel Weight&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;battery_in_owe&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kg&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e4</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Battery mass in OWE&quot;</span><span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mwe</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">owe</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mzfw</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mass_constraint_1</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mlw</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mass_constraint_2</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mtow</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mass_constraint_3</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mfw</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">battery_in_owe</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mwe</span> <span class="o">=</span> <span class="n">mwe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">owe</span> <span class="o">=</span> <span class="n">owe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mzfw</span> <span class="o">=</span> <span class="n">mzfw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass_constraint_1</span> <span class="o">=</span> <span class="n">mass_constraint_1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mlw</span> <span class="o">=</span> <span class="n">mlw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass_constraint_2</span> <span class="o">=</span> <span class="n">mass_constraint_2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mtow</span> <span class="o">=</span> <span class="n">mtow</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass_constraint_3</span> <span class="o">=</span> <span class="n">mass_constraint_3</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mfw</span> <span class="o">=</span> <span class="n">mfw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">battery_in_owe</span> <span class="o">=</span> <span class="n">battery_in_owe</span></div>
+
+<span class="c1">#--------------------------------------------------------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="CenterOfGravity"><a class="viewcode-back" href="../../../api/marilib.aircraft_data.physical_performances.html#marilib.aircraft_data.physical_performances.CenterOfGravity">[docs]</a><span class="k">class</span> <span class="nc">CenterOfGravity</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Operational positions of the center of gravity</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">INFO</span> <span class="o">=</span> <span class="p">{</span>\
+    <span class="s2">&quot;cg_range_optimization&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;int&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Wing position, HTP area and VTP area optimized according to HQ criteria, 0: no, 1:yes&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;mwe&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e1</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Longitudinal position of MWE CG&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;owe&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e1</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Longitudinal position of OWE CG&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;battery&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e1</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Longitudinal position of battery CG&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;max_fwd_mass&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kg&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e4</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Aircraft mass at maximum forward CG&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;max_fwd_req_cg&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e1</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Required maximum forward aircraft CG&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;max_fwd_trim_cg&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e1</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Maximum trim-able forward CG&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;cg_constraint_1&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;no_dim&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Forward CG constraint n°1, must be kept positive&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;max_bwd_mass&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kg&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e4</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Aircraft mass at maximum backward payload CG&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;max_bwd_req_cg&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e1</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Required maximum backward aircraft CG&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;max_bwd_stab_cg&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e1</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Maximum backward CG&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;cg_constraint_2&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;no_dim&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Backward CG constraint n°1, must be kept positive&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;max_bwd_oei_mass&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kg&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e4</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Aircraft mass for OEI control criterion&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;max_bwd_oei_req_cg&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e1</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Required backward CG at max_bwd_oei_mass&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;max_bwd_oei_cg&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e1</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Maximum backward CG according to OEI control&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;cg_constraint_3&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;no_dim&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Backward CG constraint n°2, must be kept positive&quot;</span><span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cg_range_optimization</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mwe</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">owe</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">battery</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">max_fwd_mass</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">max_fwd_req_cg</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+					   <span class="n">max_fwd_trim_cg</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">cg_constraint_1</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">max_bwd_mass</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">max_bwd_req_cg</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">max_bwd_stab_cg</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">cg_constraint_2</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">max_bwd_oei_mass</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">max_bwd_oei_req_cg</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">max_bwd_oei_cg</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">cg_constraint_3</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cg_range_optimization</span> <span class="o">=</span> <span class="n">cg_range_optimization</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mwe</span> <span class="o">=</span> <span class="n">mwe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">owe</span> <span class="o">=</span> <span class="n">owe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">battery</span> <span class="o">=</span> <span class="n">battery</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_fwd_mass</span> <span class="o">=</span> <span class="n">max_fwd_mass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_fwd_req_cg</span> <span class="o">=</span> <span class="n">max_fwd_req_cg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_fwd_trim_cg</span> <span class="o">=</span> <span class="n">max_fwd_trim_cg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cg_constraint_1</span> <span class="o">=</span> <span class="n">cg_constraint_1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_bwd_mass</span> <span class="o">=</span> <span class="n">max_bwd_mass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_bwd_req_cg</span> <span class="o">=</span> <span class="n">max_bwd_req_cg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_bwd_stab_cg</span> <span class="o">=</span> <span class="n">max_bwd_stab_cg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cg_constraint_2</span> <span class="o">=</span> <span class="n">cg_constraint_2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_bwd_oei_mass</span> <span class="o">=</span> <span class="n">max_bwd_oei_mass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_bwd_oei_req_cg</span> <span class="o">=</span> <span class="n">max_bwd_oei_req_cg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_bwd_oei_cg</span> <span class="o">=</span> <span class="n">max_bwd_oei_cg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cg_constraint_3</span> <span class="o">=</span> <span class="n">cg_constraint_3</span></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../marilib.html" >marilib</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

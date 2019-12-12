@@ -1,0 +1,219 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.aircraft_model.operations.pricing_and_costing &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../../marilib.html" accesskey="U">marilib</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for marilib.aircraft_model.operations.pricing_and_costing</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Thu Jan 24 23:22:21 2019</span>
+
+<span class="sd">@author: DRUOT Thierry : original Scilab implementation</span>
+<span class="sd">         PETEILH Nicolas : portage to Python</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">from</span> <span class="nn">marilib</span> <span class="k">import</span> <span class="n">numpy</span>
+
+<span class="kn">from</span> <span class="nn">marilib.earth</span> <span class="k">import</span> <span class="n">environment</span> <span class="k">as</span> <span class="n">earth</span>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="landing_gear_price"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.operations.pricing_and_costing.html#marilib.aircraft_model.operations.pricing_and_costing.landing_gear_price">[docs]</a><span class="k">def</span> <span class="nf">landing_gear_price</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Typical value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ldg</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">landing_gears</span>
+
+    <span class="n">gear_price</span> <span class="o">=</span> <span class="mf">720.</span> <span class="o">*</span> <span class="n">ldg</span><span class="o">.</span><span class="n">mass</span>
+
+    <span class="k">return</span> <span class="n">gear_price</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="one_engine_price"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.operations.pricing_and_costing.html#marilib.aircraft_model.operations.pricing_and_costing.one_engine_price">[docs]</a><span class="k">def</span> <span class="nf">one_engine_price</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Regression on catalog prices</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">propulsion</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span>
+
+    <span class="n">engine_price</span> <span class="o">=</span> <span class="p">((</span><span class="mf">2.115e-4</span><span class="o">*</span><span class="n">propulsion</span><span class="o">.</span><span class="n">reference_thrust</span> <span class="o">+</span> <span class="mf">78.85</span><span class="p">)</span><span class="o">*</span><span class="n">propulsion</span><span class="o">.</span><span class="n">reference_thrust</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">engine_price</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="one_airframe_price"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.operations.pricing_and_costing.html#marilib.aircraft_model.operations.pricing_and_costing.one_airframe_price">[docs]</a><span class="k">def</span> <span class="nf">one_airframe_price</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Regression on catalog prices corrected with engine prices</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span>
+    
+    <span class="n">airframe_price</span> <span class="o">=</span> <span class="mf">0.7e3</span><span class="o">*</span><span class="p">(</span><span class="mf">9e4</span> <span class="o">+</span> <span class="mf">1.15</span><span class="o">*</span><span class="n">weights</span><span class="o">.</span><span class="n">mwe</span> <span class="o">-</span> <span class="mf">1.8e9</span><span class="o">/</span><span class="p">(</span><span class="mf">2e4</span> <span class="o">+</span> <span class="n">weights</span><span class="o">.</span><span class="n">mwe</span><span class="o">**</span><span class="mf">0.94</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">airframe_price</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_operating_costs"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.operations.pricing_and_costing.html#marilib.aircraft_model.operations.pricing_and_costing.eval_operating_costs">[docs]</a><span class="k">def</span> <span class="nf">eval_operating_costs</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">block_fuel</span><span class="p">,</span><span class="n">block_time</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes Cash and Direct Operating Costs per flight (based on AAE 451 Spring 2004)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cabin</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">cabin</span>
+    <span class="n">propulsion</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span>
+    <span class="n">cost_mission</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">cost_mission</span>
+
+    <span class="n">eco</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">economics</span>
+
+    <span class="n">labor_cost</span> <span class="o">=</span> <span class="n">eco</span><span class="o">.</span><span class="n">labor_cost</span>
+    <span class="n">irp</span> <span class="o">=</span> <span class="n">eco</span><span class="o">.</span><span class="n">irp</span>
+    <span class="n">period</span> <span class="o">=</span> <span class="n">eco</span><span class="o">.</span><span class="n">period</span>
+    <span class="n">interest_rate</span> <span class="o">=</span> <span class="n">eco</span><span class="o">.</span><span class="n">interest_rate</span>
+    <span class="n">utilisation</span> <span class="o">=</span> <span class="n">eco</span><span class="o">.</span><span class="n">utilisation</span>
+
+    <span class="n">fuel_density</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">fuel_density</span><span class="p">(</span><span class="n">propulsion</span><span class="o">.</span><span class="n">fuel_type</span><span class="p">)</span>
+
+    <span class="c1"># Cash Operating Cost</span>
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------------------------------------------</span>
+    <span class="n">eco</span><span class="o">.</span><span class="n">fuel_cost</span> <span class="o">=</span>   <span class="p">(</span><span class="n">block_fuel</span><span class="o">*</span><span class="p">(</span><span class="n">eco</span><span class="o">.</span><span class="n">fuel_price</span><span class="o">*</span><span class="mf">1.e3</span><span class="p">)</span><span class="o">/</span><span class="n">fuel_density</span><span class="p">)</span>
+    <span class="n">eco</span><span class="o">.</span><span class="n">elec_cost</span> <span class="o">=</span>  <span class="n">cost_mission</span><span class="o">.</span><span class="n">req_battery_mass</span> <span class="o">*</span> <span class="n">propulsion</span><span class="o">.</span><span class="n">battery_energy_density</span> <span class="o">*</span> <span class="n">eco</span><span class="o">.</span><span class="n">elec_price</span>
+
+    <span class="n">b_h</span> <span class="o">=</span> <span class="n">block_time</span><span class="o">/</span><span class="mf">3600.</span>
+    <span class="n">t_t</span> <span class="o">=</span> <span class="n">b_h</span> <span class="o">+</span> <span class="mf">0.25</span>
+    <span class="n">w_f</span> <span class="o">=</span> <span class="p">(</span><span class="mf">10000.</span> <span class="o">+</span> <span class="n">weights</span><span class="o">.</span><span class="n">mwe</span><span class="o">-</span><span class="n">propulsion</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span><span class="o">*</span><span class="mf">1.e-5</span>
+
+    <span class="n">labor_frame</span> <span class="o">=</span> <span class="p">((</span><span class="mf">1.26</span><span class="o">+</span><span class="mf">1.774</span><span class="o">*</span><span class="n">w_f</span><span class="o">-</span><span class="mf">0.1071</span><span class="o">*</span><span class="n">w_f</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">t_t</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.614</span><span class="o">+</span><span class="mf">0.7227</span><span class="o">*</span><span class="n">w_f</span><span class="o">+</span><span class="mf">0.1204</span><span class="o">*</span><span class="n">w_f</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">*</span><span class="n">labor_cost</span>
+    <span class="n">matrl_frame</span> <span class="o">=</span> <span class="p">(</span><span class="mf">12.39</span><span class="o">+</span><span class="mf">29.8</span><span class="o">*</span><span class="n">w_f</span><span class="o">+</span><span class="mf">0.1806</span><span class="o">*</span><span class="n">w_f</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">t_t</span> <span class="o">+</span> <span class="p">(</span><span class="mf">15.20</span><span class="o">+</span><span class="mf">97.330</span><span class="o">*</span><span class="n">w_f</span><span class="o">-</span><span class="mf">2.8620</span><span class="o">*</span><span class="n">w_f</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">frame_cost</span> <span class="o">=</span> <span class="n">labor_frame</span> <span class="o">+</span> <span class="n">matrl_frame</span>
+
+    <span class="n">t_h</span> <span class="o">=</span> <span class="mf">0.05</span><span class="o">*</span><span class="p">(</span><span class="n">propulsion</span><span class="o">.</span><span class="n">reference_thrust_effective</span><span class="o">/</span><span class="mf">4.4482198</span><span class="p">)</span><span class="o">*</span><span class="mf">1e-4</span>
+
+    <span class="n">labor_engine</span> <span class="o">=</span> <span class="n">propulsion</span><span class="o">.</span><span class="n">n_engine</span><span class="o">*</span><span class="p">(</span><span class="mf">0.645</span><span class="o">*</span><span class="n">t_t</span><span class="o">+</span><span class="n">t_h</span><span class="o">*</span><span class="p">(</span><span class="mf">0.566</span><span class="o">*</span><span class="n">t_t</span><span class="o">+</span><span class="mf">0.434</span><span class="p">))</span><span class="o">*</span><span class="n">labor_cost</span>
+    <span class="n">matrl_engine</span> <span class="o">=</span> <span class="n">propulsion</span><span class="o">.</span><span class="n">n_engine</span><span class="o">*</span><span class="p">(</span><span class="mf">25.</span><span class="o">*</span><span class="n">t_t</span><span class="o">+</span><span class="n">t_h</span><span class="o">*</span><span class="p">(</span><span class="mf">0.62</span><span class="o">*</span><span class="n">t_t</span><span class="o">+</span><span class="mf">0.38</span><span class="p">))</span>
+    <span class="n">engine_cost</span> <span class="o">=</span> <span class="n">labor_engine</span> <span class="o">+</span> <span class="n">matrl_engine</span>
+
+    <span class="n">w_g</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">mtow</span><span class="o">*</span><span class="mf">1e-3</span>
+
+    <span class="n">eco</span><span class="o">.</span><span class="n">cockpit_crew_cost</span> <span class="o">=</span> <span class="n">b_h</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">440</span><span class="o">-</span><span class="mf">0.532</span><span class="o">*</span><span class="n">w_g</span><span class="p">)</span>
+
+    <span class="n">eco</span><span class="o">.</span><span class="n">cabin_crew_cost</span> <span class="o">=</span> <span class="n">b_h</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">cabin</span><span class="o">.</span><span class="n">n_pax_ref</span><span class="o">/</span><span class="mf">50.</span><span class="p">)</span><span class="o">*</span><span class="n">labor_cost</span>
+
+    <span class="n">eco</span><span class="o">.</span><span class="n">landing_fees</span> <span class="o">=</span> <span class="mf">8.66</span><span class="o">*</span><span class="p">(</span><span class="n">weights</span><span class="o">.</span><span class="n">mtow</span><span class="o">*</span><span class="mf">1e-3</span><span class="p">)</span>
+
+    <span class="n">eco</span><span class="o">.</span><span class="n">navigation_fees</span> <span class="o">=</span> <span class="mf">57.</span><span class="o">*</span><span class="p">(</span><span class="n">cost_mission</span><span class="o">.</span><span class="n">range</span><span class="o">/</span><span class="mf">185200.</span><span class="p">)</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">weights</span><span class="o">.</span><span class="n">mtow</span><span class="o">/</span><span class="mf">1000.</span><span class="p">)</span><span class="o">/</span><span class="mf">50.</span><span class="p">)</span>
+
+    <span class="n">eco</span><span class="o">.</span><span class="n">catering_cost</span> <span class="o">=</span> <span class="mf">3.07</span> <span class="o">*</span> <span class="n">cabin</span><span class="o">.</span><span class="n">n_pax_ref</span>
+
+    <span class="n">eco</span><span class="o">.</span><span class="n">pax_handling_cost</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">cabin</span><span class="o">.</span><span class="n">n_pax_ref</span>
+
+    <span class="n">eco</span><span class="o">.</span><span class="n">ramp_handling_cost</span> <span class="o">=</span> <span class="mf">8.70</span> <span class="o">*</span> <span class="n">cabin</span><span class="o">.</span><span class="n">n_pax_ref</span>
+
+    <span class="n">std_op_cost</span> <span class="o">=</span> <span class="n">eco</span><span class="o">.</span><span class="n">fuel_cost</span> <span class="o">+</span> <span class="n">eco</span><span class="o">.</span><span class="n">elec_cost</span> <span class="o">+</span> <span class="n">frame_cost</span> <span class="o">+</span> <span class="n">engine_cost</span> <span class="o">+</span> <span class="n">eco</span><span class="o">.</span><span class="n">cockpit_crew_cost</span> <span class="o">+</span> <span class="n">eco</span><span class="o">.</span><span class="n">landing_fees</span> <span class="o">+</span> <span class="n">eco</span><span class="o">.</span><span class="n">navigation_fees</span>
+
+    <span class="n">cash_op_cost</span> <span class="o">=</span> <span class="n">std_op_cost</span> <span class="o">+</span> <span class="n">eco</span><span class="o">.</span><span class="n">cabin_crew_cost</span> <span class="o">+</span> <span class="n">eco</span><span class="o">.</span><span class="n">catering_cost</span> <span class="o">+</span> <span class="n">eco</span><span class="o">.</span><span class="n">pax_handling_cost</span> <span class="o">+</span> <span class="n">eco</span><span class="o">.</span><span class="n">ramp_handling_cost</span>
+
+    <span class="c1"># DirectOperating Cost</span>
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------------------------------------------</span>
+    <span class="n">engine_price</span> <span class="o">=</span> <span class="n">one_engine_price</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">gear_price</span> <span class="o">=</span> <span class="n">landing_gear_price</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">frame_price</span> <span class="o">=</span> <span class="n">one_airframe_price</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">battery_price</span> <span class="o">=</span> <span class="n">eco</span><span class="o">.</span><span class="n">battery_mass_price</span><span class="o">*</span><span class="n">cost_mission</span><span class="o">.</span><span class="n">req_battery_mass</span>
+
+    <span class="n">aircraft_price</span> <span class="o">=</span> <span class="n">frame_price</span> <span class="o">+</span> <span class="n">engine_price</span> <span class="o">*</span> <span class="n">propulsion</span><span class="o">.</span><span class="n">n_engine</span> <span class="o">+</span> <span class="n">gear_price</span> <span class="o">+</span> <span class="n">battery_price</span>
+
+    <span class="n">eco</span><span class="o">.</span><span class="n">total_investment</span> <span class="o">=</span> <span class="n">frame_price</span> <span class="o">*</span> <span class="mf">1.06</span> <span class="o">+</span> <span class="n">propulsion</span><span class="o">.</span><span class="n">n_engine</span> <span class="o">*</span> <span class="n">engine_price</span> <span class="o">*</span> <span class="mf">1.025</span>
+
+    <span class="n">eco</span><span class="o">.</span><span class="n">interest</span> <span class="o">=</span> <span class="p">(</span><span class="n">eco</span><span class="o">.</span><span class="n">total_investment</span><span class="o">/</span><span class="p">(</span><span class="n">utilisation</span><span class="o">*</span><span class="n">period</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">irp</span> <span class="o">*</span> <span class="mf">0.04</span> <span class="o">*</span> <span class="p">(((</span><span class="mf">1.</span> <span class="o">+</span> <span class="n">interest_rate</span><span class="p">)</span><span class="o">**</span><span class="n">irp</span><span class="p">)</span><span class="o">/</span><span class="p">((</span><span class="mf">1.</span> <span class="o">+</span> <span class="n">interest_rate</span><span class="p">)</span><span class="o">**</span><span class="n">irp</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">))</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span>
+
+    <span class="n">eco</span><span class="o">.</span><span class="n">insurance</span> <span class="o">=</span> <span class="mf">0.0035</span> <span class="o">*</span> <span class="n">aircraft_price</span><span class="o">/</span><span class="n">utilisation</span>
+
+    <span class="n">eco</span><span class="o">.</span><span class="n">depreciation</span> <span class="o">=</span> <span class="mf">0.99</span> <span class="o">*</span> <span class="p">(</span><span class="n">eco</span><span class="o">.</span><span class="n">total_investment</span> <span class="o">/</span> <span class="p">(</span><span class="n">utilisation</span> <span class="o">*</span> <span class="n">period</span><span class="p">))</span>     <span class="c1"># Depreciation</span>
+
+    <span class="n">direct_op_cost</span> <span class="o">=</span> <span class="n">cash_op_cost</span> <span class="o">+</span> <span class="n">eco</span><span class="o">.</span><span class="n">interest</span> <span class="o">+</span> <span class="n">eco</span><span class="o">.</span><span class="n">depreciation</span> <span class="o">+</span> <span class="n">eco</span><span class="o">.</span><span class="n">insurance</span>
+
+    <span class="k">return</span> <span class="n">std_op_cost</span><span class="p">,</span><span class="n">direct_op_cost</span><span class="p">,</span><span class="n">cash_op_cost</span><span class="p">,</span><span class="n">battery_price</span><span class="p">,</span><span class="n">gear_price</span><span class="p">,</span><span class="n">engine_price</span><span class="p">,</span><span class="n">aircraft_price</span></div>
+
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../../marilib.html" >marilib</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

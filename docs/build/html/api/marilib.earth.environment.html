@@ -1,0 +1,280 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.earth.environment module &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="marilib.earth.environment_grad module" href="marilib.earth.environment_grad.html" />
+    <link rel="prev" title="marilib.earth package" href="marilib.earth.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="marilib.earth.environment_grad.html" title="marilib.earth.environment_grad module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="marilib.earth.html" title="marilib.earth package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="marilib.html" >marilib package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="marilib.earth.html" accesskey="U">marilib.earth package</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/marilib.earth.environment.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-marilib.earth.environment">
+<span id="marilib-earth-environment-module"></span><h1>marilib.earth.environment module<a class="headerlink" href="#module-marilib.earth.environment" title="Permalink to this headline">¶</a></h1>
+<p>Created on Thu Jan 24 23:22:21 2019</p>
+<dl class="simple">
+<dt>&#64;author: DRUOT Thierry<span class="classifier">original Scilab implementation</span></dt><dd><p>PETEILH Nicolas : portage to Python</p>
+</dd>
+</dl>
+<dl class="function">
+<dt id="marilib.earth.environment.air_density">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">air_density</code><span class="sig-paren">(</span><em class="sig-param">pamb</em>, <em class="sig-param">tamb</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#air_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.air_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ideal gas density</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.air_viscosity">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">air_viscosity</code><span class="sig-paren">(</span><em class="sig-param">tamb</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#air_viscosity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.air_viscosity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Air viscosity, Sutherland’s formula</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.altg_from_altp">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">altg_from_altp</code><span class="sig-paren">(</span><em class="sig-param">altp</em>, <em class="sig-param">disa</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#altg_from_altp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.altg_from_altp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.atmosphere">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">atmosphere</code><span class="sig-paren">(</span><em class="sig-param">altp</em>, <em class="sig-param">disa</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#atmosphere"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.atmosphere" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pressure from pressure altitude from ground to 50 km</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.atmosphere_geo">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">atmosphere_geo</code><span class="sig-paren">(</span><em class="sig-param">altg</em>, <em class="sig-param">disa</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#atmosphere_geo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.atmosphere_geo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pressure from pressure altitude from ground to 50 km</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.climb_mode">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">climb_mode</code><span class="sig-paren">(</span><em class="sig-param">speed_mode</em>, <em class="sig-param">dtodz</em>, <em class="sig-param">tstd</em>, <em class="sig-param">disa</em>, <em class="sig-param">mach</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#climb_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.climb_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acceleration factor depending on speed driver (1: constant CAS, 2: constant Mach)
+WARNING : input is mach number whatever SpeedMode</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.cross_over_altp">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">cross_over_altp</code><span class="sig-paren">(</span><em class="sig-param">Vcas</em>, <em class="sig-param">mach</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#cross_over_altp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.cross_over_altp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Altitude where constant calibrated air speed meets constant Mach number, subsonic only</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.emission_index">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">emission_index</code><span class="sig-paren">(</span><em class="sig-param">compound</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#emission_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.emission_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.fuel_density">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">fuel_density</code><span class="sig-paren">(</span><em class="sig-param">fuel_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#fuel_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.fuel_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference fuel density</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.fuel_heat">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">fuel_heat</code><span class="sig-paren">(</span><em class="sig-param">fuel_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#fuel_heat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.fuel_heat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference fuel lower heating value or battery energy density</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.gas_constant">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">gas_constant</code><span class="sig-paren">(</span><em class="sig-param">gas='air'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#gas_constant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.gas_constant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ideal gas constant (J/kg/K)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.gravity">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">gravity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#gravity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.gravity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference gravity acceleration</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.heat_constant">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">heat_constant</code><span class="sig-paren">(</span><em class="sig-param">gam</em>, <em class="sig-param">R</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#heat_constant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.heat_constant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference air heat at constant pressure</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.heat_ratio">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">heat_ratio</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#heat_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.heat_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference air heat capacity ratio Cp/Cv</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.mach_from_vcas">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">mach_from_vcas</code><span class="sig-paren">(</span><em class="sig-param">pamb</em>, <em class="sig-param">Vcas</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#mach_from_vcas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.mach_from_vcas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mach number from calibrated air speed, subsonic only</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.pressure">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">pressure</code><span class="sig-paren">(</span><em class="sig-param">altp</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#pressure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.pressure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pressure from pressure altitude from ground to 50 km</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.pressure_altitude">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">pressure_altitude</code><span class="sig-paren">(</span><em class="sig-param">pamb</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#pressure_altitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.pressure_altitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pressure altitude from ground to 50 km</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.reynolds_number">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">reynolds_number</code><span class="sig-paren">(</span><em class="sig-param">pamb</em>, <em class="sig-param">tamb</em>, <em class="sig-param">mach</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#reynolds_number"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.reynolds_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reynolds number based on Sutherland viscosity model</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.reynolds_number_old">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">reynolds_number_old</code><span class="sig-paren">(</span><em class="sig-param">pamb</em>, <em class="sig-param">tamb</em>, <em class="sig-param">mach</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#reynolds_number_old"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.reynolds_number_old" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reynolds number</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.sea_level_density">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">sea_level_density</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#sea_level_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.sea_level_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference air density at sea level</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.sea_level_pressure">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">sea_level_pressure</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#sea_level_pressure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.sea_level_pressure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference air pressure at sea level</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.sea_level_sound_speed">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">sea_level_sound_speed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#sea_level_sound_speed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.sea_level_sound_speed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference sound speed at sea level</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.sea_level_temperature">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">sea_level_temperature</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#sea_level_temperature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.sea_level_temperature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference air temperature at sea level</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.sound_speed">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">sound_speed</code><span class="sig-paren">(</span><em class="sig-param">tamb</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#sound_speed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.sound_speed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sound speed for ideal gas</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.total_pressure">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">total_pressure</code><span class="sig-paren">(</span><em class="sig-param">pamb</em>, <em class="sig-param">mach</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#total_pressure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.total_pressure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stagnation pressure</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.total_temperature">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">total_temperature</code><span class="sig-paren">(</span><em class="sig-param">tamb</em>, <em class="sig-param">mach</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#total_temperature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.total_temperature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stagnation temperature</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.vcas_from_mach">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">vcas_from_mach</code><span class="sig-paren">(</span><em class="sig-param">pamb</em>, <em class="sig-param">mach</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#vcas_from_mach"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.vcas_from_mach" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calibrated air speed from Mach number, subsonic only</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.vtas_from_mach">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">vtas_from_mach</code><span class="sig-paren">(</span><em class="sig-param">altp</em>, <em class="sig-param">disa</em>, <em class="sig-param">mach</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#vtas_from_mach"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.vtas_from_mach" title="Permalink to this definition">¶</a></dt>
+<dd><p>True air speed from Mach number, subsonic only</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.earth.environment.vtas_from_vcas">
+<code class="sig-prename descclassname">marilib.earth.environment.</code><code class="sig-name descname">vtas_from_vcas</code><span class="sig-paren">(</span><em class="sig-param">altp</em>, <em class="sig-param">disa</em>, <em class="sig-param">vcas</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/earth/environment.html#vtas_from_vcas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.earth.environment.vtas_from_vcas" title="Permalink to this definition">¶</a></dt>
+<dd><p>True air speed from calibrated air speed, subsonic only</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="marilib.earth.environment_grad.html" title="marilib.earth.environment_grad module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="marilib.earth.html" title="marilib.earth package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="marilib.html" >marilib package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="marilib.earth.html" >marilib.earth package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

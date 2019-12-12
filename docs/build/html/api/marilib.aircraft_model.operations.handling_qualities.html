@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.aircraft_model.operations.handling_qualities module &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="marilib.aircraft_model.operations.mission module" href="marilib.aircraft_model.operations.mission.html" />
+    <link rel="prev" title="marilib.aircraft_model.operations.flight_mechanics module" href="marilib.aircraft_model.operations.flight_mechanics.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="marilib.aircraft_model.operations.mission.html" title="marilib.aircraft_model.operations.mission module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="marilib.aircraft_model.operations.flight_mechanics.html" title="marilib.aircraft_model.operations.flight_mechanics module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="marilib.html" >marilib package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="marilib.aircraft_model.html" >marilib.aircraft_model package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="marilib.aircraft_model.operations.html" accesskey="U">marilib.aircraft_model.operations package</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/marilib.aircraft_model.operations.handling_qualities.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-marilib.aircraft_model.operations.handling_qualities">
+<span id="marilib-aircraft-model-operations-handling-qualities-module"></span><h1>marilib.aircraft_model.operations.handling_qualities module<a class="headerlink" href="#module-marilib.aircraft_model.operations.handling_qualities" title="Permalink to this headline">¶</a></h1>
+<p>Created on Thu Jan 24 23:22:21 2019</p>
+<dl class="simple">
+<dt>&#64;author: DRUOT Thierry<span class="classifier">original Scilab implementation</span></dt><dd><p>PETEILH Nicolas : portage to Python</p>
+</dd>
+</dl>
+<dl class="function">
+<dt id="marilib.aircraft_model.operations.handling_qualities.backward_cg_stab">
+<code class="sig-prename descclassname">marilib.aircraft_model.operations.handling_qualities.</code><code class="sig-name descname">backward_cg_stab</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em>, <em class="sig-param">stability_margin</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/aircraft_model/operations/handling_qualities.html#backward_cg_stab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.aircraft_model.operations.handling_qualities.backward_cg_stab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes max backward CG position according to static stability (neutral point position)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.aircraft_model.operations.handling_qualities.forward_cg_stall">
+<code class="sig-prename descclassname">marilib.aircraft_model.operations.handling_qualities.</code><code class="sig-name descname">forward_cg_stall</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em>, <em class="sig-param">altp</em>, <em class="sig-param">disa</em>, <em class="sig-param">nei</em>, <em class="sig-param">hld_conf</em>, <em class="sig-param">speed_mode</em>, <em class="sig-param">mass</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/aircraft_model/operations/handling_qualities.html#forward_cg_stall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.aircraft_model.operations.handling_qualities.forward_cg_stall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes max forward trimmable CG position at stall speed</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.aircraft_model.operations.handling_qualities.thrust_yaw_moment">
+<code class="sig-prename descclassname">marilib.aircraft_model.operations.handling_qualities.</code><code class="sig-name descname">thrust_yaw_moment</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em>, <em class="sig-param">fn</em>, <em class="sig-param">pamb</em>, <em class="sig-param">mach</em>, <em class="sig-param">dcx_oei</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/aircraft_model/operations/handling_qualities.html#thrust_yaw_moment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.aircraft_model.operations.handling_qualities.thrust_yaw_moment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assumed right engine inoperative</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.aircraft_model.operations.handling_qualities.vertical_tail_sizing">
+<code class="sig-prename descclassname">marilib.aircraft_model.operations.handling_qualities.</code><code class="sig-name descname">vertical_tail_sizing</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/aircraft_model/operations/handling_qualities.html#vertical_tail_sizing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.aircraft_model.operations.handling_qualities.vertical_tail_sizing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes necessary VTP area variation to meet engine failure case constraint
+Influence of CG position is ignored</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="marilib.aircraft_model.operations.mission.html" title="marilib.aircraft_model.operations.mission module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="marilib.aircraft_model.operations.flight_mechanics.html" title="marilib.aircraft_model.operations.flight_mechanics module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="marilib.html" >marilib package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="marilib.aircraft_model.html" >marilib.aircraft_model package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="marilib.aircraft_model.operations.html" >marilib.aircraft_model.operations package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

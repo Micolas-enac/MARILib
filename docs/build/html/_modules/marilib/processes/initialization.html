@@ -1,0 +1,769 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.processes.initialization &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../marilib.html" accesskey="U">marilib</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for marilib.processes.initialization</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Thu Jan 24 23:22:21 2019</span>
+
+<span class="sd">@author: DRUOT Thierry : original Scilab implementation</span>
+<span class="sd">         PETEILH Nicolas : portage to Python</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">marilib</span> <span class="k">import</span> <span class="n">numpy</span>
+
+<span class="kn">from</span> <span class="nn">marilib.tools</span> <span class="k">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">unit</span>
+
+<span class="kn">from</span> <span class="nn">marilib.earth</span> <span class="k">import</span> <span class="n">environment</span> <span class="k">as</span> <span class="n">earth</span>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="ref_cruise_altp"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.ref_cruise_altp">[docs]</a><span class="k">def</span> <span class="nf">ref_cruise_altp</span><span class="p">(</span><span class="n">propulsive_architecture</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">propulsive_architecture</span><span class="o">==</span><span class="s2">&quot;TF&quot;</span><span class="p">):</span>
+        <span class="n">ref_cruise_altp_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_ft</span><span class="p">(</span><span class="mf">35000.</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">propulsive_architecture</span><span class="o">==</span><span class="s2">&quot;TP&quot;</span><span class="p">):</span>
+        <span class="n">ref_cruise_altp_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_ft</span><span class="p">(</span><span class="mf">20000.</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">propulsive_architecture</span><span class="o">==</span><span class="s2">&quot;PTE1&quot;</span><span class="p">):</span>
+        <span class="n">ref_cruise_altp_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_ft</span><span class="p">(</span><span class="mf">35000.</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">propulsive_architecture</span><span class="o">==</span><span class="s2">&quot;EF1&quot;</span><span class="p">):</span>
+        <span class="n">ref_cruise_altp_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_ft</span><span class="p">(</span><span class="mf">25000.</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;propulsion.architecture index is out of range&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ref_cruise_altp_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="top_of_climb_altp"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.top_of_climb_altp">[docs]</a><span class="k">def</span> <span class="nf">top_of_climb_altp</span><span class="p">(</span><span class="n">propulsive_architecture</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">propulsive_architecture</span><span class="o">==</span><span class="s2">&quot;TF&quot;</span><span class="p">):</span>
+        <span class="n">top_of_climb_altp_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_ft</span><span class="p">(</span><span class="mf">31000.</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">propulsive_architecture</span><span class="o">==</span><span class="s2">&quot;TP&quot;</span><span class="p">):</span>
+        <span class="n">top_of_climb_altp_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_ft</span><span class="p">(</span><span class="mf">15000.</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">propulsive_architecture</span><span class="o">==</span><span class="s2">&quot;PTE1&quot;</span><span class="p">):</span>
+        <span class="n">top_of_climb_altp_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_ft</span><span class="p">(</span><span class="mf">31000.</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">propulsive_architecture</span><span class="o">==</span><span class="s2">&quot;EF1&quot;</span><span class="p">):</span>
+        <span class="n">top_of_climb_altp_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_ft</span><span class="p">(</span><span class="mf">25000.</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;propulsion.architecture index is out of range&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">top_of_climb_altp_i</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="n_pax_front"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.n_pax_front">[docs]</a><span class="k">def</span> <span class="nf">n_pax_front</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="p">):</span>
+    <span class="k">if</span>  <span class="p">(</span><span class="n">n_pax_ref</span><span class="o">&lt;=</span><span class="mi">8</span><span class="p">):</span>   <span class="n">n_pax_front_i</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="o">&lt;=</span><span class="mi">16</span><span class="p">):</span>  <span class="n">n_pax_front_i</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="o">&lt;=</span><span class="mi">70</span><span class="p">):</span>  <span class="n">n_pax_front_i</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="o">&lt;=</span><span class="mi">120</span><span class="p">):</span> <span class="n">n_pax_front_i</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="o">&lt;=</span><span class="mi">225</span><span class="p">):</span> <span class="n">n_pax_front_i</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="o">&lt;=</span><span class="mi">300</span><span class="p">):</span> <span class="n">n_pax_front_i</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="o">&lt;=</span><span class="mi">375</span><span class="p">):</span> <span class="n">n_pax_front_i</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="k">else</span><span class="p">:</span>                 <span class="n">n_pax_front_i</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="k">return</span> <span class="n">n_pax_front_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="n_aisle"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.n_aisle">[docs]</a><span class="k">def</span> <span class="nf">n_aisle</span><span class="p">(</span><span class="n">n_pax_front</span><span class="p">):</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">n_pax_front</span> <span class="o">&lt;=</span> <span class="mi">6</span><span class="p">):</span> <span class="n">n_aisle_i</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>                 <span class="n">n_aisle_i</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">return</span> <span class="n">n_aisle_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="fuselage_width"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.fuselage_width">[docs]</a><span class="k">def</span> <span class="nf">fuselage_width</span><span class="p">(</span><span class="n">n_pax_front</span><span class="p">,</span><span class="n">n_aisle</span><span class="p">):</span>
+    <span class="n">fuselage_width_i</span> <span class="o">=</span> <span class="mf">0.38</span><span class="o">*</span><span class="n">n_pax_front</span> <span class="o">+</span> <span class="mf">1.05</span><span class="o">*</span><span class="n">n_aisle</span> <span class="o">+</span> <span class="mf">0.55</span>
+    <span class="k">return</span> <span class="n">fuselage_width_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="m_pax_nominal"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.m_pax_nominal">[docs]</a><span class="k">def</span> <span class="nf">m_pax_nominal</span><span class="p">(</span><span class="n">design_range</span><span class="p">):</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">design_range</span> <span class="o">&lt;=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">1500.</span><span class="p">)):</span>
+        <span class="n">m_pax_nominal_i</span> <span class="o">=</span> <span class="mf">95.</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">design_range</span> <span class="o">&lt;=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">3500.</span><span class="p">)):</span>
+        <span class="n">m_pax_nominal_i</span> <span class="o">=</span> <span class="mf">100.</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">design_range</span> <span class="o">&lt;=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">5500.</span><span class="p">)):</span>
+        <span class="n">m_pax_nominal_i</span> <span class="o">=</span> <span class="mf">105.</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">m_pax_nominal_i</span> <span class="o">=</span> <span class="mf">110.</span>
+    <span class="k">return</span> <span class="n">m_pax_nominal_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="m_pax_max"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.m_pax_max">[docs]</a><span class="k">def</span> <span class="nf">m_pax_max</span><span class="p">(</span><span class="n">design_range</span><span class="p">):</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">design_range</span> <span class="o">&lt;=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">3500.</span><span class="p">)):</span>
+        <span class="n">m_pax_max_i</span> <span class="o">=</span> <span class="mf">120.</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">design_range</span> <span class="o">&lt;=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">5500.</span><span class="p">)):</span>
+        <span class="n">m_pax_max_i</span> <span class="o">=</span> <span class="mf">135.</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">m_pax_max_i</span> <span class="o">=</span> <span class="mf">150.</span>
+    <span class="k">return</span> <span class="n">m_pax_max_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="cg_range_optimization"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.cg_range_optimization">[docs]</a><span class="k">def</span> <span class="nf">cg_range_optimization</span><span class="p">():</span>
+    <span class="n">cg_range_optimization_i</span> <span class="o">=</span> <span class="mi">0</span>       <span class="c1"># Wing position, HTP area and VTP area optimized according to HQ criteria, 0: no, 1:yes</span>
+    <span class="k">return</span> <span class="n">cg_range_optimization_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="wing_attachment"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.wing_attachment">[docs]</a><span class="k">def</span> <span class="nf">wing_attachment</span><span class="p">(</span><span class="n">propulsive_architecture</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    wing_attachment = 1 : low wing</span>
+<span class="sd">    wing_attachment = 2 : high wing</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">propulsive_architecture</span><span class="o">==</span><span class="s2">&quot;TP&quot;</span><span class="p">):</span>
+        <span class="n">wing_attachment_i</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">wing_attachment_i</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">wing_attachment_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="wing_morphing"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.wing_morphing">[docs]</a><span class="k">def</span> <span class="nf">wing_morphing</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    wing_morphing = 1 : aspect ratio is the driver</span>
+<span class="sd">    wing_morphing = 2 : wing span is the driver</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">wing_morphing_i</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">wing_morphing_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="hld_type"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.hld_type">[docs]</a><span class="k">def</span> <span class="nf">hld_type</span><span class="p">(</span><span class="n">propulsive_architecture</span><span class="p">,</span><span class="n">n_pax_ref</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    hld_type = 0  : Clean</span>
+<span class="sd">    hld_type = 1  : Flap only, Rotation without slot</span>
+<span class="sd">    hld_type = 2  : Flap only, Rotation with slot      (ATR)</span>
+<span class="sd">    hld_type = 3  : Flap only, Rotation double slot</span>
+<span class="sd">    hld_type = 4  : Flap only, Fowler</span>
+<span class="sd">    hld_type = 5  : Slat only</span>
+<span class="sd">    hld_type = 6  : Slat + Flap rotation double slot</span>
+<span class="sd">    hld_type = 7  : Slat + Flap rotation with slot</span>
+<span class="sd">    hld_type = 8  : Slat + Flap rotation double slot</span>
+<span class="sd">    hld_type = 9  : Slat + Fowler                      (A320)</span>
+<span class="sd">    hld_type = 10 : Slat + Slotted Fowler (A321)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">n_pax_ref</span><span class="o">&gt;</span><span class="mi">100</span><span class="p">):</span>
+        <span class="n">hld_type_i</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">hld_type_i</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="k">return</span> <span class="n">hld_type_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="wing_area"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.wing_area">[docs]</a><span class="k">def</span> <span class="nf">wing_area</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="p">,</span><span class="n">design_range</span><span class="p">):</span>
+    <span class="n">wing_area_i</span> <span class="o">=</span> <span class="mf">60.</span> <span class="o">+</span> <span class="mf">88.</span><span class="o">*</span><span class="n">n_pax_ref</span><span class="o">*</span><span class="n">design_range</span><span class="o">*</span><span class="mf">1.e-9</span>
+    <span class="k">return</span> <span class="n">wing_area_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="blimp_body_length"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.blimp_body_length">[docs]</a><span class="k">def</span> <span class="nf">blimp_body_length</span><span class="p">(</span><span class="n">wing_span</span><span class="p">):</span>
+    <span class="n">blimp_body_length_i</span> <span class="o">=</span> <span class="n">wing_span</span>
+    <span class="k">return</span> <span class="n">blimp_body_length_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="blimp_body_width"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.blimp_body_width">[docs]</a><span class="k">def</span> <span class="nf">blimp_body_width</span><span class="p">(</span><span class="n">wing_span</span><span class="p">):</span>
+    <span class="n">blimp_body_width_i</span> <span class="o">=</span> <span class="mf">0.18</span><span class="o">*</span><span class="n">wing_span</span>
+    <span class="k">return</span> <span class="n">blimp_body_width_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="blimp_body_gas"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.blimp_body_gas">[docs]</a><span class="k">def</span> <span class="nf">blimp_body_gas</span><span class="p">():</span>
+    <span class="n">blimp_body_gas_i</span> <span class="o">=</span> <span class="s2">&quot;helium&quot;</span>
+    <span class="k">return</span> <span class="n">blimp_body_gas_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="htp_area"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.htp_area">[docs]</a><span class="k">def</span> <span class="nf">htp_area</span><span class="p">(</span><span class="n">wing_area</span><span class="p">):</span>
+    <span class="n">htp_area_i</span> <span class="o">=</span> <span class="mf">0.33</span><span class="o">*</span><span class="n">wing_area</span>
+    <span class="k">return</span> <span class="n">htp_area_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="vtp_area"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.vtp_area">[docs]</a><span class="k">def</span> <span class="nf">vtp_area</span><span class="p">(</span><span class="n">wing_area</span><span class="p">):</span>
+    <span class="n">vtp_area_i</span> <span class="o">=</span> <span class="mf">0.2</span><span class="o">*</span><span class="n">wing_area</span>
+    <span class="k">return</span> <span class="n">vtp_area_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="hld_conf_clean"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.hld_conf_clean">[docs]</a><span class="k">def</span> <span class="nf">hld_conf_clean</span><span class="p">():</span>
+    <span class="n">hld_conf_clean_i</span> <span class="o">=</span> <span class="mi">0</span>        <span class="c1"># By definition (0=&lt;hld_conf=&lt;1)</span>
+    <span class="k">return</span> <span class="n">hld_conf_clean_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="hld_conf_to"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.hld_conf_to">[docs]</a><span class="k">def</span> <span class="nf">hld_conf_to</span><span class="p">():</span>
+    <span class="n">hld_conf_to_i</span> <span class="o">=</span> <span class="mf">0.3</span>       <span class="c1"># by definition (0=&lt;hld_conf=&lt;1)</span>
+    <span class="k">return</span> <span class="n">hld_conf_to_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="hld_conf_ld"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.hld_conf_ld">[docs]</a><span class="k">def</span> <span class="nf">hld_conf_ld</span><span class="p">():</span>
+    <span class="n">hld_conf_ld_i</span> <span class="o">=</span> <span class="mi">1</span>       <span class="c1"># by definition (0=&lt;hld_conf=&lt;1)</span>
+    <span class="k">return</span> <span class="n">hld_conf_ld_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="wing_aspect_ratio"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.wing_aspect_ratio">[docs]</a><span class="k">def</span> <span class="nf">wing_aspect_ratio</span><span class="p">(</span><span class="n">propulsive_architecture</span><span class="p">):</span>
+    <span class="n">wing_aspect_ratio_i</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="k">return</span> <span class="n">wing_aspect_ratio_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="wing_span"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.wing_span">[docs]</a><span class="k">def</span> <span class="nf">wing_span</span><span class="p">(</span><span class="n">wing_area</span><span class="p">,</span><span class="n">wing_aspect_ratio</span><span class="p">):</span>
+    <span class="n">wing_span_i</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">wing_area</span><span class="o">*</span><span class="n">wing_aspect_ratio</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wing_span_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="wing_x_root"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.wing_x_root">[docs]</a><span class="k">def</span> <span class="nf">wing_x_root</span><span class="p">(</span><span class="n">wing_aspect_ratio</span><span class="p">,</span><span class="n">wing_span</span><span class="p">):</span>
+    <span class="n">wing_x_root_i</span> <span class="o">=</span> <span class="mf">0.3</span><span class="o">*</span><span class="n">wing_span</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">9</span><span class="o">/</span><span class="n">wing_aspect_ratio</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wing_x_root_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="wing_sweep"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.wing_sweep">[docs]</a><span class="k">def</span> <span class="nf">wing_sweep</span><span class="p">(</span><span class="n">cruise_mach</span><span class="p">):</span>
+    <span class="n">wing_sweep_i</span> <span class="o">=</span> <span class="mf">1.6</span><span class="o">*</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,(</span><span class="n">cruise_mach</span><span class="o">-</span><span class="mf">0.5</span><span class="p">))</span>     <span class="c1"># Empirical law</span>
+    <span class="k">return</span> <span class="n">wing_sweep_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="wing_mac"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.wing_mac">[docs]</a><span class="k">def</span> <span class="nf">wing_mac</span><span class="p">(</span><span class="n">wing_area_i</span><span class="p">,</span><span class="n">wing_aspect_ratio_i</span><span class="p">):</span>
+    <span class="n">wing_mac_i</span> <span class="o">=</span> <span class="mf">1.2</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">wing_area_i</span> <span class="o">/</span> <span class="n">wing_aspect_ratio_i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wing_mac_i</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="fuel_type"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.fuel_type">[docs]</a><span class="k">def</span> <span class="nf">fuel_type</span><span class="p">(</span><span class="n">propulsive_architecture</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">propulsive_architecture</span><span class="o">==</span><span class="s2">&quot;EF1&quot;</span><span class="p">):</span>
+        <span class="n">fuel_type_i</span> <span class="o">=</span> <span class="s2">&quot;Battery&quot;</span>     <span class="c1"># Kerosene, Hydrogene, Methane, Battery</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fuel_type_i</span> <span class="o">=</span> <span class="s2">&quot;Kerosene&quot;</span>     <span class="c1"># Kerosene, Hydrogene, Methane, Battery</span>
+    <span class="k">return</span> <span class="n">fuel_type_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="nacelle_body_length"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.nacelle_body_length">[docs]</a><span class="k">def</span> <span class="nf">nacelle_body_length</span><span class="p">():</span>
+    <span class="n">nacelle_body_length_i</span> <span class="o">=</span> <span class="mf">4.</span>
+    <span class="k">return</span> <span class="n">nacelle_body_length_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="nacelle_body_width"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.nacelle_body_width">[docs]</a><span class="k">def</span> <span class="nf">nacelle_body_width</span><span class="p">():</span>
+    <span class="n">nacelle_body_width_i</span> <span class="o">=</span> <span class="mf">1.5</span>
+    <span class="k">return</span> <span class="n">nacelle_body_width_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="nacelle_body_hub_width"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.nacelle_body_hub_width">[docs]</a><span class="k">def</span> <span class="nf">nacelle_body_hub_width</span><span class="p">():</span>
+    <span class="n">nacelle_body_hub_width_i</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="k">return</span> <span class="n">nacelle_body_hub_width_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="ef1_rear_nacelle"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.ef1_rear_nacelle">[docs]</a><span class="k">def</span> <span class="nf">ef1_rear_nacelle</span><span class="p">():</span>
+    <span class="n">efi_rear_nacelle_i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">efi_rear_nacelle_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="nacelle_attachment"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.nacelle_attachment">[docs]</a><span class="k">def</span> <span class="nf">nacelle_attachment</span><span class="p">(</span><span class="n">propulsive_architecture</span><span class="p">,</span><span class="n">n_pax_ref</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">propulsive_architecture</span><span class="o">==</span><span class="s2">&quot;TP&quot;</span><span class="p">):</span>
+        <span class="n">nacelle_attachment_i</span> <span class="o">=</span> <span class="mi">1</span>     <span class="c1"># 1: underwing</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="mi">80</span><span class="o">&lt;</span><span class="n">n_pax_ref</span><span class="p">):</span>
+            <span class="n">nacelle_attachment_i</span> <span class="o">=</span> <span class="mi">1</span>     <span class="c1"># 1: underwing</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nacelle_attachment_i</span> <span class="o">=</span> <span class="mi">2</span>     <span class="c1"># 2: on rear fuselage</span>
+    <span class="k">return</span> <span class="n">nacelle_attachment_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="rating_code"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.rating_code">[docs]</a><span class="k">def</span> <span class="nf">rating_code</span><span class="p">():</span>
+    <span class="n">rating_code_i</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;MTO&quot;</span><span class="p">,</span><span class="s2">&quot;MCN&quot;</span><span class="p">,</span><span class="s2">&quot;MCL&quot;</span><span class="p">,</span><span class="s2">&quot;MCR&quot;</span><span class="p">,</span><span class="s2">&quot;FID&quot;</span><span class="p">)</span>     <span class="c1"># Engine rating codes</span>
+    <span class="k">return</span> <span class="n">rating_code_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="rating_factor"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.rating_factor">[docs]</a><span class="k">def</span> <span class="nf">rating_factor</span><span class="p">(</span><span class="n">propulsive_architecture</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">propulsive_architecture</span><span class="o">==</span><span class="s2">&quot;TF&quot;</span><span class="p">):</span>
+        <span class="n">rating_factor_i</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;MTO&quot;</span><span class="p">:</span><span class="mf">0.800</span><span class="p">,</span> <span class="s2">&quot;MCN&quot;</span><span class="p">:</span><span class="mf">0.688</span><span class="p">,</span> <span class="s2">&quot;MCL&quot;</span><span class="p">:</span><span class="mf">0.624</span><span class="p">,</span> <span class="s2">&quot;MCR&quot;</span><span class="p">:</span><span class="mf">0.560</span><span class="p">,</span> <span class="s2">&quot;FID&quot;</span><span class="p">:</span><span class="mf">0.100</span><span class="p">}</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">propulsive_architecture</span><span class="o">==</span><span class="s2">&quot;EF1&quot;</span><span class="p">):</span>
+        <span class="n">rating_factor_i</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;MTO&quot;</span><span class="p">:</span><span class="mf">1.00</span><span class="p">,</span> <span class="s2">&quot;MCN&quot;</span><span class="p">:</span><span class="mf">0.80</span><span class="p">,</span> <span class="s2">&quot;MCL&quot;</span><span class="p">:</span><span class="mf">0.80</span><span class="p">,</span> <span class="s2">&quot;MCR&quot;</span><span class="p">:</span><span class="mf">0.80</span><span class="p">,</span> <span class="s2">&quot;FID&quot;</span><span class="p">:</span><span class="mf">0.05</span><span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">rating_factor_i</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">rating_factor_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="efficiency_fan"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.efficiency_fan">[docs]</a><span class="k">def</span> <span class="nf">efficiency_fan</span><span class="p">():</span>
+    <span class="n">efficiency_fan_i</span> <span class="o">=</span> <span class="mf">0.95</span>     <span class="c1"># efficiency to convert shaft power into kinetic energy</span>
+    <span class="k">return</span> <span class="n">efficiency_fan_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="efficiency_prop"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.efficiency_prop">[docs]</a><span class="k">def</span> <span class="nf">efficiency_prop</span><span class="p">():</span>
+    <span class="n">efficiency_prop_i</span> <span class="o">=</span> <span class="mf">0.82</span>     <span class="c1"># efficiency of a fan to convert shaft power into propulsive power</span>
+    <span class="k">return</span> <span class="n">efficiency_prop_i</span></div>
+
+	
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="propeller_efficiency"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.propeller_efficiency">[docs]</a><span class="k">def</span> <span class="nf">propeller_efficiency</span><span class="p">():</span>
+    <span class="n">propeller_efficiency_i</span> <span class="o">=</span> <span class="mf">0.85</span>     <span class="c1"># efficiency of a propeller to convert shaft power into propulsive power</span>
+    <span class="k">return</span> <span class="n">propeller_efficiency_i</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="n_engine"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.n_engine">[docs]</a><span class="k">def</span> <span class="nf">n_engine</span><span class="p">():</span>
+    <span class="n">n_engine_i</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">return</span> <span class="n">n_engine_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="bpr"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.bpr">[docs]</a><span class="k">def</span> <span class="nf">bpr</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="p">,</span><span class="n">propulsive_architecture</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">propulsive_architecture</span><span class="o">==</span><span class="s2">&quot;TF&quot;</span> <span class="ow">or</span> \
+        <span class="n">propulsive_architecture</span><span class="o">==</span><span class="s2">&quot;PTE1&quot;</span> <span class="ow">or</span> \
+        <span class="n">propulsive_architecture</span><span class="o">==</span><span class="s2">&quot;EF1&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="mi">80</span><span class="o">&lt;</span><span class="n">n_pax_ref</span><span class="p">):</span>
+            <span class="n">bpr_i</span> <span class="o">=</span> <span class="mf">9.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bpr_i</span> <span class="o">=</span> <span class="mf">5.</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">propulsive_architecture</span><span class="o">==</span><span class="s2">&quot;TP&quot;</span><span class="p">):</span>
+        <span class="n">bpr_i</span> <span class="o">=</span> <span class="mf">30.</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;propulsive architecture is not supported&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">bpr_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="reference_thrust"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.reference_thrust">[docs]</a><span class="k">def</span> <span class="nf">reference_thrust</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="p">,</span><span class="n">design_range</span><span class="p">,</span><span class="n">n_engine</span><span class="p">):</span>
+    <span class="n">reference_thrust_i</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.e5</span> <span class="o">+</span> <span class="mf">177.</span><span class="o">*</span><span class="n">n_pax_ref</span><span class="o">*</span><span class="n">design_range</span><span class="o">*</span><span class="mf">1.e-6</span><span class="p">)</span><span class="o">/</span><span class="n">n_engine</span>
+    <span class="k">return</span> <span class="n">reference_thrust_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="nacelle_width"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.nacelle_width">[docs]</a><span class="k">def</span> <span class="nf">nacelle_width</span><span class="p">(</span><span class="n">bpr</span><span class="p">,</span><span class="n">reference_thrust</span><span class="p">):</span>
+    <span class="n">turbofan_nacelle_width_i</span> <span class="o">=</span> <span class="p">(</span><span class="mf">9.e-6</span><span class="o">*</span><span class="n">bpr</span><span class="o">*</span><span class="n">reference_thrust</span><span class="p">)</span><span class="o">**</span><span class="mf">0.4</span>
+    <span class="k">return</span> <span class="n">turbofan_nacelle_width_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="propeller_width"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.propeller_width">[docs]</a><span class="k">def</span> <span class="nf">propeller_width</span><span class="p">(</span><span class="n">reference_thrust</span><span class="p">):</span>
+    <span class="n">propeller_width_i</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="mf">4.</span><span class="o">/</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">reference_thrust</span><span class="o">/</span><span class="mf">3000.</span><span class="p">))</span>      <span class="c1"># Assuming 3000 N/m2</span>
+    <span class="k">return</span> <span class="n">propeller_width_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="nacelle_y_ext"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.nacelle_y_ext">[docs]</a><span class="k">def</span> <span class="nf">nacelle_y_ext</span><span class="p">(</span><span class="n">propulsive_architecture</span><span class="p">,</span><span class="n">n_engine</span><span class="p">,</span><span class="n">attachment</span><span class="p">,</span><span class="n">fuselage_width_i</span><span class="p">,</span><span class="n">width_i</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">propulsive_architecture</span><span class="o">==</span><span class="s2">&quot;TP&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">n_engine</span><span class="o">==</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">nacelle_y_ext_i</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">fuselage_width_i</span> <span class="o">+</span> <span class="mf">0.7</span> <span class="o">*</span> <span class="n">width_i</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">n_engine</span><span class="o">==</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">nacelle_y_ext_i</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">fuselage_width_i</span> <span class="o">+</span> <span class="mf">1.9</span> <span class="o">*</span> <span class="n">width_i</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">attachment</span><span class="o">==</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">n_engine</span><span class="o">==</span><span class="mi">2</span><span class="p">):</span>
+                <span class="n">nacelle_y_ext_i</span> <span class="o">=</span> <span class="mf">0.7</span> <span class="o">*</span> <span class="n">fuselage_width_i</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">width_i</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">n_engine</span><span class="o">==</span><span class="mi">4</span><span class="p">):</span>
+                <span class="n">nacelle_y_ext_i</span> <span class="o">=</span> <span class="mf">1.9</span> <span class="o">*</span> <span class="n">fuselage_width_i</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">width_i</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nacelle_y_ext_i</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">fuselage_width_i</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">width_i</span>
+    <span class="k">return</span> <span class="n">nacelle_y_ext_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="core_thrust_ratio"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.core_thrust_ratio">[docs]</a><span class="k">def</span> <span class="nf">core_thrust_ratio</span><span class="p">():</span>
+    <span class="n">core_thrust_ratio_i</span> <span class="o">=</span> <span class="mf">0.13</span>    <span class="c1"># Mean contribution of the core to the total thrust</span>
+    <span class="k">return</span> <span class="n">core_thrust_ratio_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="core_width_ratio"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.core_width_ratio">[docs]</a><span class="k">def</span> <span class="nf">core_width_ratio</span><span class="p">():</span>
+    <span class="n">core_width_ratio_i</span> <span class="o">=</span> <span class="mf">0.70</span>    <span class="c1"># Ratio of core mean diameter over fan diameter</span>
+    <span class="k">return</span> <span class="n">core_width_ratio_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="core_weight_ratio"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.core_weight_ratio">[docs]</a><span class="k">def</span> <span class="nf">core_weight_ratio</span><span class="p">():</span>
+    <span class="n">core_weight_ratio_i</span> <span class="o">=</span> <span class="mf">0.13</span>    <span class="c1"># Mean contribution of the core to the total engine weight</span>
+    <span class="k">return</span> <span class="n">core_weight_ratio_i</span></div>
+
+	
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="prop_architecture"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.prop_architecture">[docs]</a><span class="k">def</span> <span class="nf">prop_architecture</span><span class="p">():</span>
+    <span class="n">prop_architecture_i</span> <span class="o">=</span> <span class="s2">&quot;TF&quot;</span>    <span class="c1"># prop_architecture, TF: turbofan, PTE1: partial turbo electric 1</span>
+    <span class="k">return</span> <span class="n">prop_architecture_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="tank_architecture"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.tank_architecture">[docs]</a><span class="k">def</span> <span class="nf">tank_architecture</span><span class="p">():</span>
+    <span class="n">tank_architecture_i</span> <span class="o">=</span> <span class="mi">0</span>    <span class="c1"># tank_architecture, 0: wing box, 1:wing pods, 2:piggyback pod</span>
+    <span class="k">return</span> <span class="n">tank_architecture_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="tank_pod_length"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.tank_pod_length">[docs]</a><span class="k">def</span> <span class="nf">tank_pod_length</span><span class="p">(</span><span class="n">tanks_architecture</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">tanks_architecture</span><span class="o">==</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">tank_pod_length_i</span> <span class="o">=</span> <span class="mf">1.e-6</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">tanks_architecture</span><span class="o">==</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">tank_pod_length_i</span> <span class="o">=</span> <span class="mf">6.</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">tanks_architecture</span><span class="o">==</span><span class="mi">2</span><span class="p">):</span>
+        <span class="n">tank_pod_length_i</span> <span class="o">=</span> <span class="mf">10.</span>
+    <span class="k">return</span> <span class="n">tank_pod_length_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="tank_pod_width"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.tank_pod_width">[docs]</a><span class="k">def</span> <span class="nf">tank_pod_width</span><span class="p">(</span><span class="n">tanks_architecture</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">tanks_architecture</span><span class="o">==</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">tank_pod_width_i</span> <span class="o">=</span> <span class="mf">1.e-6</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">tanks_architecture</span><span class="o">==</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">tank_pod_width_i</span> <span class="o">=</span> <span class="mf">2.</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">tanks_architecture</span><span class="o">==</span><span class="mi">2</span><span class="p">):</span>
+        <span class="n">tank_pod_width_i</span> <span class="o">=</span> <span class="mf">2.</span>
+    <span class="k">return</span> <span class="n">tank_pod_width_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="pod_surface_mass"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.pod_surface_mass">[docs]</a><span class="k">def</span> <span class="nf">pod_surface_mass</span><span class="p">():</span>
+    <span class="n">pod_surface_mass_i</span> <span class="o">=</span> <span class="mf">50.</span>    <span class="c1"># kg/m2</span>
+    <span class="k">return</span> <span class="n">pod_surface_mass_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="electric_shaft_power"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.electric_shaft_power">[docs]</a><span class="k">def</span> <span class="nf">electric_shaft_power</span><span class="p">():</span>
+    <span class="n">electric_shaft_power_i</span> <span class="o">=</span> <span class="mf">1.e6</span>    <span class="c1"># Watts, electric motor power</span>
+    <span class="k">return</span> <span class="n">electric_shaft_power_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="idle_electric_shaft_power"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.idle_electric_shaft_power">[docs]</a><span class="k">def</span> <span class="nf">idle_electric_shaft_power</span><span class="p">():</span>
+    <span class="n">idle_electric_shaft_power_i</span> <span class="o">=</span> <span class="mf">1.e4</span>    <span class="c1"># Watts, electric motor power</span>
+    <span class="k">return</span> <span class="n">idle_electric_shaft_power_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="battery_strategy"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.battery_strategy">[docs]</a><span class="k">def</span> <span class="nf">battery_strategy</span><span class="p">():</span>
+    <span class="n">battery_strategy_i</span> <span class="o">=</span> <span class="mi">0</span>    <span class="c1"># Battery sizing strategy, 0: no battery, 1: power_feed &amp; energy_cruise driven, 2: battery mass driven</span>
+    <span class="k">return</span> <span class="n">battery_strategy_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="battery_power_feed"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.battery_power_feed">[docs]</a><span class="k">def</span> <span class="nf">battery_power_feed</span><span class="p">():</span>
+    <span class="n">battery_power_feed_i</span> <span class="o">=</span> <span class="mf">0.</span>    <span class="c1"># Power delivered to e-fan(s) at take off and(or) climb during a total of time_feed</span>
+    <span class="k">return</span> <span class="n">battery_power_feed_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="battery_time_feed"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.battery_time_feed">[docs]</a><span class="k">def</span> <span class="nf">battery_time_feed</span><span class="p">():</span>
+    <span class="n">battery_time_feed_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">s_min</span><span class="p">(</span><span class="mf">15.</span><span class="p">)</span>    <span class="c1"># Maximum duration of the power_feed delivered to e-fan(s)</span>
+    <span class="k">return</span> <span class="n">battery_time_feed_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="battery_energy_cruise"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.battery_energy_cruise">[docs]</a><span class="k">def</span> <span class="nf">battery_energy_cruise</span><span class="p">():</span>
+    <span class="n">battery_energy_cruise_i</span> <span class="o">=</span> <span class="mf">0.</span>    <span class="c1"># Total battery energy dedicated to cruise</span>
+    <span class="k">return</span> <span class="n">battery_energy_cruise_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="battery_energy_density"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.battery_energy_density">[docs]</a><span class="k">def</span> <span class="nf">battery_energy_density</span><span class="p">(</span><span class="n">propulsive_architecture</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">propulsive_architecture</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;PTE1&quot;</span><span class="p">,</span> <span class="s2">&quot;EF1&quot;</span><span class="p">)):</span>
+        <span class="n">battery_energy_density_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">J_kWh</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>    <span class="c1"># Battery energy density (kWh/kg)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">battery_energy_density_i</span> <span class="o">=</span> <span class="mf">0.</span> <span class="c1"># TF propulsion has no battery</span>
+    <span class="k">return</span> <span class="n">battery_energy_density_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="battery_power_density"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.battery_power_density">[docs]</a><span class="k">def</span> <span class="nf">battery_power_density</span><span class="p">():</span>
+    <span class="n">battery_power_density_i</span> <span class="o">=</span> <span class="mf">1.e3</span>    <span class="c1"># Battery power density (capability to release power per mass unit (W/kg)</span>
+    <span class="k">return</span> <span class="n">battery_power_density_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="battery_density"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.battery_density">[docs]</a><span class="k">def</span> <span class="nf">battery_density</span><span class="p">():</span>
+    <span class="n">battery_density_i</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">fuel_density</span><span class="p">(</span><span class="s2">&quot;Battery&quot;</span><span class="p">)</span>    <span class="c1"># Battery density (kg/m3)</span>
+    <span class="k">return</span> <span class="n">battery_density_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="e_chain_efficiency"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.e_chain_efficiency">[docs]</a><span class="k">def</span> <span class="nf">e_chain_efficiency</span><span class="p">():</span>
+    <span class="n">e_chain_efficiency_i</span> <span class="o">=</span> <span class="mf">0.90</span>    <span class="c1"># Overall efficiency of the electric chain, from generator to motor</span>
+    <span class="k">return</span> <span class="n">e_chain_efficiency_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="controller_efficiency"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.controller_efficiency">[docs]</a><span class="k">def</span> <span class="nf">controller_efficiency</span><span class="p">():</span>
+    <span class="n">controller_efficiency_i</span> <span class="o">=</span> <span class="mf">0.98</span>    <span class="c1"># no_dim</span>
+    <span class="k">return</span> <span class="n">controller_efficiency_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="e_motor_efficiency"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.e_motor_efficiency">[docs]</a><span class="k">def</span> <span class="nf">e_motor_efficiency</span><span class="p">():</span>
+    <span class="n">motor_efficiency_i</span> <span class="o">=</span> <span class="mf">0.98</span>    <span class="c1"># no_dim</span>
+    <span class="k">return</span> <span class="n">motor_efficiency_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="generator_power_density"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.generator_power_density">[docs]</a><span class="k">def</span> <span class="nf">generator_power_density</span><span class="p">():</span>
+    <span class="n">generator_power_density_i</span> <span class="o">=</span> <span class="mf">10.e3</span>    <span class="c1"># W/kg, Electric generator</span>
+    <span class="k">return</span> <span class="n">generator_power_density_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="rectifier_pw_density"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.rectifier_pw_density">[docs]</a><span class="k">def</span> <span class="nf">rectifier_pw_density</span><span class="p">():</span>
+    <span class="n">rectifier_pw_density_i</span> <span class="o">=</span> <span class="mf">20.e3</span>    <span class="c1"># W/kg, Rectifier</span>
+    <span class="k">return</span> <span class="n">rectifier_pw_density_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="wiring_pw_density"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.wiring_pw_density">[docs]</a><span class="k">def</span> <span class="nf">wiring_pw_density</span><span class="p">():</span>
+    <span class="n">wiring_pw_density_i</span> <span class="o">=</span> <span class="mf">20.e3</span>    <span class="c1"># W/kg, Wiring</span>
+    <span class="k">return</span> <span class="n">wiring_pw_density_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="cooling_pw_density"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.cooling_pw_density">[docs]</a><span class="k">def</span> <span class="nf">cooling_pw_density</span><span class="p">():</span>
+    <span class="n">cooling_pw_density_i</span> <span class="o">=</span> <span class="mf">15.e3</span>    <span class="c1"># W/kg, Cooling</span>
+    <span class="k">return</span> <span class="n">cooling_pw_density_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="controller_pw_density"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.controller_pw_density">[docs]</a><span class="k">def</span> <span class="nf">controller_pw_density</span><span class="p">():</span>
+    <span class="n">controller_pw_density_i</span> <span class="o">=</span> <span class="mf">20.e3</span>    <span class="c1"># W/kg, Electric motor</span>
+    <span class="k">return</span> <span class="n">controller_pw_density_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="e_motor_pw_density"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.e_motor_pw_density">[docs]</a><span class="k">def</span> <span class="nf">e_motor_pw_density</span><span class="p">():</span>
+    <span class="n">e_motor_pw_density_i</span> <span class="o">=</span> <span class="mf">10.e3</span>    <span class="c1"># W/kg, Electric motor</span>
+    <span class="k">return</span> <span class="n">e_motor_pw_density_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="e_nacelle_pw_density"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.e_nacelle_pw_density">[docs]</a><span class="k">def</span> <span class="nf">e_nacelle_pw_density</span><span class="p">():</span>
+    <span class="n">e_nacelle_pw_density_i</span> <span class="o">=</span> <span class="mf">5.e3</span>    <span class="c1"># W/kg, Electric nacelle</span>
+    <span class="k">return</span> <span class="n">e_nacelle_pw_density_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="boundary_layer_effect"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.boundary_layer_effect">[docs]</a><span class="k">def</span> <span class="nf">boundary_layer_effect</span><span class="p">():</span>
+    <span class="n">bli_effect_i</span> <span class="o">=</span> <span class="mi">1</span>    <span class="c1"># 0: without, 1: with</span>
+    <span class="k">return</span> <span class="n">bli_effect_i</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="htp_attachment"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.htp_attachment">[docs]</a><span class="k">def</span> <span class="nf">htp_attachment</span><span class="p">(</span><span class="n">propulsive_architecture</span><span class="p">,</span><span class="n">nacelle_attachment_i</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">propulsive_architecture</span><span class="o">==</span><span class="s2">&quot;TP&quot;</span><span class="p">):</span>
+        <span class="n">htp_attachment_i</span> <span class="o">=</span> <span class="mi">2</span>        <span class="c1"># 2: T-tail (on top of fin)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">nacelle_attachment_i</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">htp_attachment_i</span> <span class="o">=</span> <span class="mi">1</span>        <span class="c1"># 1: Classical (on fuselage tail cone)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">htp_attachment_i</span> <span class="o">=</span> <span class="mi">2</span>        <span class="c1"># 2: T-tail (on top of fin)</span>
+    <span class="k">return</span> <span class="n">htp_attachment_i</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="vtp_attachment"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.vtp_attachment">[docs]</a><span class="k">def</span> <span class="nf">vtp_attachment</span><span class="p">():</span>
+    <span class="n">vtp_attachment_i</span> <span class="o">=</span> <span class="mi">1</span>        <span class="c1"># 1: Classical (on fuselage tail cone)</span>
+    <span class="k">return</span> <span class="n">vtp_attachment_i</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="mtow"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.mtow">[docs]</a><span class="k">def</span> <span class="nf">mtow</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="p">,</span><span class="n">design_range</span><span class="p">):</span>
+    <span class="n">mtow_i</span> <span class="o">=</span>  <span class="mf">20500.</span> <span class="o">+</span> <span class="mf">67.e-6</span><span class="o">*</span><span class="n">n_pax_ref</span><span class="o">*</span><span class="n">design_range</span>
+    <span class="k">return</span> <span class="n">mtow_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="mzfw"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.mzfw">[docs]</a><span class="k">def</span> <span class="nf">mzfw</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="p">,</span><span class="n">design_range</span><span class="p">):</span>
+    <span class="n">mzfw_i</span> <span class="o">=</span> <span class="mf">25000.</span> <span class="o">+</span> <span class="mf">41.e-6</span><span class="o">*</span><span class="n">n_pax_ref</span><span class="o">*</span><span class="n">design_range</span>
+    <span class="k">return</span> <span class="n">mzfw_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="mlw"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.mlw">[docs]</a><span class="k">def</span> <span class="nf">mlw</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="p">,</span><span class="n">mtow_i</span><span class="p">,</span><span class="n">mzfw_i</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">n_pax_ref</span><span class="o">&gt;</span><span class="mi">100</span><span class="p">):</span>
+        <span class="n">mlw_i</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">mtow_i</span> <span class="p">,</span> <span class="p">(</span><span class="mf">1.07</span><span class="o">*</span><span class="n">mzfw_i</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mlw_i</span> <span class="o">=</span> <span class="n">mtow_i</span>
+    <span class="k">return</span> <span class="n">mlw_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="battery_mass"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.battery_mass">[docs]</a><span class="k">def</span> <span class="nf">battery_mass</span><span class="p">():</span>
+    <span class="n">battery_mass_i</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">return</span> <span class="n">battery_mass_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="battery_stacking"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.battery_stacking">[docs]</a><span class="k">def</span> <span class="nf">battery_stacking</span><span class="p">():</span>
+    <span class="n">battery_stacking_i</span> <span class="o">=</span> <span class="s2">&quot;Variable&quot;</span>
+    <span class="k">return</span> <span class="n">battery_stacking_i</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="disa_oei"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.disa_oei">[docs]</a><span class="k">def</span> <span class="nf">disa_oei</span><span class="p">():</span>
+    <span class="n">init_disa_oei_i</span> <span class="o">=</span> <span class="mf">15.</span>
+    <span class="k">return</span> <span class="n">init_disa_oei_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="req_oei_altp"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.req_oei_altp">[docs]</a><span class="k">def</span> <span class="nf">req_oei_altp</span><span class="p">(</span><span class="n">propulsive_architecture</span><span class="p">):</span>
+    <span class="n">req_oei_altp_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_ft</span><span class="p">(</span><span class="mf">11000.</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">req_oei_altp_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="oei_best_speed"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.oei_best_speed">[docs]</a><span class="k">def</span> <span class="nf">oei_best_speed</span><span class="p">(</span><span class="n">cruise_mach</span><span class="p">):</span>
+    <span class="n">oei_best_speed_i</span> <span class="o">=</span> <span class="n">cruise_mach</span> <span class="o">-</span> <span class="mf">0.01</span>
+    <span class="k">return</span> <span class="n">oei_best_speed_i</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="altp_tofl"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.altp_tofl">[docs]</a><span class="k">def</span> <span class="nf">altp_tofl</span><span class="p">():</span>
+    <span class="n">altp_tofl_i</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">return</span> <span class="n">altp_tofl_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="disa_tofl"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.disa_tofl">[docs]</a><span class="k">def</span> <span class="nf">disa_tofl</span><span class="p">():</span>
+    <span class="n">disa_tofl_i</span> <span class="o">=</span> <span class="mf">15.</span>
+    <span class="k">return</span> <span class="n">disa_tofl_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="req_tofl"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.req_tofl">[docs]</a><span class="k">def</span> <span class="nf">req_tofl</span><span class="p">(</span><span class="n">design_range</span><span class="p">):</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">design_range</span> <span class="o">&lt;=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">1500.</span><span class="p">)):</span>
+        <span class="n">req_tofl_i</span> <span class="o">=</span> <span class="mf">1500.</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">design_range</span> <span class="o">&lt;=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">3500.</span><span class="p">)):</span>
+        <span class="n">req_tofl_i</span> <span class="o">=</span> <span class="mf">2000.</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">design_range</span> <span class="o">&lt;=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">5500.</span><span class="p">)):</span>
+        <span class="n">req_tofl_i</span> <span class="o">=</span> <span class="mf">2500.</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">req_tofl_i</span> <span class="o">=</span> <span class="mf">3000.</span>
+    <span class="k">return</span> <span class="n">req_tofl_i</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="altp_app_speed"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.altp_app_speed">[docs]</a><span class="k">def</span> <span class="nf">altp_app_speed</span><span class="p">():</span>
+    <span class="n">altp_app_speed_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_ft</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">altp_app_speed_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="disa_app_speed"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.disa_app_speed">[docs]</a><span class="k">def</span> <span class="nf">disa_app_speed</span><span class="p">():</span>
+    <span class="n">disa_app_speed_i</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">return</span> <span class="n">disa_app_speed_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="req_app_speed"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.req_app_speed">[docs]</a><span class="k">def</span> <span class="nf">req_app_speed</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">n_pax_ref</span><span class="o">&lt;=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="n">req_app_speed_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">mps_kt</span><span class="p">(</span><span class="mf">120.</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">n_pax_ref</span><span class="o">&lt;=</span><span class="mi">200</span><span class="p">):</span>
+        <span class="n">req_app_speed_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">mps_kt</span><span class="p">(</span><span class="mf">137.</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">req_app_speed_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">mps_kt</span><span class="p">(</span><span class="mf">140.</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">req_app_speed_i</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="cas1_ttc"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.cas1_ttc">[docs]</a><span class="k">def</span> <span class="nf">cas1_ttc</span><span class="p">(</span><span class="n">cruise_mach</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">cruise_mach</span><span class="o">&gt;=</span><span class="mf">0.6</span><span class="p">):</span>
+        <span class="n">cas1_ttc_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">mps_kt</span><span class="p">(</span><span class="mf">250.</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">cruise_mach</span><span class="o">&gt;=</span><span class="mf">0.4</span><span class="p">):</span>
+        <span class="n">cas1_ttc_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">mps_kt</span><span class="p">(</span><span class="mf">180.</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cas1_ttc_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">mps_kt</span><span class="p">(</span><span class="mf">70.</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cas1_ttc_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="cas2_ttc"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.cas2_ttc">[docs]</a><span class="k">def</span> <span class="nf">cas2_ttc</span><span class="p">(</span><span class="n">cruise_mach</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">cruise_mach</span><span class="o">&gt;=</span><span class="mf">0.6</span><span class="p">):</span>
+        <span class="n">cas2_ttc_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">mps_kt</span><span class="p">(</span><span class="mf">300.</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">cruise_mach</span><span class="o">&gt;=</span><span class="mf">0.4</span><span class="p">):</span>
+        <span class="n">cas2_ttc_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">mps_kt</span><span class="p">(</span><span class="mf">200.</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cas2_ttc_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">mps_kt</span><span class="p">(</span><span class="mf">70.</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cas2_ttc_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="req_ttc"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.req_ttc">[docs]</a><span class="k">def</span> <span class="nf">req_ttc</span><span class="p">():</span>
+    <span class="n">req_ttc_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">s_min</span><span class="p">(</span><span class="mf">25.</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">req_ttc_i</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="disa_climb"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.disa_climb">[docs]</a><span class="k">def</span> <span class="nf">disa_climb</span><span class="p">():</span>
+    <span class="n">disa_climb_i</span> <span class="o">=</span> <span class="mf">15.</span>
+    <span class="k">return</span> <span class="n">disa_climb_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="req_vz_climb"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.req_vz_climb">[docs]</a><span class="k">def</span> <span class="nf">req_vz_climb</span><span class="p">():</span>
+    <span class="n">req_vz_climb_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">mps_ftpmin</span><span class="p">(</span><span class="mf">300.</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">req_vz_climb_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="req_vz_cruise"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.req_vz_cruise">[docs]</a><span class="k">def</span> <span class="nf">req_vz_cruise</span><span class="p">():</span>
+    <span class="n">req_vz_cruise_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">mps_ftpmin</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">req_vz_cruise_i</span></div>
+
+	
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="cost_mission_disa"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.cost_mission_disa">[docs]</a><span class="k">def</span> <span class="nf">cost_mission_disa</span><span class="p">():</span>
+    <span class="n">cost_mission_disa_i</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">return</span> <span class="n">cost_mission_disa_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="cost_mission_range"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.cost_mission_range">[docs]</a><span class="k">def</span> <span class="nf">cost_mission_range</span><span class="p">(</span><span class="n">design_range</span><span class="p">):</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">design_range</span> <span class="o">&lt;</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">400.</span><span class="p">)):</span> <span class="n">cost_mission_range_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">100.</span><span class="p">)</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">design_range</span> <span class="o">&lt;</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">1000.</span><span class="p">)):</span> <span class="n">cost_mission_range_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">200.</span><span class="p">)</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">design_range</span> <span class="o">&lt;</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">2500.</span><span class="p">)):</span> <span class="n">cost_mission_range_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">400.</span><span class="p">)</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">design_range</span> <span class="o">&lt;</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">4500.</span><span class="p">)):</span> <span class="n">cost_mission_range_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">800.</span><span class="p">)</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">design_range</span> <span class="o">&lt;</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">6500.</span><span class="p">)):</span> <span class="n">cost_mission_range_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">2000.</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>                               <span class="n">cost_mission_range_i</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">4000.</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cost_mission_range_i</span></div>
+
+<div class="viewcode-block" id="fuel_price"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.fuel_price">[docs]</a><span class="k">def</span> <span class="nf">fuel_price</span><span class="p">():</span>
+<span class="c1">#===========================================================================================================</span>
+    <span class="n">fuel_price_i</span> <span class="o">=</span> <span class="mf">2.</span><span class="o">/</span><span class="n">unit</span><span class="o">.</span><span class="n">liter_usgal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>   <span class="c1"># 2 $/USgal</span>
+    <span class="k">return</span> <span class="n">fuel_price_i</span></div>
+
+<div class="viewcode-block" id="elec_price"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.elec_price">[docs]</a><span class="k">def</span> <span class="nf">elec_price</span><span class="p">():</span>
+<span class="c1">#===========================================================================================================</span>
+    <span class="n">elec_price_i</span> <span class="o">=</span> <span class="mf">0.15</span><span class="o">/</span><span class="n">unit</span><span class="o">.</span><span class="n">J_kWh</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>   <span class="c1"># 0.15 $/kWh  Assumed de-carbonated</span>
+    <span class="k">return</span> <span class="n">elec_price_i</span></div>
+
+<div class="viewcode-block" id="battery_mass_price"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.battery_mass_price">[docs]</a><span class="k">def</span> <span class="nf">battery_mass_price</span><span class="p">():</span>
+<span class="c1">#===========================================================================================================</span>
+    <span class="n">battery_mass_price_i</span> <span class="o">=</span> <span class="mf">20.</span>   <span class="c1"># $/kg    installed</span>
+    <span class="k">return</span> <span class="n">battery_mass_price_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="labor_cost"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.labor_cost">[docs]</a><span class="k">def</span> <span class="nf">labor_cost</span><span class="p">():</span>
+    <span class="n">labor_cost_i</span> <span class="o">=</span> <span class="mf">120.</span>   <span class="c1"># 120 $/h</span>
+    <span class="k">return</span> <span class="n">labor_cost_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="irp"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.irp">[docs]</a><span class="k">def</span> <span class="nf">irp</span><span class="p">():</span>
+    <span class="n">irp_i</span> <span class="o">=</span> <span class="mf">10.</span>     <span class="c1"># 10 years</span>
+    <span class="k">return</span> <span class="n">irp_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="period"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.period">[docs]</a><span class="k">def</span> <span class="nf">period</span><span class="p">():</span>
+    <span class="n">period_i</span> <span class="o">=</span> <span class="mf">15.</span>     <span class="c1"># 15 years</span>
+    <span class="k">return</span> <span class="n">period_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="interest_rate"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.interest_rate">[docs]</a><span class="k">def</span> <span class="nf">interest_rate</span><span class="p">():</span>
+    <span class="n">interest_rate_i</span> <span class="o">=</span> <span class="mf">0.04</span>     <span class="c1"># 4%</span>
+    <span class="k">return</span> <span class="n">interest_rate_i</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="utilisation"><a class="viewcode-back" href="../../../api/marilib.processes.initialization.html#marilib.processes.initialization.utilisation">[docs]</a><span class="k">def</span> <span class="nf">utilisation</span><span class="p">(</span><span class="n">design_range</span><span class="p">):</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">design_range</span> <span class="o">&lt;=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">3500.</span><span class="p">)):</span> <span class="n">utilisation_i</span> <span class="o">=</span> <span class="mf">1600.</span>
+    <span class="k">else</span><span class="p">:</span>                                <span class="n">utilisation_i</span> <span class="o">=</span> <span class="mf">600.</span>
+    <span class="k">return</span> <span class="n">utilisation_i</span></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../marilib.html" >marilib</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

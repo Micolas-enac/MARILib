@@ -1,0 +1,539 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.earth.environment &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../marilib.html" accesskey="U">marilib</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for marilib.earth.environment</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Thu Jan 24 23:22:21 2019</span>
+
+<span class="sd">@author: DRUOT Thierry : original Scilab implementation</span>
+<span class="sd">         PETEILH Nicolas : portage to Python</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">marilib</span> <span class="k">import</span> <span class="n">numpy</span>
+
+<span class="kn">from</span> <span class="nn">marilib.tools</span> <span class="k">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">unit</span>
+
+<span class="kn">from</span> <span class="nn">marilib</span> <span class="k">import</span> <span class="n">fsolve</span>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="gravity"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.gravity">[docs]</a><span class="k">def</span> <span class="nf">gravity</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reference gravity acceleration</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="mf">9.80665</span>     <span class="c1"># Gravity acceleration at sea level</span>
+    <span class="k">return</span> <span class="n">g</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="sea_level_density"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.sea_level_density">[docs]</a><span class="k">def</span> <span class="nf">sea_level_density</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reference air density at sea level</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rho0</span> <span class="o">=</span> <span class="mf">1.225</span>    <span class="c1"># (kg/m3) Air density at sea level</span>
+    <span class="k">return</span> <span class="n">rho0</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="sea_level_pressure"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.sea_level_pressure">[docs]</a><span class="k">def</span> <span class="nf">sea_level_pressure</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reference air pressure at sea level</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">P0</span> <span class="o">=</span> <span class="mf">101325.</span>    <span class="c1"># Pascals</span>
+    <span class="k">return</span> <span class="n">P0</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="sea_level_temperature"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.sea_level_temperature">[docs]</a><span class="k">def</span> <span class="nf">sea_level_temperature</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reference air temperature at sea level</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">T0</span> <span class="o">=</span> <span class="mf">288.15</span>    <span class="c1"># Kelvins</span>
+    <span class="k">return</span> <span class="n">T0</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="sea_level_sound_speed"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.sea_level_sound_speed">[docs]</a><span class="k">def</span> <span class="nf">sea_level_sound_speed</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reference sound speed at sea level</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vc0</span> <span class="o">=</span> <span class="mf">340.29</span>    <span class="c1"># m/s</span>
+    <span class="k">return</span> <span class="n">vc0</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="gas_constant"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.gas_constant">[docs]</a><span class="k">def</span> <span class="nf">gas_constant</span><span class="p">(</span><span class="n">gas</span><span class="o">=</span><span class="s2">&quot;air&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ideal gas constant (J/kg/K)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="p">{</span>
+         <span class="s2">&quot;air&quot;</span> <span class="p">:</span> <span class="mf">287.053</span> <span class="p">,</span>
+         <span class="s2">&quot;helium&quot;</span> <span class="p">:</span> <span class="mf">2077.</span> <span class="p">,</span>
+         <span class="s2">&quot;hydrogen&quot;</span> <span class="p">:</span> <span class="mf">4124.</span>
+         <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">gas</span><span class="p">,</span> <span class="s2">&quot;Erreur: type of gas is unknown&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">R</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="heat_ratio"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.heat_ratio">[docs]</a><span class="k">def</span> <span class="nf">heat_ratio</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reference air heat capacity ratio Cp/Cv</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gam</span> <span class="o">=</span> <span class="mf">1.4</span>       <span class="c1"># Heat capacity ratio for the air</span>
+    <span class="k">return</span> <span class="n">gam</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="heat_constant"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.heat_constant">[docs]</a><span class="k">def</span> <span class="nf">heat_constant</span><span class="p">(</span><span class="n">gam</span><span class="p">,</span><span class="n">R</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reference air heat at constant pressure</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Cp</span> <span class="o">=</span> <span class="n">gam</span><span class="o">*</span><span class="n">R</span><span class="o">/</span><span class="p">(</span><span class="n">gam</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span> <span class="c1"># Heat constant at constant pressure</span>
+    <span class="k">return</span> <span class="n">Cp</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="air_viscosity"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.air_viscosity">[docs]</a><span class="k">def</span> <span class="nf">air_viscosity</span><span class="p">(</span><span class="n">tamb</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Air viscosity, Sutherland&#39;s formula</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mu0</span> <span class="o">=</span> <span class="mf">1.715e-5</span>
+    <span class="n">T0</span> <span class="o">=</span> <span class="mf">273.15</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="mf">110.4</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">mu0</span><span class="o">*</span><span class="p">((</span><span class="n">T0</span><span class="o">+</span><span class="n">S</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">tamb</span><span class="o">+</span><span class="n">S</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="n">tamb</span><span class="o">/</span><span class="n">T0</span><span class="p">)</span><span class="o">**</span><span class="mf">1.5</span>
+    <span class="k">return</span> <span class="n">mu</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="reynolds_number_old"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.reynolds_number_old">[docs]</a><span class="k">def</span> <span class="nf">reynolds_number_old</span><span class="p">(</span><span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">,</span><span class="n">mach</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reynolds number</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fac</span> <span class="o">=</span> <span class="p">(</span> <span class="mf">1.</span> <span class="o">+</span> <span class="mf">0.126</span><span class="o">*</span><span class="n">mach</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span>
+    <span class="n">re</span> <span class="o">=</span> <span class="mi">47899</span><span class="o">*</span><span class="n">pamb</span><span class="o">*</span><span class="n">mach</span><span class="o">*</span><span class="p">(</span><span class="n">fac</span><span class="o">*</span><span class="n">tamb</span> <span class="o">+</span> <span class="mf">110.4</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">tamb</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">fac</span><span class="o">**</span><span class="mf">2.5</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">re</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="reynolds_number"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.reynolds_number">[docs]</a><span class="k">def</span> <span class="nf">reynolds_number</span><span class="p">(</span><span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">,</span><span class="n">mach</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reynolds number based on Sutherland viscosity model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vsnd</span> <span class="o">=</span> <span class="n">sound_speed</span><span class="p">(</span><span class="n">tamb</span><span class="p">)</span>
+    <span class="n">rho</span><span class="p">,</span><span class="n">sig</span> <span class="o">=</span> <span class="n">air_density</span><span class="p">(</span><span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">)</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">air_viscosity</span><span class="p">(</span><span class="n">tamb</span><span class="p">)</span>
+
+    <span class="n">re</span> <span class="o">=</span> <span class="n">rho</span><span class="o">*</span><span class="n">vsnd</span><span class="o">*</span><span class="n">mach</span><span class="o">/</span><span class="n">mu</span>
+
+    <span class="k">return</span> <span class="n">re</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="atmosphere"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.atmosphere">[docs]</a><span class="k">def</span> <span class="nf">atmosphere</span><span class="p">(</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pressure from pressure altitude from ground to 50 km</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">gravity</span><span class="p">()</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">gas_constant</span><span class="p">()</span>
+
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">11000.</span><span class="p">,</span> <span class="mf">20000.</span><span class="p">,</span><span class="mf">32000.</span><span class="p">,</span> <span class="mf">47000.</span><span class="p">,</span> <span class="mf">50000.</span><span class="p">])</span>
+    <span class="n">dtodz</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.0065</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.0010</span><span class="p">,</span> <span class="mf">0.0028</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+
+    <span class="n">P</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">sea_level_pressure</span><span class="p">(),</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">sea_level_temperature</span><span class="p">(),</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">&lt;</span><span class="n">altp</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;atmosphere, altitude cannot exceed 50km&quot;</span><span class="p">)</span>
+
+    <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="mi">1</span><span class="o">+</span><span class="n">j</span><span class="p">]</span><span class="o">&lt;=</span><span class="n">altp</span><span class="p">):</span>
+        <span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+        <span class="k">if</span> <span class="p">(</span><span class="mf">0.</span><span class="o">&lt;</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">])):</span>
+            <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="p">(</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">/</span><span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">g</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">g</span><span class="o">/</span><span class="n">R</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">/</span><span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="mf">0.</span><span class="o">&lt;</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">])):</span>
+        <span class="n">pamb</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">/</span><span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="n">altp</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">g</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pamb</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">g</span><span class="o">/</span><span class="n">R</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="n">altp</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">/</span><span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+    <span class="n">tstd</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">altp</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+    <span class="n">tamb</span> <span class="o">=</span> <span class="n">tstd</span> <span class="o">+</span> <span class="n">disa</span>
+
+    <span class="k">return</span> <span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">,</span><span class="n">tstd</span><span class="p">,</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="altg_from_altp"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.altg_from_altp">[docs]</a><span class="k">def</span> <span class="nf">altg_from_altp</span><span class="p">(</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">fct_altg_from_altp</span><span class="p">(</span><span class="n">altg</span><span class="p">,</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">):</span>
+        <span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">,</span><span class="n">dtodz</span> <span class="o">=</span> <span class="n">atmosphere_geo</span><span class="p">(</span><span class="n">altg</span><span class="p">,</span><span class="n">disa</span><span class="p">)</span>
+        <span class="n">zp</span> <span class="o">=</span> <span class="n">pressure_altitude</span><span class="p">(</span><span class="n">pamb</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">altp</span><span class="o">-</span><span class="n">zp</span>
+
+    <span class="n">output_dict</span> <span class="o">=</span> <span class="n">fsolve</span><span class="p">(</span><span class="n">fct_altg_from_altp</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">altp</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">),</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">altg</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">altg</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="atmosphere_geo"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.atmosphere_geo">[docs]</a><span class="k">def</span> <span class="nf">atmosphere_geo</span><span class="p">(</span><span class="n">altg</span><span class="p">,</span><span class="n">disa</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pressure from pressure altitude from ground to 50 km</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">gravity</span><span class="p">()</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">gas_constant</span><span class="p">()</span>
+
+    <span class="n">Zi</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">11000.</span><span class="p">,</span> <span class="mf">20000.</span><span class="p">,</span><span class="mf">32000.</span><span class="p">,</span> <span class="mf">47000.</span><span class="p">,</span> <span class="mf">50000.</span><span class="p">])</span>
+    <span class="n">dtodzi</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.0065</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.0010</span><span class="p">,</span> <span class="mf">0.0028</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">Zi</span><span class="p">)</span>
+    <span class="n">dtodz</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">dtodzi</span><span class="p">)</span>
+
+    <span class="n">P</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">sea_level_pressure</span><span class="p">(),</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">sea_level_temperature</span><span class="p">(),</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+
+    <span class="n">K</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">disa</span><span class="o">/</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">dtodz</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtodzi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">K</span>
+    <span class="n">Z</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">Zi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">Zi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="n">K</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="n">j</span><span class="o">&lt;</span><span class="n">n</span> <span class="ow">and</span> <span class="n">Z</span><span class="p">[</span><span class="mi">1</span><span class="o">+</span><span class="n">j</span><span class="p">]</span><span class="o">&lt;=</span><span class="n">altg</span><span class="p">):</span>
+        <span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+        <span class="k">if</span> <span class="p">(</span><span class="mf">0.</span><span class="o">&lt;</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">])):</span>
+            <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="p">(</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">disa</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">g</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">g</span><span class="o">/</span><span class="n">R</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">disa</span><span class="p">)))</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">disa</span><span class="o">/</span><span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+        <span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtodzi</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">/</span><span class="n">K</span>
+        <span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">Zi</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">Zi</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">*</span><span class="n">K</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="mi">1</span><span class="o">+</span><span class="n">j</span><span class="p">]</span><span class="o">&lt;</span><span class="n">altg</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;atmosphere_geo, altitude cannot exceed 50km&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="mf">0.</span><span class="o">&lt;</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">])):</span>
+        <span class="n">pamb</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">disa</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="n">altg</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">g</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pamb</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">g</span><span class="o">/</span><span class="n">R</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="n">altg</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">disa</span><span class="p">)))</span>
+    <span class="n">tamb</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">altg</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">+</span> <span class="n">disa</span>
+
+    <span class="k">return</span> <span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">,</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="pressure_altitude"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.pressure_altitude">[docs]</a><span class="k">def</span> <span class="nf">pressure_altitude</span><span class="p">(</span><span class="n">pamb</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pressure altitude from ground to 50 km</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">gravity</span><span class="p">()</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">gas_constant</span><span class="p">()</span>
+
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">11000.</span><span class="p">,</span> <span class="mf">20000.</span><span class="p">,</span><span class="mf">32000.</span><span class="p">,</span> <span class="mf">47000.</span><span class="p">,</span> <span class="mf">50000.</span><span class="p">])</span>
+    <span class="n">dtodz</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.0065</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.0010</span><span class="p">,</span> <span class="mf">0.0028</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+
+    <span class="n">P</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">sea_level_pressure</span><span class="p">(),</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">sea_level_temperature</span><span class="p">(),</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+
+    <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">P</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="p">(</span><span class="n">dtodz</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">g</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="n">dtodz</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">dtodz</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="n">j</span><span class="o">&lt;</span><span class="n">n</span> <span class="ow">and</span> <span class="n">pamb</span><span class="o">&lt;</span><span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+        <span class="k">if</span> <span class="p">(</span><span class="mf">0.</span><span class="o">&lt;</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">])):</span>
+            <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="p">(</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">/</span><span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">g</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">g</span><span class="o">/</span><span class="n">R</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">/</span><span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">pamb</span><span class="o">&lt;</span><span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;pressure_altitude, altitude cannot exceed 50km&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="mf">0.</span><span class="o">&lt;</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">])):</span>
+        <span class="n">altp</span> <span class="o">=</span> <span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="p">((</span><span class="n">pamb</span><span class="o">/</span><span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">/</span><span class="n">g</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">/</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">altp</span> <span class="o">=</span> <span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">g</span><span class="o">/</span><span class="n">R</span><span class="p">))</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pamb</span><span class="o">/</span><span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">altp</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="pressure"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.pressure">[docs]</a><span class="k">def</span> <span class="nf">pressure</span><span class="p">(</span><span class="n">altp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pressure from pressure altitude from ground to 50 km</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">gravity</span><span class="p">()</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">gas_constant</span><span class="p">()</span>
+
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">11000.</span><span class="p">,</span> <span class="mf">20000.</span><span class="p">,</span><span class="mf">32000.</span><span class="p">,</span> <span class="mf">47000.</span><span class="p">,</span> <span class="mf">50000.</span><span class="p">])</span>
+    <span class="n">dtodz</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.0065</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.0010</span><span class="p">,</span> <span class="mf">0.0028</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+
+    <span class="n">P</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">sea_level_pressure</span><span class="p">(),</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">sea_level_temperature</span><span class="p">(),</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">&lt;</span><span class="n">altp</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;pressure, altitude cannot exceed 50km&quot;</span><span class="p">)</span>
+
+    <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="mi">1</span><span class="o">+</span><span class="n">j</span><span class="p">]</span><span class="o">&lt;=</span><span class="n">altp</span><span class="p">):</span>
+        <span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+        <span class="k">if</span> <span class="p">(</span><span class="mf">0.</span><span class="o">&lt;</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">])):</span>
+            <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="p">(</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">/</span><span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">g</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">g</span><span class="o">/</span><span class="n">R</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">/</span><span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="mf">0.</span><span class="o">&lt;</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">])):</span>
+        <span class="n">pamb</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">/</span><span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="n">altp</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">g</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="n">dtodz</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pamb</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">g</span><span class="o">/</span><span class="n">R</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="n">altp</span><span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">/</span><span class="n">T</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+
+    <span class="k">return</span> <span class="n">pamb</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="air_density"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.air_density">[docs]</a><span class="k">def</span> <span class="nf">air_density</span><span class="p">(</span><span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ideal gas density</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">gas_constant</span><span class="p">()</span>
+    <span class="n">rho0</span> <span class="o">=</span> <span class="n">sea_level_density</span><span class="p">()</span>
+    <span class="n">rho</span> <span class="o">=</span> <span class="n">pamb</span> <span class="o">/</span> <span class="p">(</span> <span class="n">R</span> <span class="o">*</span> <span class="n">tamb</span> <span class="p">)</span>
+    <span class="n">sig</span> <span class="o">=</span> <span class="n">rho</span> <span class="o">/</span> <span class="n">rho0</span>
+    <span class="k">return</span> <span class="n">rho</span><span class="p">,</span> <span class="n">sig</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="sound_speed"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.sound_speed">[docs]</a><span class="k">def</span> <span class="nf">sound_speed</span><span class="p">(</span><span class="n">tamb</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sound speed for ideal gas</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">gas_constant</span><span class="p">()</span>
+    <span class="n">gam</span> <span class="o">=</span> <span class="n">heat_ratio</span><span class="p">()</span>
+    <span class="n">vsnd</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="n">gam</span> <span class="o">*</span> <span class="n">R</span> <span class="o">*</span> <span class="n">tamb</span> <span class="p">)</span>
+    <span class="k">return</span> <span class="n">vsnd</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="total_temperature"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.total_temperature">[docs]</a><span class="k">def</span> <span class="nf">total_temperature</span><span class="p">(</span><span class="n">tamb</span><span class="p">,</span><span class="n">mach</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stagnation temperature</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gam</span> <span class="o">=</span> <span class="n">heat_ratio</span><span class="p">()</span>
+    <span class="n">ttot</span> <span class="o">=</span> <span class="n">tamb</span><span class="o">*</span><span class="p">(</span><span class="mf">1.</span><span class="o">+</span><span class="p">((</span><span class="n">gam</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">mach</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ttot</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="total_pressure"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.total_pressure">[docs]</a><span class="k">def</span> <span class="nf">total_pressure</span><span class="p">(</span><span class="n">pamb</span><span class="p">,</span><span class="n">mach</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stagnation pressure</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gam</span> <span class="o">=</span> <span class="n">heat_ratio</span><span class="p">()</span>
+    <span class="n">ptot</span> <span class="o">=</span> <span class="n">pamb</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="p">((</span><span class="n">gam</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">mach</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">gam</span><span class="o">/</span><span class="p">(</span><span class="n">gam</span><span class="o">-</span><span class="mf">1.</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">ptot</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="vtas_from_mach"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.vtas_from_mach">[docs]</a><span class="k">def</span> <span class="nf">vtas_from_mach</span><span class="p">(</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">mach</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    True air speed from Mach number, subsonic only</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">,</span><span class="n">tstd</span><span class="p">,</span><span class="n">dtodz</span> <span class="o">=</span> <span class="n">atmosphere</span><span class="p">(</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">)</span>
+    <span class="n">vsnd</span> <span class="o">=</span> <span class="n">sound_speed</span><span class="p">(</span><span class="n">tamb</span><span class="p">)</span>
+    <span class="n">vtas</span> <span class="o">=</span> <span class="n">vsnd</span><span class="o">*</span><span class="n">mach</span>
+    <span class="k">return</span> <span class="n">vtas</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="mach_from_vcas"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.mach_from_vcas">[docs]</a><span class="k">def</span> <span class="nf">mach_from_vcas</span><span class="p">(</span><span class="n">pamb</span><span class="p">,</span><span class="n">Vcas</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mach number from calibrated air speed, subsonic only</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gam</span> <span class="o">=</span> <span class="n">heat_ratio</span><span class="p">()</span>
+    <span class="n">P0</span> <span class="o">=</span> <span class="n">sea_level_pressure</span><span class="p">()</span>
+    <span class="n">vc0</span> <span class="o">=</span> <span class="n">sea_level_sound_speed</span><span class="p">()</span>
+    <span class="n">fac</span> <span class="o">=</span> <span class="n">gam</span><span class="o">/</span><span class="p">(</span><span class="n">gam</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span>
+    <span class="n">mach</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(((((((</span><span class="n">gam</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Vcas</span><span class="o">/</span><span class="n">vc0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="n">fac</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span><span class="o">*</span><span class="n">P0</span><span class="o">/</span><span class="n">pamb</span><span class="o">+</span><span class="mf">1.</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">fac</span><span class="p">)</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mf">2.</span><span class="o">/</span><span class="p">(</span><span class="n">gam</span><span class="o">-</span><span class="mf">1.</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">mach</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="vcas_from_mach"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.vcas_from_mach">[docs]</a><span class="k">def</span> <span class="nf">vcas_from_mach</span><span class="p">(</span><span class="n">pamb</span><span class="p">,</span><span class="n">mach</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calibrated air speed from Mach number, subsonic only</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gam</span> <span class="o">=</span> <span class="n">heat_ratio</span><span class="p">()</span>
+    <span class="n">P0</span> <span class="o">=</span> <span class="n">sea_level_pressure</span><span class="p">()</span>
+    <span class="n">vc0</span> <span class="o">=</span> <span class="n">sea_level_sound_speed</span><span class="p">()</span>
+    <span class="n">fac</span> <span class="o">=</span> <span class="n">gam</span><span class="o">/</span><span class="p">(</span><span class="n">gam</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span>
+    <span class="n">vcas</span> <span class="o">=</span> <span class="n">vc0</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">5.</span><span class="o">*</span><span class="p">((((</span><span class="n">pamb</span><span class="o">/</span><span class="n">P0</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="mf">1.</span><span class="o">+</span><span class="p">((</span><span class="n">gam</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">mach</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="n">fac</span><span class="o">-</span><span class="mf">1.</span><span class="p">))</span><span class="o">+</span><span class="mf">1.</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">fac</span><span class="p">)</span><span class="o">-</span><span class="mf">1.</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">vcas</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="vtas_from_vcas"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.vtas_from_vcas">[docs]</a><span class="k">def</span> <span class="nf">vtas_from_vcas</span><span class="p">(</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">vcas</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    True air speed from calibrated air speed, subsonic only</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">,</span><span class="n">tstd</span><span class="p">,</span><span class="n">dtodz</span> <span class="o">=</span> <span class="n">atmosphere</span><span class="p">(</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">)</span>
+    <span class="n">mach</span> <span class="o">=</span> <span class="n">mach_from_vcas</span><span class="p">(</span><span class="n">pamb</span><span class="p">,</span><span class="n">vcas</span><span class="p">)</span>
+    <span class="n">vsnd</span> <span class="o">=</span> <span class="n">sound_speed</span><span class="p">(</span><span class="n">tamb</span><span class="p">)</span>
+    <span class="n">vtas</span> <span class="o">=</span> <span class="n">vsnd</span><span class="o">*</span><span class="n">mach</span>
+    <span class="k">return</span> <span class="n">vtas</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="cross_over_altp"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.cross_over_altp">[docs]</a><span class="k">def</span> <span class="nf">cross_over_altp</span><span class="p">(</span><span class="n">Vcas</span><span class="p">,</span><span class="n">mach</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Altitude where constant calibrated air speed meets constant Mach number, subsonic only</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gam</span> <span class="o">=</span> <span class="n">heat_ratio</span><span class="p">()</span>
+    <span class="n">P0</span> <span class="o">=</span> <span class="n">sea_level_pressure</span><span class="p">()</span>
+    <span class="n">vc0</span> <span class="o">=</span> <span class="n">sea_level_sound_speed</span><span class="p">()</span>
+    <span class="n">fac</span> <span class="o">=</span> <span class="n">gam</span><span class="o">/</span><span class="p">(</span><span class="n">gam</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">pamb</span> <span class="o">=</span> <span class="p">((</span><span class="mf">1.</span><span class="o">+</span><span class="p">((</span><span class="n">gam</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Vcas</span><span class="o">/</span><span class="n">vc0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="n">fac</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span><span class="o">*</span><span class="n">P0</span><span class="o">/</span><span class="p">((</span><span class="mf">1.</span><span class="o">+</span><span class="p">((</span><span class="n">gam</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">mach</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="n">fac</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span>
+
+    <span class="n">altp</span> <span class="o">=</span> <span class="n">pressure_altitude</span><span class="p">(</span><span class="n">pamb</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">altp</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="climb_mode"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.climb_mode">[docs]</a><span class="k">def</span> <span class="nf">climb_mode</span><span class="p">(</span><span class="n">speed_mode</span><span class="p">,</span><span class="n">dtodz</span><span class="p">,</span><span class="n">tstd</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">mach</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Acceleration factor depending on speed driver (1: constant CAS, 2: constant Mach)</span>
+<span class="sd">    WARNING : input is mach number whatever SpeedMode</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">gravity</span><span class="p">()</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">gas_constant</span><span class="p">()</span>
+    <span class="n">gam</span> <span class="o">=</span> <span class="n">heat_ratio</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">speed_mode</span><span class="o">==</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">fac</span> <span class="o">=</span> <span class="p">(</span><span class="n">gam</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span>
+        <span class="n">acc_factor</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">+</span> <span class="p">(((</span><span class="mf">1.</span><span class="o">+</span><span class="n">fac</span><span class="o">*</span><span class="n">mach</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">gam</span><span class="o">/</span><span class="p">(</span><span class="n">gam</span><span class="o">-</span><span class="mf">1.</span><span class="p">))</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span><span class="o">+</span><span class="n">fac</span><span class="o">*</span><span class="n">mach</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="n">gam</span><span class="o">-</span><span class="mf">1.</span><span class="p">)))</span> \
+                        <span class="o">+</span> <span class="p">((</span><span class="n">gam</span><span class="o">*</span><span class="n">R</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">g</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="n">mach</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">tstd</span><span class="o">/</span><span class="p">(</span><span class="n">tstd</span><span class="o">+</span><span class="n">disa</span><span class="p">))</span><span class="o">*</span><span class="n">dtodz</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">speed_mode</span><span class="o">==</span><span class="mi">2</span><span class="p">):</span>
+        <span class="n">acc_factor</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">+</span> <span class="p">((</span><span class="n">gam</span><span class="o">*</span><span class="n">R</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">g</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="n">mach</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">tstd</span><span class="o">/</span><span class="p">(</span><span class="n">tstd</span><span class="o">+</span><span class="n">disa</span><span class="p">))</span><span class="o">*</span><span class="n">dtodz</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;climb_mode index is out of range&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">acc_factor</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="fuel_density"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.fuel_density">[docs]</a><span class="k">def</span> <span class="nf">fuel_density</span><span class="p">(</span><span class="n">fuel_type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reference fuel density</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">fuel_type</span><span class="o">==</span><span class="s2">&quot;Kerosene&quot;</span><span class="p">):</span>
+        <span class="n">fuel_density</span> <span class="o">=</span> <span class="mf">803.</span> <span class="c1"># Kerosene : between 775-840 kg/m3</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">fuel_type</span><span class="o">==</span><span class="s2">&quot;Hydrogen&quot;</span><span class="p">):</span>
+        <span class="n">fuel_density</span> <span class="o">=</span> <span class="mf">70.8</span> <span class="c1"># Liquid hydrogene</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">fuel_type</span><span class="o">==</span><span class="s2">&quot;Methane&quot;</span><span class="p">):</span>
+        <span class="n">fuel_density</span> <span class="o">=</span> <span class="mf">422.6</span> <span class="c1"># Liquid methane</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">fuel_type</span><span class="o">==</span><span class="s2">&quot;Battery&quot;</span><span class="p">):</span>
+        <span class="n">fuel_density</span> <span class="o">=</span> <span class="mf">2800.</span> <span class="c1"># Lithium-ion</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;fuel_type index is out of range&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fuel_density</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="fuel_heat"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.fuel_heat">[docs]</a><span class="k">def</span> <span class="nf">fuel_heat</span><span class="p">(</span><span class="n">fuel_type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reference fuel lower heating value or battery energy density</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">fuel_type</span><span class="o">==</span><span class="s2">&quot;Kerosene&quot;</span><span class="p">):</span>
+        <span class="n">fuel_heat</span> <span class="o">=</span> <span class="mf">43.1e6</span> <span class="c1"># J/kg, kerosene</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">fuel_type</span><span class="o">==</span><span class="s2">&quot;Hydrogen&quot;</span><span class="p">):</span>
+        <span class="n">fuel_heat</span> <span class="o">=</span> <span class="mf">121.0e6</span> <span class="c1"># J/kg, Liquid hydrogene</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">fuel_type</span><span class="o">==</span><span class="s2">&quot;Methane&quot;</span><span class="p">):</span>
+        <span class="n">fuel_heat</span> <span class="o">=</span> <span class="mf">50.3e6</span> <span class="c1"># J/kg, Liquid methane</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">fuel_type</span><span class="o">==</span><span class="s2">&quot;Battery&quot;</span><span class="p">):</span>
+        <span class="n">fuel_heat</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">J_kWh</span><span class="p">(</span><span class="mf">0.200</span><span class="p">)</span> <span class="c1"># J/kg, best Lithium-ion</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;fuel_type index is out of range&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fuel_heat</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="emission_index"><a class="viewcode-back" href="../../../api/marilib.earth.environment.html#marilib.earth.environment.emission_index">[docs]</a><span class="k">def</span> <span class="nf">emission_index</span><span class="p">(</span><span class="n">compound</span><span class="p">):</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;CO2&quot;</span> <span class="p">:</span> <span class="mf">3140.</span><span class="o">/</span><span class="mf">1000.</span><span class="p">,</span>
+             <span class="s2">&quot;H2O&quot;</span> <span class="p">:</span> <span class="mf">1290.</span><span class="o">/</span><span class="mf">1000.</span><span class="p">,</span>
+             <span class="s2">&quot;SO2&quot;</span> <span class="p">:</span> <span class="mf">0.8</span><span class="o">/</span><span class="mf">1000.</span><span class="p">,</span>
+             <span class="s2">&quot;NOx&quot;</span> <span class="p">:</span> <span class="mf">14.</span><span class="o">/</span><span class="mf">1000.</span><span class="p">,</span>
+             <span class="s2">&quot;CO&quot;</span> <span class="p">:</span> <span class="mf">3.</span><span class="o">/</span><span class="mf">1000.</span><span class="p">,</span>
+             <span class="s2">&quot;HC&quot;</span> <span class="p">:</span> <span class="mf">0.4</span><span class="o">/</span><span class="mf">1000.</span><span class="p">,</span>
+             <span class="s2">&quot;sulfuric_acid&quot;</span> <span class="p">:</span> <span class="mf">0.04</span><span class="o">/</span><span class="mf">1000.</span><span class="p">,</span>
+             <span class="s2">&quot;nitrous_acid&quot;</span> <span class="p">:</span> <span class="mf">0.4</span><span class="o">/</span><span class="mf">1000.</span><span class="p">,</span>
+             <span class="s2">&quot;nitric_acid&quot;</span> <span class="p">:</span> <span class="mf">0.2</span><span class="o">/</span><span class="mf">1000.</span><span class="p">,</span>
+             <span class="s2">&quot;soot&quot;</span> <span class="p">:</span> <span class="mf">2.5e12</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">index</span><span class="p">[</span><span class="n">compound</span><span class="p">]</span></div>
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../marilib.html" >marilib</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

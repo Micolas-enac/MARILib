@@ -1,0 +1,244 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.airplane.propulsion.turbofan.turbofan_design &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../../../marilib.html" accesskey="U">marilib</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for marilib.airplane.propulsion.turbofan.turbofan_design</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Thu Jan 24 23:22:21 2019</span>
+
+<span class="sd">@author: DRUOT Thierry : original Scilab implementation</span>
+<span class="sd">         ROCHES Pascal : portage to Python</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">marilib</span> <span class="k">import</span> <span class="n">numpy</span>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_turbofan_pylon_mass"><a class="viewcode-back" href="../../../../../api/marilib.airplane.propulsion.turbofan.turbofan_design.html#marilib.airplane.propulsion.turbofan.turbofan_design.eval_turbofan_pylon_mass">[docs]</a><span class="k">def</span> <span class="nf">eval_turbofan_pylon_mass</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Turbofan pylon mass &amp; CG estimation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">nacelle</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_nacelle</span>
+    <span class="n">engine</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_engine</span>
+
+    <span class="n">pylon</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_pylon</span>
+
+    <span class="n">pylon</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="mf">0.0031</span><span class="o">*</span><span class="n">engine</span><span class="o">.</span><span class="n">reference_thrust</span><span class="o">*</span><span class="n">nacelle</span><span class="o">.</span><span class="n">n_engine</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">nacelle</span><span class="o">.</span><span class="n">n_engine</span><span class="o">==</span><span class="mi">2</span><span class="p">):</span>
+        <span class="n">pylon</span><span class="o">.</span><span class="n">c_g</span> <span class="o">=</span> <span class="n">nacelle</span><span class="o">.</span><span class="n">x_ext</span> <span class="o">+</span> <span class="mf">0.75</span><span class="o">*</span><span class="n">nacelle</span><span class="o">.</span><span class="n">length</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">nacelle</span><span class="o">.</span><span class="n">n_engine</span><span class="o">==</span><span class="mi">4</span><span class="p">):</span>
+        <span class="n">pylon</span><span class="o">.</span><span class="n">c_g</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">nacelle</span><span class="o">.</span><span class="n">x_int</span> <span class="o">+</span> <span class="n">nacelle</span><span class="o">.</span><span class="n">x_ext</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.75</span><span class="o">*</span><span class="n">nacelle</span><span class="o">.</span><span class="n">length</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Number of engine is not allowed&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_turbofan_engine_design"><a class="viewcode-back" href="../../../../../api/marilib.airplane.propulsion.turbofan.turbofan_design.html#marilib.airplane.propulsion.turbofan.turbofan_design.eval_turbofan_engine_design">[docs]</a><span class="k">def</span> <span class="nf">eval_turbofan_engine_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Thermal propulsive architecture design</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">design_driver</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">design_driver</span>
+    <span class="n">low_speed</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">low_speed</span>
+
+    <span class="n">engine</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_engine</span>
+    <span class="n">propulsion</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span>
+
+    <span class="n">engine</span><span class="o">.</span><span class="n">rating_factor</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;MTO&quot;</span><span class="p">:</span><span class="mf">0.800</span><span class="p">,</span> <span class="s2">&quot;MCN&quot;</span><span class="p">:</span><span class="mf">0.688</span><span class="p">,</span> <span class="s2">&quot;MCL&quot;</span><span class="p">:</span><span class="mf">0.624</span><span class="p">,</span> <span class="s2">&quot;MCR&quot;</span><span class="p">:</span><span class="mf">0.560</span><span class="p">,</span> <span class="s2">&quot;FID&quot;</span><span class="p">:</span><span class="mf">0.100</span><span class="p">}</span>
+
+    <span class="n">engine</span><span class="o">.</span><span class="n">reference_thrust</span> <span class="o">=</span> <span class="n">propulsion</span><span class="o">.</span><span class="n">reference_thrust</span>
+
+
+    <span class="c1"># Propulsion architecture design, definition reference conditions for engine performances</span>
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+
+    <span class="c1"># Initialisation</span>
+    <span class="n">crm</span> <span class="o">=</span> <span class="n">design_driver</span><span class="o">.</span><span class="n">cruise_mach</span>
+    <span class="n">toc</span> <span class="o">=</span> <span class="n">design_driver</span><span class="o">.</span><span class="n">top_of_climb_altp</span>
+    <span class="n">rca</span> <span class="o">=</span> <span class="n">design_driver</span><span class="o">.</span><span class="n">ref_cruise_altp</span>
+    <span class="n">roa</span> <span class="o">=</span> <span class="n">low_speed</span><span class="o">.</span><span class="n">req_oei_altp</span>
+
+    <span class="c1">#                      MTO   MCN    MCL  MCR  FID</span>
+    <span class="n">fd_disa</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;MTO&quot;</span><span class="p">:</span><span class="mf">15.</span> <span class="p">,</span> <span class="s2">&quot;MCN&quot;</span><span class="p">:</span><span class="mf">15.</span>  <span class="p">,</span> <span class="s2">&quot;MCL&quot;</span><span class="p">:</span><span class="mf">0.</span> <span class="p">,</span> <span class="s2">&quot;MCR&quot;</span><span class="p">:</span><span class="mf">0.</span> <span class="p">,</span> <span class="s2">&quot;FID&quot;</span><span class="p">:</span><span class="mf">0.</span> <span class="p">}</span>
+    <span class="n">fd_altp</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;MTO&quot;</span><span class="p">:</span><span class="mf">0.</span>  <span class="p">,</span> <span class="s2">&quot;MCN&quot;</span><span class="p">:</span><span class="n">roa</span>  <span class="p">,</span> <span class="s2">&quot;MCL&quot;</span><span class="p">:</span><span class="n">toc</span><span class="p">,</span> <span class="s2">&quot;MCR&quot;</span><span class="p">:</span><span class="n">rca</span><span class="p">,</span> <span class="s2">&quot;FID&quot;</span><span class="p">:</span><span class="n">rca</span><span class="p">}</span>
+    <span class="n">fd_mach</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;MTO&quot;</span><span class="p">:</span><span class="mf">0.25</span><span class="p">,</span> <span class="s2">&quot;MCN&quot;</span><span class="p">:</span><span class="n">crm</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;MCL&quot;</span><span class="p">:</span><span class="n">crm</span><span class="p">,</span> <span class="s2">&quot;MCR&quot;</span><span class="p">:</span><span class="n">crm</span><span class="p">,</span> <span class="s2">&quot;FID&quot;</span><span class="p">:</span><span class="n">crm</span><span class="p">}</span>
+    <span class="n">fd_nei</span>  <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;MTO&quot;</span><span class="p">:</span><span class="mf">0.</span>  <span class="p">,</span> <span class="s2">&quot;MCN&quot;</span><span class="p">:</span><span class="mf">1.</span>   <span class="p">,</span> <span class="s2">&quot;MCL&quot;</span><span class="p">:</span><span class="mf">0.</span> <span class="p">,</span> <span class="s2">&quot;MCR&quot;</span><span class="p">:</span><span class="mf">0.</span> <span class="p">,</span> <span class="s2">&quot;FID&quot;</span><span class="p">:</span><span class="mf">0.</span> <span class="p">}</span>
+
+    <span class="n">propulsion</span><span class="o">.</span><span class="n">flight_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;disa&quot;</span><span class="p">:</span><span class="n">fd_disa</span><span class="p">,</span> <span class="s2">&quot;altp&quot;</span><span class="p">:</span><span class="n">fd_altp</span><span class="p">,</span> <span class="s2">&quot;mach&quot;</span><span class="p">:</span><span class="n">fd_mach</span><span class="p">,</span> <span class="s2">&quot;nei&quot;</span><span class="p">:</span><span class="n">fd_nei</span><span class="p">}</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_turbofan_nacelle_design"><a class="viewcode-back" href="../../../../../api/marilib.airplane.propulsion.turbofan.turbofan_design.html#marilib.airplane.propulsion.turbofan.turbofan_design.eval_turbofan_nacelle_design">[docs]</a><span class="k">def</span> <span class="nf">eval_turbofan_nacelle_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Thermal propulsive architecture design</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">fuselage</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">fuselage</span>
+    <span class="n">wing</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span>
+    <span class="n">vtp</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">vertical_tail</span>
+    <span class="n">engine</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_engine</span>
+    <span class="n">propulsion</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span>
+
+    <span class="n">nacelle</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_nacelle</span>
+
+    <span class="n">nacelle</span><span class="o">.</span><span class="n">n_engine</span> <span class="o">=</span> <span class="n">propulsion</span><span class="o">.</span><span class="n">n_engine</span>
+    <span class="n">nacelle</span><span class="o">.</span><span class="n">attachment</span> <span class="o">=</span> <span class="n">propulsion</span><span class="o">.</span><span class="n">nacelle_attachment</span>
+
+    <span class="n">nacelle</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">engine</span><span class="o">.</span><span class="n">bpr</span> <span class="o">**</span> <span class="mf">0.7</span> <span class="o">+</span> <span class="mf">5.E-6</span> <span class="o">*</span> <span class="n">engine</span><span class="o">.</span><span class="n">reference_thrust</span>
+
+    <span class="n">nacelle</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="mf">0.86</span> <span class="o">*</span> <span class="n">nacelle</span><span class="o">.</span><span class="n">width</span> <span class="o">+</span> <span class="n">engine</span><span class="o">.</span><span class="n">bpr</span> <span class="o">**</span> <span class="mf">0.37</span>      <span class="c1"># statistical regression</span>
+
+    <span class="n">Knac</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">nacelle</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="n">nacelle</span><span class="o">.</span><span class="n">length</span>
+
+    <span class="n">nacelle</span><span class="o">.</span><span class="n">net_wetted_area</span> <span class="o">=</span> <span class="n">Knac</span><span class="o">*</span><span class="p">(</span><span class="mf">1.48</span> <span class="o">-</span> <span class="mf">0.0076</span><span class="o">*</span><span class="n">Knac</span><span class="p">)</span><span class="o">*</span><span class="n">nacelle</span><span class="o">.</span><span class="n">n_engine</span>        <span class="c1"># statistical regression</span>
+
+    <span class="n">tan_phi0</span> <span class="o">=</span> <span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="n">wing</span><span class="o">.</span><span class="n">c_kink</span><span class="o">-</span><span class="n">wing</span><span class="o">.</span><span class="n">c_tip</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">wing</span><span class="o">.</span><span class="n">y_tip</span><span class="o">-</span><span class="n">wing</span><span class="o">.</span><span class="n">y_kink</span><span class="p">)</span> <span class="o">+</span> <span class="n">numpy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">wing</span><span class="o">.</span><span class="n">sweep</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">nacelle</span><span class="o">.</span><span class="n">attachment</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">nacelle</span><span class="o">.</span><span class="n">n_engine</span><span class="o">==</span><span class="mi">2</span><span class="p">):</span>
+
+            <span class="n">nacelle</span><span class="o">.</span><span class="n">y_ext</span> <span class="o">=</span> <span class="mf">0.8</span> <span class="o">*</span> <span class="n">fuselage</span><span class="o">.</span><span class="n">width</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">nacelle</span><span class="o">.</span><span class="n">width</span>      <span class="c1"># statistical regression</span>
+
+            <span class="n">nacelle</span><span class="o">.</span><span class="n">x_ext</span> <span class="o">=</span> <span class="n">wing</span><span class="o">.</span><span class="n">x_root</span> <span class="o">+</span> <span class="p">(</span><span class="n">nacelle</span><span class="o">.</span><span class="n">y_ext</span><span class="o">-</span><span class="n">wing</span><span class="o">.</span><span class="n">y_root</span><span class="p">)</span><span class="o">*</span><span class="n">tan_phi0</span> <span class="o">-</span> <span class="mf">0.7</span><span class="o">*</span><span class="n">nacelle</span><span class="o">.</span><span class="n">length</span>
+
+            <span class="n">nacelle</span><span class="o">.</span><span class="n">z_ext</span> <span class="o">=</span> <span class="p">(</span><span class="n">nacelle</span><span class="o">.</span><span class="n">y_ext</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">fuselage</span><span class="o">.</span><span class="n">width</span><span class="p">)</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">wing</span><span class="o">.</span><span class="n">dihedral</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">nacelle</span><span class="o">.</span><span class="n">width</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="n">nacelle</span><span class="o">.</span><span class="n">n_engine</span><span class="o">==</span><span class="mi">4</span><span class="p">):</span>
+
+            <span class="n">nacelle</span><span class="o">.</span><span class="n">y_int</span> <span class="o">=</span> <span class="mf">0.8</span> <span class="o">*</span> <span class="n">fuselage</span><span class="o">.</span><span class="n">width</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">nacelle</span><span class="o">.</span><span class="n">width</span>      <span class="c1"># statistical regression</span>
+
+            <span class="n">nacelle</span><span class="o">.</span><span class="n">x_int</span> <span class="o">=</span> <span class="n">wing</span><span class="o">.</span><span class="n">x_root</span> <span class="o">+</span> <span class="p">(</span><span class="n">nacelle</span><span class="o">.</span><span class="n">y_int</span><span class="o">-</span><span class="n">wing</span><span class="o">.</span><span class="n">y_root</span><span class="p">)</span><span class="o">*</span><span class="n">tan_phi0</span> <span class="o">-</span> <span class="mf">0.7</span><span class="o">*</span><span class="n">nacelle</span><span class="o">.</span><span class="n">length</span>
+
+            <span class="n">nacelle</span><span class="o">.</span><span class="n">z_int</span> <span class="o">=</span> <span class="p">(</span><span class="n">nacelle</span><span class="o">.</span><span class="n">y_int</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">fuselage</span><span class="o">.</span><span class="n">width</span><span class="p">)</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">wing</span><span class="o">.</span><span class="n">dihedral</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">nacelle</span><span class="o">.</span><span class="n">width</span>
+
+            <span class="n">nacelle</span><span class="o">.</span><span class="n">y_ext</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">fuselage</span><span class="o">.</span><span class="n">width</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">nacelle</span><span class="o">.</span><span class="n">width</span>      <span class="c1"># statistical regression</span>
+
+            <span class="n">nacelle</span><span class="o">.</span><span class="n">x_ext</span> <span class="o">=</span> <span class="n">wing</span><span class="o">.</span><span class="n">x_root</span> <span class="o">+</span> <span class="p">(</span><span class="n">nacelle</span><span class="o">.</span><span class="n">y_ext</span><span class="o">-</span><span class="n">wing</span><span class="o">.</span><span class="n">y_root</span><span class="p">)</span><span class="o">*</span><span class="n">tan_phi0</span> <span class="o">-</span> <span class="mf">0.7</span><span class="o">*</span><span class="n">nacelle</span><span class="o">.</span><span class="n">length</span>
+
+            <span class="n">nacelle</span><span class="o">.</span><span class="n">z_ext</span> <span class="o">=</span> <span class="p">(</span><span class="n">nacelle</span><span class="o">.</span><span class="n">y_ext</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">fuselage</span><span class="o">.</span><span class="n">width</span><span class="p">)</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">wing</span><span class="o">.</span><span class="n">dihedral</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">nacelle</span><span class="o">.</span><span class="n">width</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;nacelle.n_engine, number of engine not supported&quot;</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="p">(</span><span class="n">nacelle</span><span class="o">.</span><span class="n">attachment</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">nacelle</span><span class="o">.</span><span class="n">n_engine</span><span class="o">==</span><span class="mi">2</span><span class="p">):</span>
+
+            <span class="n">nacelle</span><span class="o">.</span><span class="n">y_ext</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">fuselage</span><span class="o">.</span><span class="n">width</span> <span class="o">+</span> <span class="mf">0.6</span> <span class="o">*</span> <span class="n">nacelle</span><span class="o">.</span><span class="n">width</span>      <span class="c1"># statistical regression</span>
+
+            <span class="n">nacelle</span><span class="o">.</span><span class="n">x_ext</span> <span class="o">=</span> <span class="n">vtp</span><span class="o">.</span><span class="n">x_root</span> <span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">nacelle</span><span class="o">.</span><span class="n">length</span>
+
+            <span class="n">nacelle</span><span class="o">.</span><span class="n">z_ext</span> <span class="o">=</span> <span class="n">fuselage</span><span class="o">.</span><span class="n">height</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;nacelle.n_engine, number of engine not supported&quot;</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;nacelle.attachment, index is out of range&quot;</span><span class="p">)</span>
+
+    <span class="n">propulsion</span><span class="o">.</span><span class="n">y_ext_nacelle</span> <span class="o">=</span> <span class="n">nacelle</span><span class="o">.</span><span class="n">y_ext</span>
+
+    <span class="n">nacelle</span><span class="o">.</span><span class="n">rear_nacelle</span> <span class="o">=</span> <span class="mi">0</span>    <span class="c1"># No rear nacelle in this architecture</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_turbofan_nacelle_mass"><a class="viewcode-back" href="../../../../../api/marilib.airplane.propulsion.turbofan.turbofan_design.html#marilib.airplane.propulsion.turbofan.turbofan_design.eval_turbofan_nacelle_mass">[docs]</a><span class="k">def</span> <span class="nf">eval_turbofan_nacelle_mass</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Thermal propulsive nacelle mass estimation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">engine</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_engine</span>
+    <span class="n">nacelle</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_nacelle</span>
+
+    <span class="n">nacelle</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1250.</span> <span class="o">+</span> <span class="mf">0.021</span><span class="o">*</span><span class="n">engine</span><span class="o">.</span><span class="n">reference_thrust</span><span class="p">)</span><span class="o">*</span><span class="n">nacelle</span><span class="o">.</span><span class="n">n_engine</span>       <span class="c1"># statistical regression</span>
+
+    <span class="n">nacelle</span><span class="o">.</span><span class="n">c_g</span> <span class="o">=</span> <span class="n">nacelle</span><span class="o">.</span><span class="n">x_ext</span> <span class="o">+</span> <span class="mf">0.7</span> <span class="o">*</span> <span class="n">nacelle</span><span class="o">.</span><span class="n">length</span>      <span class="c1"># statistical regression</span>
+
+    <span class="k">return</span></div>
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../../../marilib.html" >marilib</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

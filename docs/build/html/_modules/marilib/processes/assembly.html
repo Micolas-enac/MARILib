@@ -1,0 +1,1174 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.processes.assembly &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../marilib.html" accesskey="U">marilib</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for marilib.processes.assembly</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Thu Jan 24 23:22:21 2019</span>
+<span class="sd">@author: DRUOT Thierry</span>
+<span class="sd">Changed name from &quot;design.py&quot; to &quot;assembly.py&quot; on 21:05:2019</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">marilib</span> <span class="k">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">from</span> <span class="nn">marilib</span> <span class="k">import</span> <span class="n">fsolve</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">minimize</span>
+<span class="kn">from</span> <span class="nn">marilib.tools</span> <span class="k">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">unit</span>
+
+<span class="kn">from</span> <span class="nn">marilib.earth</span> <span class="k">import</span> <span class="n">environment</span> <span class="k">as</span> <span class="n">earth</span>
+<span class="kn">from</span> <span class="nn">marilib.aircraft_model.airplane</span> <span class="k">import</span> <span class="n">airplane_design</span> <span class="k">as</span> <span class="n">airplane</span><span class="p">,</span> \
+                                            <span class="n">regulation</span> <span class="k">as</span> <span class="n">regul</span>
+
+<span class="kn">from</span> <span class="nn">marilib.airplane.airframe</span> <span class="k">import</span> <span class="n">airframe_design</span> <span class="k">as</span> <span class="n">airframe</span>
+
+<span class="kn">from</span> <span class="nn">marilib.airplane.propulsion</span> <span class="k">import</span> <span class="n">propulsion_design</span> <span class="k">as</span> <span class="n">propulsion</span>
+
+<span class="kn">from</span> <span class="nn">marilib.aircraft_model.operations</span> <span class="k">import</span> <span class="n">mission</span><span class="p">,</span> \
+                                            <span class="n">handling_qualities</span> <span class="k">as</span> <span class="n">h_q</span>
+
+<span class="kn">from</span> <span class="nn">marilib.processes</span> <span class="k">import</span> <span class="n">component</span> <span class="k">as</span> <span class="n">sub_proc</span><span class="p">,</span> \
+                              <span class="n">initialization</span> <span class="k">as</span> <span class="n">init</span>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="aircraft_initialize"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.aircraft_initialize">[docs]</a><span class="k">def</span> <span class="nf">aircraft_initialize</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span> <span class="n">n_pax_ref</span><span class="p">,</span> <span class="n">design_range</span><span class="p">,</span> <span class="n">cruise_mach</span><span class="p">,</span> <span class="n">propu_config</span><span class="p">,</span> <span class="n">n_engine</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initialize a generic aircraft</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">architecture</span> <span class="o">=</span> <span class="n">propu_config</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">n_engine</span> <span class="o">=</span> <span class="n">n_engine</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">nacelle_attachment</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">nacelle_attachment</span><span class="p">(</span><span class="n">propu_config</span><span class="p">,</span><span class="n">n_pax_ref</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">fuel_type</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">fuel_type</span><span class="p">(</span><span class="n">propu_config</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">reference_thrust</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">reference_thrust</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="p">,</span><span class="n">design_range</span><span class="p">,</span><span class="n">n_engine</span><span class="p">)</span>                                            <span class="c1"># Main design variable</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;my_test_airplane&quot;</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">design_driver</span><span class="o">.</span><span class="n">design_range</span> <span class="o">=</span> <span class="n">design_range</span>        <span class="c1"># TLR</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">design_driver</span><span class="o">.</span><span class="n">cruise_mach</span> <span class="o">=</span> <span class="n">cruise_mach</span>          <span class="c1"># TLR</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">cabin</span><span class="o">.</span><span class="n">n_pax_ref</span> <span class="o">=</span> <span class="n">n_pax_ref</span>                      <span class="c1"># TLR</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">design_driver</span><span class="o">.</span><span class="n">ref_cruise_altp</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">ref_cruise_altp</span><span class="p">(</span><span class="n">propu_config</span><span class="p">)</span>        <span class="c1"># TLR</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">design_driver</span><span class="o">.</span><span class="n">top_of_climb_altp</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">top_of_climb_altp</span><span class="p">(</span><span class="n">propu_config</span><span class="p">)</span>    <span class="c1"># TLR</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">low_speed</span><span class="o">.</span><span class="n">altp_tofl</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">altp_tofl</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">low_speed</span><span class="o">.</span><span class="n">disa_tofl</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">disa_tofl</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">low_speed</span><span class="o">.</span><span class="n">kvs1g_tofl</span> <span class="o">=</span> <span class="n">regul</span><span class="o">.</span><span class="n">kvs1g_min_take_off</span><span class="p">()</span>       <span class="c1"># Regulation</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">low_speed</span><span class="o">.</span><span class="n">req_tofl</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">req_tofl</span><span class="p">(</span><span class="n">design_range</span><span class="p">)</span>        <span class="c1"># TLR</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">low_speed</span><span class="o">.</span><span class="n">altp_app_speed</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">altp_app_speed</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">low_speed</span><span class="o">.</span><span class="n">disa_app_speed</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">disa_app_speed</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">low_speed</span><span class="o">.</span><span class="n">kvs1g_app_speed</span> <span class="o">=</span> <span class="n">regul</span><span class="o">.</span><span class="n">kvs1g_min_landing</span><span class="p">()</span>   <span class="c1"># Regulation</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">low_speed</span><span class="o">.</span><span class="n">req_app_speed</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">req_app_speed</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="p">)</span>          <span class="c1"># TLR</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">low_speed</span><span class="o">.</span><span class="n">disa_oei</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">disa_oei</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">low_speed</span><span class="o">.</span><span class="n">req_oei_path</span> <span class="o">=</span> <span class="n">regul</span><span class="o">.</span><span class="n">ceil_oei_min_path</span><span class="p">(</span><span class="n">n_engine</span><span class="p">)</span>     <span class="c1"># Regulation</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">low_speed</span><span class="o">.</span><span class="n">req_oei_altp</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">req_oei_altp</span><span class="p">(</span><span class="n">propu_config</span><span class="p">)</span>       <span class="c1"># TLR</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">low_speed</span><span class="o">.</span><span class="n">oei_best_speed</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">oei_best_speed</span><span class="p">(</span><span class="n">cruise_mach</span><span class="p">)</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">high_speed</span><span class="o">.</span><span class="n">disa_climb</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">disa_climb</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">high_speed</span><span class="o">.</span><span class="n">req_vz_climb</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">req_vz_climb</span><span class="p">()</span>           <span class="c1"># TLR</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">high_speed</span><span class="o">.</span><span class="n">req_vz_cruise</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">req_vz_cruise</span><span class="p">()</span>         <span class="c1"># TLR</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">high_speed</span><span class="o">.</span><span class="n">req_toc_altp</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">top_of_climb_altp</span><span class="p">(</span><span class="n">propu_config</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">high_speed</span><span class="o">.</span><span class="n">cas1_ttc</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">cas1_ttc</span><span class="p">(</span><span class="n">cruise_mach</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">high_speed</span><span class="o">.</span><span class="n">cas2_ttc</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">cas2_ttc</span><span class="p">(</span><span class="n">cruise_mach</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">high_speed</span><span class="o">.</span><span class="n">req_ttc</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">req_ttc</span><span class="p">()</span>                     <span class="c1"># TLR</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">cost_mission</span><span class="o">.</span><span class="n">disa</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">cost_mission_disa</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">cost_mission</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">cost_mission_range</span><span class="p">(</span><span class="n">design_range</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">cost_mission</span><span class="o">.</span><span class="n">req_battery_mass</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">battery_mass</span><span class="p">()</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">nominal_mission</span><span class="o">.</span><span class="n">nominal_cruise_mach</span> <span class="o">=</span> <span class="n">cruise_mach</span>                              <span class="c1"># TLR</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">nominal_mission</span><span class="o">.</span><span class="n">nominal_cruise_altp</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">ref_cruise_altp</span><span class="p">(</span><span class="n">propu_config</span><span class="p">)</span>       <span class="c1"># TLR</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">nominal_mission</span><span class="o">.</span><span class="n">req_battery_mass</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">battery_mass</span><span class="p">()</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">economics</span><span class="o">.</span><span class="n">fuel_price</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">fuel_price</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">economics</span><span class="o">.</span><span class="n">elec_price</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">elec_price</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">economics</span><span class="o">.</span><span class="n">battery_mass_price</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">battery_mass_price</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">economics</span><span class="o">.</span><span class="n">labor_cost</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">labor_cost</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">economics</span><span class="o">.</span><span class="n">irp</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">irp</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">economics</span><span class="o">.</span><span class="n">period</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">period</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">economics</span><span class="o">.</span><span class="n">interest_rate</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">interest_rate</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">economics</span><span class="o">.</span><span class="n">utilisation</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">utilisation</span><span class="p">(</span><span class="n">design_range</span><span class="p">)</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">environmental_impact</span><span class="o">.</span><span class="n">CO2_index</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">emission_index</span><span class="p">(</span><span class="s2">&quot;CO2&quot;</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">environmental_impact</span><span class="o">.</span><span class="n">H2O_index</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">emission_index</span><span class="p">(</span><span class="s2">&quot;H2O&quot;</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">environmental_impact</span><span class="o">.</span><span class="n">SO2_index</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">emission_index</span><span class="p">(</span><span class="s2">&quot;SO2&quot;</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">environmental_impact</span><span class="o">.</span><span class="n">NOx_index</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">emission_index</span><span class="p">(</span><span class="s2">&quot;NOx&quot;</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">environmental_impact</span><span class="o">.</span><span class="n">CO_index</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">emission_index</span><span class="p">(</span><span class="s2">&quot;CO&quot;</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">environmental_impact</span><span class="o">.</span><span class="n">HC_index</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">emission_index</span><span class="p">(</span><span class="s2">&quot;HC&quot;</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">environmental_impact</span><span class="o">.</span><span class="n">sulfuric_acid_index</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">emission_index</span><span class="p">(</span><span class="s2">&quot;sulfuric_acid&quot;</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">environmental_impact</span><span class="o">.</span><span class="n">nitrous_acid_index</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">emission_index</span><span class="p">(</span><span class="s2">&quot;nitrous_acid&quot;</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">environmental_impact</span><span class="o">.</span><span class="n">nitric_acid_index</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">emission_index</span><span class="p">(</span><span class="s2">&quot;nitric_acid&quot;</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">environmental_impact</span><span class="o">.</span><span class="n">soot_index</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">emission_index</span><span class="p">(</span><span class="s2">&quot;soot&quot;</span><span class="p">)</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mzfw</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">mzfw</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="p">,</span><span class="n">design_range</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mtow</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">mtow</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="p">,</span><span class="n">design_range</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mlw</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">mlw</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="p">,</span><span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mtow</span><span class="p">,</span><span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mzfw</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">battery_in_owe</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">battery_mass</span><span class="p">()</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">cabin</span><span class="o">.</span><span class="n">n_pax_front</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">n_pax_front</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">cabin</span><span class="o">.</span><span class="n">n_aisle</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">n_aisle</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">cabin</span><span class="o">.</span><span class="n">n_pax_front</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">fuselage</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">fuselage_width</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">cabin</span><span class="o">.</span><span class="n">n_pax_front</span><span class="p">,</span><span class="n">aircraft</span><span class="o">.</span><span class="n">cabin</span><span class="o">.</span><span class="n">n_aisle</span><span class="p">)</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">m_pax_nominal</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">m_pax_nominal</span><span class="p">(</span><span class="n">design_range</span><span class="p">)</span>      <span class="c1"># TLR</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">m_pax_max</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">m_pax_max</span><span class="p">(</span><span class="n">design_range</span><span class="p">)</span>              <span class="c1"># TLR</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">center_of_gravity</span><span class="o">.</span><span class="n">cg_range_optimization</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">cg_range_optimization</span><span class="p">()</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">attachment</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">wing_attachment</span><span class="p">(</span><span class="n">propu_config</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">morphing</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">wing_morphing</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">hld_type</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">hld_type</span><span class="p">(</span><span class="n">propu_config</span><span class="p">,</span><span class="n">n_pax_ref</span><span class="p">)</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">wing_area</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="p">,</span><span class="n">design_range</span><span class="p">)</span>                                              <span class="c1"># Main design variable</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">aspect_ratio</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">wing_aspect_ratio</span><span class="p">(</span><span class="n">propu_config</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">span</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">wing_span</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">area</span><span class="p">,</span><span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">aspect_ratio</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">x_root</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">wing_x_root</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">aspect_ratio</span><span class="p">,</span><span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">span</span><span class="p">)</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">tanks</span><span class="o">.</span><span class="n">architecture</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">tank_architecture</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">tanks</span><span class="o">.</span><span class="n">pod_length</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">tank_pod_length</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">tanks</span><span class="o">.</span><span class="n">architecture</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">tanks</span><span class="o">.</span><span class="n">pod_width</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">tank_pod_width</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">tanks</span><span class="o">.</span><span class="n">architecture</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">tanks</span><span class="o">.</span><span class="n">pod_surface_mass</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">pod_surface_mass</span><span class="p">()</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">horizontal_tail</span><span class="o">.</span><span class="n">attachment</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">htp_attachment</span><span class="p">(</span><span class="n">propu_config</span><span class="p">,</span><span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">nacelle_attachment</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">horizontal_tail</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">htp_area</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">area</span><span class="p">)</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">vertical_tail</span><span class="o">.</span><span class="n">attachment</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">vtp_attachment</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">vertical_tail</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">vtp_area</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">area</span><span class="p">)</span>
+
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">aerodynamics</span><span class="o">.</span><span class="n">hld_conf_clean</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">hld_conf_clean</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">aerodynamics</span><span class="o">.</span><span class="n">hld_conf_to</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">hld_conf_to</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">aerodynamics</span><span class="o">.</span><span class="n">hld_conf_ld</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">hld_conf_ld</span><span class="p">()</span>
+
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_engine</span><span class="o">.</span><span class="n">bpr</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">bpr</span><span class="p">(</span><span class="n">n_pax_ref</span><span class="p">,</span><span class="n">propu_config</span><span class="p">)</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_engine</span><span class="o">.</span><span class="n">core_thrust_ratio</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">core_thrust_ratio</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_engine</span><span class="o">.</span><span class="n">core_width_ratio</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">core_width_ratio</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_engine</span><span class="o">.</span><span class="n">core_weight_ratio</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">core_weight_ratio</span><span class="p">()</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_nacelle</span><span class="o">.</span><span class="n">efficiency_fan</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">efficiency_fan</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_nacelle</span><span class="o">.</span><span class="n">efficiency_prop</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">efficiency_prop</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_nacelle</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">nacelle_width</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_engine</span><span class="o">.</span><span class="n">bpr</span><span class="p">,</span>
+                                                                  <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">reference_thrust</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_nacelle</span><span class="o">.</span><span class="n">y_ext</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">nacelle_y_ext</span><span class="p">(</span><span class="n">propu_config</span><span class="p">,</span><span class="n">n_engine</span><span class="p">,</span>
+                                                         <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">nacelle_attachment</span><span class="p">,</span>
+                                                         <span class="n">aircraft</span><span class="o">.</span><span class="n">fuselage</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+                                                         <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_nacelle</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">turboprop_nacelle</span><span class="o">.</span><span class="n">efficiency_prop</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">efficiency_prop</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">turboprop_nacelle</span><span class="o">.</span><span class="n">propeller_width</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">propeller_width</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">reference_thrust</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">turboprop_nacelle</span><span class="o">.</span><span class="n">y_ext</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">nacelle_y_ext</span><span class="p">(</span><span class="n">propu_config</span><span class="p">,</span><span class="n">n_engine</span><span class="p">,</span>
+                                                         <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">nacelle_attachment</span><span class="p">,</span>
+                                                          <span class="n">aircraft</span><span class="o">.</span><span class="n">fuselage</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+                                                          <span class="n">aircraft</span><span class="o">.</span><span class="n">turboprop_nacelle</span><span class="o">.</span><span class="n">propeller_width</span><span class="p">)</span>
+
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">rear_electric_nacelle</span><span class="o">.</span><span class="n">efficiency_fan</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">efficiency_fan</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">rear_electric_nacelle</span><span class="o">.</span><span class="n">efficiency_prop</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">efficiency_prop</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">rear_electric_nacelle</span><span class="o">.</span><span class="n">motor_efficiency</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">e_motor_efficiency</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">rear_electric_nacelle</span><span class="o">.</span><span class="n">controller_efficiency</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">controller_efficiency</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">rear_electric_nacelle</span><span class="o">.</span><span class="n">controller_pw_density</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">controller_pw_density</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">rear_electric_nacelle</span><span class="o">.</span><span class="n">motor_pw_density</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">e_motor_pw_density</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">rear_electric_nacelle</span><span class="o">.</span><span class="n">nacelle_pw_density</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">e_nacelle_pw_density</span><span class="p">()</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">rear_electric_engine</span><span class="o">.</span><span class="n">mto_r_shaft_power</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">electric_shaft_power</span><span class="p">()</span>       <span class="c1"># Watts, rear fan shaft power</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">rear_electric_engine</span><span class="o">.</span><span class="n">mcn_r_shaft_power</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">electric_shaft_power</span><span class="p">()</span>       <span class="c1"># Watts, rear fan shaft power</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">rear_electric_engine</span><span class="o">.</span><span class="n">mcl_r_shaft_power</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">electric_shaft_power</span><span class="p">()</span>       <span class="c1"># Watts, rear fan shaft power</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">rear_electric_engine</span><span class="o">.</span><span class="n">mcr_r_shaft_power</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">electric_shaft_power</span><span class="p">()</span>       <span class="c1"># Watts, rear fan shaft power</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">rear_electric_engine</span><span class="o">.</span><span class="n">fid_r_shaft_power</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">idle_electric_shaft_power</span><span class="p">()</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">pte1_power_elec_chain</span><span class="o">.</span><span class="n">overall_efficiency</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">e_chain_efficiency</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">pte1_power_elec_chain</span><span class="o">.</span><span class="n">generator_pw_density</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">generator_power_density</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">pte1_power_elec_chain</span><span class="o">.</span><span class="n">rectifier_pw_density</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">rectifier_pw_density</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">pte1_power_elec_chain</span><span class="o">.</span><span class="n">wiring_pw_density</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">wiring_pw_density</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">pte1_power_elec_chain</span><span class="o">.</span><span class="n">cooling_pw_density</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">cooling_pw_density</span><span class="p">()</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">pte1_battery</span><span class="o">.</span><span class="n">strategy</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">battery_strategy</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">pte1_battery</span><span class="o">.</span><span class="n">power_feed</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">battery_power_feed</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">pte1_battery</span><span class="o">.</span><span class="n">time_feed</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">battery_time_feed</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">pte1_battery</span><span class="o">.</span><span class="n">energy_cruise</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">battery_energy_cruise</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">pte1_battery</span><span class="o">.</span><span class="n">density</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">battery_density</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">pte1_battery</span><span class="o">.</span><span class="n">energy_density</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">battery_energy_density</span><span class="p">(</span><span class="n">propu_config</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">pte1_battery</span><span class="o">.</span><span class="n">power_density</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">battery_power_density</span><span class="p">()</span>
+
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">electrofan_nacelle</span><span class="o">.</span><span class="n">rear_nacelle</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">ef1_rear_nacelle</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">electrofan_nacelle</span><span class="o">.</span><span class="n">efficiency_fan</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">efficiency_fan</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">electrofan_nacelle</span><span class="o">.</span><span class="n">efficiency_prop</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">efficiency_prop</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">electrofan_nacelle</span><span class="o">.</span><span class="n">motor_efficiency</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">e_motor_efficiency</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">electrofan_nacelle</span><span class="o">.</span><span class="n">controller_efficiency</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">controller_efficiency</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">electrofan_nacelle</span><span class="o">.</span><span class="n">controller_pw_density</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">controller_pw_density</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">electrofan_nacelle</span><span class="o">.</span><span class="n">motor_pw_density</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">e_motor_pw_density</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">electrofan_nacelle</span><span class="o">.</span><span class="n">nacelle_pw_density</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">e_nacelle_pw_density</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">electrofan_nacelle</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">nacelle_width</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">reference_thrust</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">electrofan_nacelle</span><span class="o">.</span><span class="n">y_ext</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">nacelle_y_ext</span><span class="p">(</span><span class="n">propu_config</span><span class="p">,</span><span class="n">n_engine</span><span class="p">,</span>
+                                                           <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">nacelle_attachment</span><span class="p">,</span>
+                                                           <span class="n">aircraft</span><span class="o">.</span><span class="n">fuselage</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+                                                           <span class="n">aircraft</span><span class="o">.</span><span class="n">electrofan_nacelle</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">electrofan_engine</span><span class="o">.</span><span class="n">mto_e_shaft_power</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">electric_shaft_power</span><span class="p">()</span>       <span class="c1"># Watts, fan shaft power</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">electrofan_engine</span><span class="o">.</span><span class="n">mcn_e_shaft_power</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">electric_shaft_power</span><span class="p">()</span>       <span class="c1"># Watts, fan shaft power</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">electrofan_engine</span><span class="o">.</span><span class="n">mcl_e_shaft_power</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">electric_shaft_power</span><span class="p">()</span>       <span class="c1"># Watts, fan shaft power</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">electrofan_engine</span><span class="o">.</span><span class="n">mcr_e_shaft_power</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">electric_shaft_power</span><span class="p">()</span>       <span class="c1"># Watts, fan shaft power</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">electrofan_engine</span><span class="o">.</span><span class="n">fid_e_shaft_power</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">idle_electric_shaft_power</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">electrofan_engine</span><span class="o">.</span><span class="n">rating_factor</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">rating_factor</span><span class="p">(</span><span class="n">propu_config</span><span class="p">)</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">ef1_power_elec_chain</span><span class="o">.</span><span class="n">overall_efficiency</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">e_chain_efficiency</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">ef1_power_elec_chain</span><span class="o">.</span><span class="n">generator_pw_density</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">generator_power_density</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">ef1_power_elec_chain</span><span class="o">.</span><span class="n">rectifier_pw_density</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">rectifier_pw_density</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">ef1_power_elec_chain</span><span class="o">.</span><span class="n">wiring_pw_density</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">wiring_pw_density</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">ef1_power_elec_chain</span><span class="o">.</span><span class="n">cooling_pw_density</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">cooling_pw_density</span><span class="p">()</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">ef1_battery</span><span class="o">.</span><span class="n">stacking</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">battery_stacking</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">ef1_battery</span><span class="o">.</span><span class="n">density</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">battery_density</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">ef1_battery</span><span class="o">.</span><span class="n">energy_density</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">battery_energy_density</span><span class="p">(</span><span class="n">propu_config</span><span class="p">)</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">ef1_battery</span><span class="o">.</span><span class="n">power_density</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">battery_power_density</span><span class="p">()</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">ef1_battery</span><span class="o">.</span><span class="n">density</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">battery_density</span><span class="p">()</span>
+
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">bli_effect</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">boundary_layer_effect</span><span class="p">()</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">rating_code</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">rating_code</span><span class="p">()</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_geometrical_analysis"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.eval_geometrical_analysis">[docs]</a><span class="k">def</span> <span class="nf">eval_geometrical_analysis</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform geometrical analysis</span>
+<span class="sd">    Do not solve any coupling</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_cabin_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_fuselage_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_wing_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_tail_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_htp_statistical_sizing</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">propulsion</span><span class="o">.</span><span class="n">eval_propulsion_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_vtp_statistical_sizing</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_pod_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">airplane</span><span class="o">.</span><span class="n">eval_aerodynamics_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_tail_statistical_sizing"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.eval_tail_statistical_sizing">[docs]</a><span class="k">def</span> <span class="nf">eval_tail_statistical_sizing</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform tail area sizing according to statistical rules</span>
+<span class="sd">    Do not manage the coupling carried by nacelle geometry</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_cabin_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_fuselage_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="c1">#===========================================================================================================</span>
+    <span class="k">def</span> <span class="nf">fct_aircraft_pre_design</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span><span class="n">aircraft</span><span class="p">):</span>
+
+        <span class="n">ac</span> <span class="o">=</span> <span class="n">aircraft</span>
+
+        <span class="n">ac</span><span class="o">.</span><span class="n">horizontal_tail</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">x_in</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>                           <span class="c1"># Coupling variable</span>
+        <span class="n">ac</span><span class="o">.</span><span class="n">vertical_tail</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">x_in</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>                             <span class="c1"># Coupling variable</span>
+
+        <span class="n">airframe</span><span class="o">.</span><span class="n">eval_wing_design</span><span class="p">(</span><span class="n">ac</span><span class="p">)</span>
+        <span class="n">airframe</span><span class="o">.</span><span class="n">eval_tail_design</span><span class="p">(</span><span class="n">ac</span><span class="p">)</span>
+
+        <span class="n">airframe</span><span class="o">.</span><span class="n">eval_vtp_constraint</span><span class="p">(</span><span class="n">ac</span><span class="p">)</span>
+        <span class="n">airframe</span><span class="o">.</span><span class="n">eval_htp_constraint</span><span class="p">(</span><span class="n">ac</span><span class="p">)</span>
+
+        <span class="n">y_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ac</span><span class="o">.</span><span class="n">horizontal_tail</span><span class="o">.</span><span class="n">htp_sizing_constraint_1</span><span class="p">,</span>
+                          <span class="n">ac</span><span class="o">.</span><span class="n">vertical_tail</span><span class="o">.</span><span class="n">vtp_sizing_constraint_1</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">y_out</span>
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+
+    <span class="n">htp_area_i</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">htp_area</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">area</span><span class="p">)</span>
+    <span class="n">vtp_area_i</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">vtp_area</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">area</span><span class="p">)</span>
+
+    <span class="n">x_ini</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">htp_area_i</span><span class="p">,</span><span class="n">vtp_area_i</span><span class="p">])</span>
+
+    <span class="n">fct_arg</span> <span class="o">=</span> <span class="n">aircraft</span>
+
+    <span class="n">output_dict</span> <span class="o">=</span> <span class="n">fsolve</span><span class="p">(</span><span class="n">fct_aircraft_pre_design</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">x_ini</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">fct_arg</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">horizontal_tail</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>                           <span class="c1"># Coupling variable</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">vertical_tail</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>                             <span class="c1"># Coupling variable</span>
+
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_wing_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_tail_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_pod_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">propulsion</span><span class="o">.</span><span class="n">eval_propulsion_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">airplane</span><span class="o">.</span><span class="n">eval_aerodynamics_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_aircraft_pre_design"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.eval_aircraft_pre_design">[docs]</a><span class="k">def</span> <span class="nf">eval_aircraft_pre_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Solves the coupling carried by nacelle geometry only</span>
+<span class="sd">    Do not perform tail area sizing</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_cabin_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_fuselage_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="c1">#===========================================================================================================</span>
+    <span class="k">def</span> <span class="nf">fct_aircraft_pre_design</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span><span class="n">aircraft</span><span class="p">):</span>
+
+        <span class="n">ac</span> <span class="o">=</span> <span class="n">aircraft</span>
+
+        <span class="n">ac</span><span class="o">.</span><span class="n">turbofan_nacelle</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">x_in</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>                         <span class="c1"># Coupling variable</span>
+        <span class="n">ac</span><span class="o">.</span><span class="n">turbofan_nacelle</span><span class="o">.</span><span class="n">y_ext</span> <span class="o">=</span> <span class="n">x_in</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>                         <span class="c1"># Coupling variable</span>
+
+        <span class="n">airframe</span><span class="o">.</span><span class="n">eval_wing_design</span><span class="p">(</span><span class="n">ac</span><span class="p">)</span>
+        <span class="n">airframe</span><span class="o">.</span><span class="n">eval_tail_design</span><span class="p">(</span><span class="n">ac</span><span class="p">)</span>
+
+        <span class="n">propulsion</span><span class="o">.</span><span class="n">eval_propulsion_design</span><span class="p">(</span><span class="n">ac</span><span class="p">)</span>
+
+        <span class="n">y_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x_in</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">ac</span><span class="o">.</span><span class="n">turbofan_nacelle</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+                          <span class="n">x_in</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ac</span><span class="o">.</span><span class="n">turbofan_nacelle</span><span class="o">.</span><span class="n">y_ext</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">y_out</span>
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+
+    <span class="n">x_ini</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_nacelle</span><span class="o">.</span><span class="n">width</span><span class="p">,</span><span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_nacelle</span><span class="o">.</span><span class="n">y_ext</span><span class="p">])</span>
+
+    <span class="n">fct_arg</span> <span class="o">=</span> <span class="n">aircraft</span>
+
+    <span class="n">output_dict</span> <span class="o">=</span> <span class="n">fsolve</span><span class="p">(</span><span class="n">fct_aircraft_pre_design</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">x_ini</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">fct_arg</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_nacelle</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>                         <span class="c1"># Coupling variable</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_nacelle</span><span class="o">.</span><span class="n">y_ext</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>                         <span class="c1"># Coupling variable</span>
+
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_wing_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_tail_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_pod_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">propulsion</span><span class="o">.</span><span class="n">eval_propulsion_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">airplane</span><span class="o">.</span><span class="n">eval_aerodynamics_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_aircraft_statistical_pre_design"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.eval_aircraft_statistical_pre_design">[docs]</a><span class="k">def</span> <span class="nf">eval_aircraft_statistical_pre_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform tail area sizing according to statistical rules on top of the coupling carried by nacelle geometry</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_cabin_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_fuselage_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="c1">#===========================================================================================================</span>
+    <span class="k">def</span> <span class="nf">fct_aircraft_pre_design</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span><span class="n">aircraft</span><span class="p">):</span>
+
+        <span class="n">ac</span> <span class="o">=</span> <span class="n">aircraft</span>
+
+        <span class="n">ac</span><span class="o">.</span><span class="n">horizontal_tail</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">x_in</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>                           <span class="c1"># Coupling variable</span>
+        <span class="n">ac</span><span class="o">.</span><span class="n">vertical_tail</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">x_in</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>                             <span class="c1"># Coupling variable</span>
+
+        <span class="n">eval_aircraft_pre_design</span><span class="p">(</span><span class="n">ac</span><span class="p">)</span>
+
+        <span class="n">airframe</span><span class="o">.</span><span class="n">eval_tail_design</span><span class="p">(</span><span class="n">ac</span><span class="p">)</span>
+
+        <span class="n">airframe</span><span class="o">.</span><span class="n">eval_htp_constraint</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+        <span class="n">airframe</span><span class="o">.</span><span class="n">eval_vtp_constraint</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+        <span class="n">y_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ac</span><span class="o">.</span><span class="n">horizontal_tail</span><span class="o">.</span><span class="n">htp_sizing_constraint_1</span><span class="p">,</span>
+                          <span class="n">ac</span><span class="o">.</span><span class="n">vertical_tail</span><span class="o">.</span><span class="n">vtp_sizing_constraint_1</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">y_out</span>
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+
+    <span class="n">htp_area_i</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">htp_area</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">area</span><span class="p">)</span>
+    <span class="n">vtp_area_i</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">vtp_area</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">area</span><span class="p">)</span>
+
+    <span class="n">x_ini</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">htp_area_i</span><span class="p">,</span><span class="n">vtp_area_i</span><span class="p">])</span>
+
+    <span class="n">fct_arg</span> <span class="o">=</span> <span class="n">aircraft</span>
+
+    <span class="n">output_dict</span> <span class="o">=</span> <span class="n">fsolve</span><span class="p">(</span><span class="n">fct_aircraft_pre_design</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">x_ini</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">fct_arg</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">horizontal_tail</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>                           <span class="c1"># Coupling variable</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">vertical_tail</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>                             <span class="c1"># Coupling variable</span>
+
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_wing_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_tail_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_pod_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">propulsion</span><span class="o">.</span><span class="n">eval_propulsion_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">airplane</span><span class="o">.</span><span class="n">eval_aerodynamics_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_aircraft_statistical_pre_design_2"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.eval_aircraft_statistical_pre_design_2">[docs]</a><span class="k">def</span> <span class="nf">eval_aircraft_statistical_pre_design_2</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Solves the coupling carried by nacelle geometry on top of the statistical sizing of tail areas</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_cabin_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_fuselage_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="c1">#===========================================================================================================</span>
+    <span class="k">def</span> <span class="nf">fct_aircraft_statistical_pre_design</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span><span class="n">aircraft</span><span class="p">):</span>
+
+        <span class="n">ac</span> <span class="o">=</span> <span class="n">aircraft</span>
+
+        <span class="n">ac</span><span class="o">.</span><span class="n">turbofan_nacelle</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">x_in</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>                         <span class="c1"># Coupling variable</span>
+        <span class="n">ac</span><span class="o">.</span><span class="n">turbofan_nacelle</span><span class="o">.</span><span class="n">y_ext</span> <span class="o">=</span> <span class="n">x_in</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>                         <span class="c1"># Coupling variable</span>
+
+        <span class="n">eval_tail_statistical_sizing</span><span class="p">(</span><span class="n">ac</span><span class="p">)</span>            <span class="c1"># Nested solving</span>
+
+        <span class="n">propulsion</span><span class="o">.</span><span class="n">eval_propulsion_design</span><span class="p">(</span><span class="n">ac</span><span class="p">)</span>
+
+        <span class="n">y_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x_in</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">ac</span><span class="o">.</span><span class="n">turbofan_nacelle</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+                          <span class="n">x_in</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ac</span><span class="o">.</span><span class="n">turbofan_nacelle</span><span class="o">.</span><span class="n">y_ext</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">y_out</span>
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+
+    <span class="n">x_ini</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_nacelle</span><span class="o">.</span><span class="n">width</span><span class="p">,</span><span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_nacelle</span><span class="o">.</span><span class="n">y_ext</span><span class="p">])</span>
+
+    <span class="n">fct_arg</span> <span class="o">=</span> <span class="n">aircraft</span>
+
+    <span class="n">output_dict</span> <span class="o">=</span> <span class="n">fsolve</span><span class="p">(</span><span class="n">fct_aircraft_statistical_pre_design</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">x_ini</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">fct_arg</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_nacelle</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>                         <span class="c1"># Coupling variable</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_nacelle</span><span class="o">.</span><span class="n">y_ext</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>                         <span class="c1"># Coupling variable</span>
+
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_wing_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_tail_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_pod_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">propulsion</span><span class="o">.</span><span class="n">eval_propulsion_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">airplane</span><span class="o">.</span><span class="n">eval_aerodynamics_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_mass_breakdown"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.eval_mass_breakdown">[docs]</a><span class="k">def</span> <span class="nf">eval_mass_breakdown</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimate mass and CGs of the airplane</span>
+<span class="sd">    For burnable liquid fuel powered airplanes, takes MTOW, MZFW &amp; MLW as input</span>
+<span class="sd">    For battery powered airplanes, takes only MTOW as input</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_cabin_mass</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_fuselage_mass</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_vtp_mass</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_wing_mass</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_htp_mass</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="n">airframe</span><span class="o">.</span><span class="n">eval_landing_gear_mass</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">propulsion</span><span class="o">.</span><span class="n">eval_propulsion_mass</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="n">propulsion</span><span class="o">.</span><span class="n">eval_tank_mass</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="n">propulsion</span><span class="o">.</span><span class="n">eval_battery_mass</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">airplane</span><span class="o">.</span><span class="n">eval_system_mass</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="n">airplane</span><span class="o">.</span><span class="n">eval_payload_mass</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="n">airplane</span><span class="o">.</span><span class="n">eval_aircraft_weights</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">airplane</span><span class="o">.</span><span class="n">eval_aircraft_cg</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_mass_estimation"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.eval_mass_estimation">[docs]</a><span class="k">def</span> <span class="nf">eval_mass_estimation</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimate mass and CGs of the airplane</span>
+<span class="sd">    Takes MTOW as input but solves the coupling carried by MZFW and MLW</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#===========================================================================================================</span>
+    <span class="k">def</span> <span class="nf">fct_mass</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span><span class="n">aircraft</span><span class="p">):</span>
+
+        <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mlw</span> <span class="o">=</span> <span class="n">x_in</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>      <span class="c1"># Coupling variable</span>
+        <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mzfw</span> <span class="o">=</span> <span class="n">x_in</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>     <span class="c1"># Coupling variable</span>
+
+        <span class="n">eval_mass_breakdown</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+        <span class="n">y_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mass_constraint_1</span><span class="p">,</span>
+                          <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mass_constraint_2</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">y_out</span>
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+
+    <span class="n">x_ini</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mlw</span><span class="p">,</span>
+                      <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mzfw</span><span class="p">])</span>
+
+    <span class="n">fct_arg</span> <span class="o">=</span> <span class="n">aircraft</span>
+
+    <span class="n">output_dict</span> <span class="o">=</span> <span class="n">fsolve</span><span class="p">(</span><span class="n">fct_mass</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">x_ini</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">fct_arg</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mlw</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>                          <span class="c1"># Coupling variable</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mzfw</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>                         <span class="c1"># Coupling variable</span>
+
+    <span class="c1"># Update mass</span>
+    <span class="c1">#------------------------------------------------------------------------------------------------------</span>
+    <span class="n">eval_mass_breakdown</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_mass_mission_adaptation"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.eval_mass_mission_adaptation">[docs]</a><span class="k">def</span> <span class="nf">eval_mass_mission_adaptation</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform mass - mission adaptation and update mass and CGs</span>
+<span class="sd">    Solve couplings carried by MTOW, MZFW and MLW</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#===========================================================================================================</span>
+    <span class="k">def</span> <span class="nf">fct_mass_mission</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span><span class="n">aircraft</span><span class="p">):</span>
+
+        <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mtow</span> <span class="o">=</span> <span class="n">x_in</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>             <span class="c1"># Coupling variable</span>
+        <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mlw</span> <span class="o">=</span> <span class="n">x_in</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>              <span class="c1"># Coupling variable</span>
+        <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mzfw</span> <span class="o">=</span> <span class="n">x_in</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>             <span class="c1"># Coupling variable</span>
+
+        <span class="c1"># Mass</span>
+        <span class="c1">#------------------------------------------------------------------------------------------------------</span>
+        <span class="n">eval_mass_breakdown</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+        <span class="c1"># Mission</span>
+        <span class="c1">#------------------------------------------------------------------------------------------------------</span>
+        <span class="n">mission</span><span class="o">.</span><span class="n">eval_nominal_mission</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+        <span class="n">y_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mass_constraint_1</span><span class="p">,</span>
+                          <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mass_constraint_2</span><span class="p">,</span>
+                          <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mass_constraint_3</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">y_out</span>
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+
+    <span class="n">x_ini</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mtow</span><span class="p">,</span>
+                      <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mlw</span><span class="p">,</span>
+                      <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mzfw</span><span class="p">])</span>
+
+    <span class="n">fct_arg</span> <span class="o">=</span> <span class="n">aircraft</span>
+
+    <span class="n">output_dict</span> <span class="o">=</span> <span class="n">fsolve</span><span class="p">(</span><span class="n">fct_mass_mission</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">x_ini</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">fct_arg</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mtow</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>                         <span class="c1"># Coupling variable</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mlw</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>                          <span class="c1"># Coupling variable</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mzfw</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>                         <span class="c1"># Coupling variable</span>
+
+    <span class="c1"># Update mass data</span>
+    <span class="c1">#------------------------------------------------------------------------------------------------------</span>
+    <span class="n">eval_mass_breakdown</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="c1"># Update mission data</span>
+    <span class="c1">#------------------------------------------------------------------------------------------------------</span>
+    <span class="n">mission</span><span class="o">.</span><span class="n">eval_nominal_mission</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_payload_range_analysis"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.eval_payload_range_analysis">[docs]</a><span class="k">def</span> <span class="nf">eval_payload_range_analysis</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute Payload - Range diagram corner points</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">mission</span><span class="o">.</span><span class="n">eval_payload_range_missions</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_performance_analysis"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.eval_performance_analysis">[docs]</a><span class="k">def</span> <span class="nf">eval_performance_analysis</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute operational performances</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Nominal mission</span>
+    <span class="c1">#------------------------------------------------------------------------------------------------------</span>
+    <span class="n">mission</span><span class="o">.</span><span class="n">eval_nominal_mission</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="n">mission</span><span class="o">.</span><span class="n">eval_nominal_climb_constraints</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="c1"># Take off field length</span>
+    <span class="c1">#------------------------------------------------------------------------------------------------------</span>
+    <span class="n">sub_proc</span><span class="o">.</span><span class="n">eval_take_off_performances</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="c1"># Approach speed</span>
+    <span class="c1">#------------------------------------------------------------------------------------------------------</span>
+    <span class="n">sub_proc</span><span class="o">.</span><span class="n">eval_landing_performances</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="c1"># Climb performances</span>
+    <span class="c1">#------------------------------------------------------------------------------------------------------</span>
+    <span class="n">sub_proc</span><span class="o">.</span><span class="n">eval_climb_performances</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="c1"># One engine inoperative performances</span>
+    <span class="c1">#------------------------------------------------------------------------------------------------------</span>
+    <span class="n">sub_proc</span><span class="o">.</span><span class="n">eval_oei_performances</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="c1"># Environment</span>
+    <span class="c1">#------------------------------------------------------------------------------------------------------</span>
+    <span class="n">sub_proc</span><span class="o">.</span><span class="n">eval_co2_metric</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="c1"># Cost mission</span>
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------------------------------------------</span>
+    <span class="n">mission</span><span class="o">.</span><span class="n">eval_cost_mission</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="c1"># Economics</span>
+    <span class="c1">#------------------------------------------------------------------------------------------------------</span>
+    <span class="n">sub_proc</span><span class="o">.</span><span class="n">eval_economics</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_handling_quality_analysis"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.eval_handling_quality_analysis">[docs]</a><span class="k">def</span> <span class="nf">eval_handling_quality_analysis</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute CG limits from handling qualities point of view</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">c_g</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">center_of_gravity</span>
+
+    <span class="c1"># Forward limit : trim landing</span>
+    <span class="c1">#------------------------------------------------------------------------------------------------------</span>
+    <span class="n">altp</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_ft</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
+    <span class="n">disa</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">nei</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">speed_mode</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">hld_conf</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">aerodynamics</span><span class="o">.</span><span class="n">hld_conf_ld</span>
+    <span class="n">mass</span> <span class="o">=</span> <span class="n">c_g</span><span class="o">.</span><span class="n">max_fwd_mass</span>
+
+    <span class="n">cg_max_fwd_stall</span><span class="p">,</span><span class="n">speed</span><span class="p">,</span><span class="n">fn</span><span class="p">,</span><span class="n">aoa</span><span class="p">,</span><span class="n">ih</span><span class="p">,</span><span class="n">c_z</span><span class="p">,</span><span class="n">cx_trimmed</span> <span class="o">=</span> <span class="n">h_q</span><span class="o">.</span><span class="n">forward_cg_stall</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">nei</span><span class="p">,</span><span class="n">hld_conf</span><span class="p">,</span><span class="n">speed_mode</span><span class="p">,</span><span class="n">mass</span><span class="p">)</span>
+
+    <span class="n">c_g</span><span class="o">.</span><span class="n">max_fwd_trim_cg</span> <span class="o">=</span> <span class="n">cg_max_fwd_stall</span>         <span class="c1"># Forward cg limit</span>
+
+    <span class="n">c_g</span><span class="o">.</span><span class="n">cg_constraint_1</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_g</span><span class="o">.</span><span class="n">max_fwd_req_cg</span> <span class="o">-</span> <span class="n">c_g</span><span class="o">.</span><span class="n">max_fwd_trim_cg</span><span class="p">)</span> <span class="o">/</span> <span class="n">c_g</span><span class="o">.</span><span class="n">max_fwd_req_cg</span>
+
+    <span class="c1"># Backward limit : static stability</span>
+    <span class="c1">#------------------------------------------------------------------------------------------------------</span>
+    <span class="n">stability_margin</span> <span class="o">=</span> <span class="n">regul</span><span class="o">.</span><span class="n">static_stability_margin</span><span class="p">()</span>
+
+    <span class="n">cg_max_bwd_stab</span> <span class="o">=</span> <span class="n">h_q</span><span class="o">.</span><span class="n">backward_cg_stab</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">stability_margin</span><span class="p">)</span>
+
+    <span class="n">c_g</span><span class="o">.</span><span class="n">max_bwd_stab_cg</span> <span class="o">=</span> <span class="n">cg_max_bwd_stab</span>          <span class="c1"># Backward cg limit</span>
+
+    <span class="n">c_g</span><span class="o">.</span><span class="n">cg_constraint_2</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_g</span><span class="o">.</span><span class="n">max_bwd_stab_cg</span> <span class="o">-</span> <span class="n">c_g</span><span class="o">.</span><span class="n">max_bwd_req_cg</span><span class="p">)</span> <span class="o">/</span> <span class="n">c_g</span><span class="o">.</span><span class="n">max_bwd_req_cg</span>
+
+    <span class="c1"># Vertical tail sizing</span>
+    <span class="c1">#------------------------------------------------------------------------------------------------------</span>
+
+    <span class="n">h_q</span><span class="o">.</span><span class="n">vertical_tail_sizing</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">c_g</span><span class="o">.</span><span class="n">cg_constraint_3</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_g</span><span class="o">.</span><span class="n">max_bwd_oei_cg</span> <span class="o">-</span> <span class="n">c_g</span><span class="o">.</span><span class="n">max_bwd_oei_req_cg</span><span class="p">)</span> <span class="o">/</span> <span class="n">c_g</span><span class="o">.</span><span class="n">max_bwd_oei_req_cg</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_hq0"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.eval_hq0">[docs]</a><span class="k">def</span> <span class="nf">eval_hq0</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform hq based empennage sizing without updating characteristic masses MTOW, MLW &amp; MZFW</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">center_of_gravity</span><span class="o">.</span><span class="n">cg_range_optimization</span> <span class="o">=</span> <span class="mi">1</span>    <span class="c1"># Start HQ optimization mode</span>
+
+    <span class="c1">#===========================================================================================================</span>
+    <span class="k">def</span> <span class="nf">fct_hq_optim</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span><span class="n">aircraft</span><span class="p">):</span>
+
+        <span class="n">c_g</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">center_of_gravity</span>
+
+        <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">x_root</span> <span class="o">=</span> <span class="n">x_in</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">aircraft</span><span class="o">.</span><span class="n">horizontal_tail</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">x_in</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">aircraft</span><span class="o">.</span><span class="n">vertical_tail</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">x_in</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="n">eval_aircraft_pre_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>   <span class="c1"># Solves geometrical coupling without tails areas</span>
+        <span class="n">eval_mass_breakdown</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>               <span class="c1"># Just mass analysis without any solving</span>
+        <span class="n">eval_performance_analysis</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+        <span class="n">eval_handling_quality_analysis</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+        <span class="n">y_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">c_g</span><span class="o">.</span><span class="n">cg_constraint_1</span><span class="p">,</span>
+                          <span class="n">c_g</span><span class="o">.</span><span class="n">cg_constraint_2</span><span class="p">,</span>
+                          <span class="n">c_g</span><span class="o">.</span><span class="n">cg_constraint_3</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">y_out</span>
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+
+    <span class="n">x_ini</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">x_root</span><span class="p">,</span>
+                      <span class="n">aircraft</span><span class="o">.</span><span class="n">horizontal_tail</span><span class="o">.</span><span class="n">area</span><span class="p">,</span>
+                      <span class="n">aircraft</span><span class="o">.</span><span class="n">vertical_tail</span><span class="o">.</span><span class="n">area</span><span class="p">])</span>
+
+    <span class="n">fct_arg</span> <span class="o">=</span> <span class="n">aircraft</span>
+
+    <span class="n">output_dict</span> <span class="o">=</span> <span class="n">fsolve</span><span class="p">(</span><span class="n">fct_hq_optim</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">x_ini</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">fct_arg</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">output_dict</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">!=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">output_dict</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Convergence problem in HQ optimization&quot;</span><span class="p">)</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">x_root</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">horizontal_tail</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">vertical_tail</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="n">eval_mda0</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="n">eval_handling_quality_analysis</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_mda0"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.eval_mda0">[docs]</a><span class="k">def</span> <span class="nf">eval_mda0</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run the design sequence with statistical empennage sizing but without satisfying mass constraints</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">eval_aircraft_statistical_pre_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>  <span class="c1"># Solves geometrical coupling including</span>
+
+    <span class="n">eval_mass_breakdown</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>       <span class="c1"># Just mass analysis without any solving</span>
+
+    <span class="n">eval_performance_analysis</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_mda1"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.eval_mda1">[docs]</a><span class="k">def</span> <span class="nf">eval_mda1</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run the design sequence with statistical empennage sizing and local mass constraints satisfaction (mass_constraint_1&amp;2)</span>
+<span class="sd">    but without mass-mission adaptation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">eval_aircraft_statistical_pre_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>  <span class="c1"># Solves geometrical coupling including tail areas statistical assessment</span>
+
+    <span class="n">eval_mass_estimation</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>      <span class="c1"># Solves internal mass coupling on MZFW and MLW</span>
+
+    <span class="n">eval_performance_analysis</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_mda2"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.eval_mda2">[docs]</a><span class="k">def</span> <span class="nf">eval_mda2</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run the design sequence with mass-mission adaptation (mass_constraint_1,2&amp;3) and statistical empennage sizing</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">eval_aircraft_statistical_pre_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>      <span class="c1"># Solves geometrical coupling including tail areas statistical assessment</span>
+
+    <span class="n">eval_mass_mission_adaptation</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>  <span class="c1"># Solves mass coupling on MZFW, MLW and MTOW</span>
+
+    <span class="n">eval_performance_analysis</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_mda3"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.eval_mda3">[docs]</a><span class="k">def</span> <span class="nf">eval_mda3</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run full MDA design with mass-mission adaptation (mass_constraint_1,2&amp;3) and hq based empennage sizing</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">center_of_gravity</span><span class="o">.</span><span class="n">cg_range_optimization</span> <span class="o">=</span> <span class="mi">1</span>    <span class="c1"># Start HQ optimization mode</span>
+
+    <span class="c1">#===========================================================================================================</span>
+    <span class="k">def</span> <span class="nf">fct_hq_optim</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span><span class="n">aircraft</span><span class="p">):</span>
+
+        <span class="n">c_g</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">center_of_gravity</span>
+
+        <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">x_root</span> <span class="o">=</span> <span class="n">x_in</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">aircraft</span><span class="o">.</span><span class="n">horizontal_tail</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">x_in</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">aircraft</span><span class="o">.</span><span class="n">vertical_tail</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">x_in</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="n">eval_aircraft_pre_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>          <span class="c1"># Solves geometrical coupling without tail area sizing (nested solving)</span>
+        <span class="n">eval_mass_mission_adaptation</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>      <span class="c1"># Solves mass coupling on MZFW, MLW and MTOW      (nested solving)</span>
+        <span class="n">eval_performance_analysis</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+        <span class="n">eval_handling_quality_analysis</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+        <span class="n">y_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">c_g</span><span class="o">.</span><span class="n">cg_constraint_1</span><span class="p">,</span>
+                          <span class="n">c_g</span><span class="o">.</span><span class="n">cg_constraint_2</span><span class="p">,</span>
+                          <span class="n">c_g</span><span class="o">.</span><span class="n">cg_constraint_3</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">y_out</span>
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+
+    <span class="n">x_ini</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">x_root</span><span class="p">,</span>
+                      <span class="n">aircraft</span><span class="o">.</span><span class="n">horizontal_tail</span><span class="o">.</span><span class="n">area</span><span class="p">,</span>
+                      <span class="n">aircraft</span><span class="o">.</span><span class="n">vertical_tail</span><span class="o">.</span><span class="n">area</span><span class="p">])</span>
+
+    <span class="n">fct_arg</span> <span class="o">=</span> <span class="n">aircraft</span>
+
+    <span class="n">output_dict</span> <span class="o">=</span> <span class="n">fsolve</span><span class="p">(</span><span class="n">fct_hq_optim</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">x_ini</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">fct_arg</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">output_dict</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">!=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Convergence problem in HQ optimization&quot;</span><span class="p">)</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">x_root</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">horizontal_tail</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">vertical_tail</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="n">eval_mda1</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="n">eval_handling_quality_analysis</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_mda"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.eval_mda">[docs]</a><span class="k">def</span> <span class="nf">eval_mda</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">mda_type</span><span class="p">,</span><span class="n">mda_allowed</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run the requested design sequence</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">mda_type</span> <span class="ow">in</span> <span class="n">mda_allowed</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">mda_type</span><span class="o">==</span><span class="s2">&quot;MDA0&quot;</span><span class="p">):</span>
+            <span class="n">eval_mda0</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">mda_type</span><span class="o">==</span><span class="s2">&quot;MDA1&quot;</span><span class="p">):</span>
+            <span class="n">eval_mda1</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">mda_type</span><span class="o">==</span><span class="s2">&quot;MDA2&quot;</span><span class="p">):</span>
+            <span class="n">eval_mda2</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">mda_type</span><span class="o">==</span><span class="s2">&quot;MDA3&quot;</span><span class="p">):</span>
+            <span class="n">eval_mda3</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Type of MDA not exists&quot;</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Type of MDA not allowed&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_optim_data"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.eval_optim_data">[docs]</a><span class="k">def</span> <span class="nf">eval_optim_data</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span><span class="n">ac</span><span class="p">,</span><span class="n">crit_index</span><span class="p">,</span><span class="n">crit_ref</span><span class="p">,</span><span class="n">mda_type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute criterion and constraints</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ac</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">reference_thrust</span> <span class="o">=</span> <span class="n">x_in</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">ac</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">x_in</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Run MDA</span>
+    <span class="c1">#------------------------------------------------------------------------------------------------------</span>
+
+    <span class="n">eval_mda</span><span class="p">(</span><span class="n">ac</span><span class="p">,</span><span class="n">mda_type</span><span class="p">,[</span><span class="s2">&quot;MDA2&quot;</span><span class="p">,</span><span class="s2">&quot;MDA3&quot;</span><span class="p">])</span>
+
+    <span class="c1"># Constraints are violated if negative</span>
+    <span class="c1">#------------------------------------------------------------------------------------------------------</span>
+    <span class="n">cst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+
+    <span class="n">cst</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="n">high_speed</span><span class="o">.</span><span class="n">perfo_constraint_1</span>
+    <span class="n">cst</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="n">high_speed</span><span class="o">.</span><span class="n">perfo_constraint_2</span>
+    <span class="n">cst</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="n">low_speed</span><span class="o">.</span><span class="n">perfo_constraint_3</span>
+
+    <span class="n">cst</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="n">high_speed</span><span class="o">.</span><span class="n">perfo_constraint_3</span>
+    <span class="n">cst</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="n">low_speed</span><span class="o">.</span><span class="n">perfo_constraint_1</span>
+    <span class="n">cst</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="n">low_speed</span><span class="o">.</span><span class="n">perfo_constraint_2</span>
+
+<span class="c1">#    omag = [ 1. , 1., 1.e-5,  1.e2, 1.e2, 1.e-2 ]</span>
+
+<span class="c1">#    cst /= omag</span>
+
+    <span class="c1"># All criteria have to be minimized</span>
+    <span class="c1">#------------------------------------------------------------------------------------------------------</span>
+    <span class="n">crt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">crt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mtow</span>
+    <span class="n">crt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="n">cost_mission</span><span class="o">.</span><span class="n">block_fuel</span>
+    <span class="n">crt</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="n">environmental_impact</span><span class="o">.</span><span class="n">CO2_metric</span>
+    <span class="n">crt</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="n">economics</span><span class="o">.</span><span class="n">cash_operating_cost</span>
+    <span class="n">crt</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="n">economics</span><span class="o">.</span><span class="n">direct_operating_cost</span>
+
+    <span class="n">crit</span> <span class="o">=</span> <span class="n">crt</span><span class="p">[</span><span class="n">crit_index</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mf">20.</span><span class="o">/</span><span class="n">crit_ref</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">crit</span><span class="p">,</span><span class="n">cst</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_optim_cst"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.eval_optim_cst">[docs]</a><span class="k">def</span> <span class="nf">eval_optim_cst</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span><span class="n">aircraft</span><span class="p">,</span><span class="n">crit_index</span><span class="p">,</span><span class="n">crit_ref</span><span class="p">,</span><span class="n">mda_type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieve constraints</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">crit</span><span class="p">,</span><span class="n">cst</span> <span class="o">=</span> <span class="n">eval_optim_data</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span><span class="n">aircraft</span><span class="p">,</span><span class="n">crit_index</span><span class="p">,</span><span class="n">crit_ref</span><span class="p">,</span><span class="n">mda_type</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cst :&quot;</span><span class="p">,</span><span class="n">cst</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">cst</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_optim_crt"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.eval_optim_crt">[docs]</a><span class="k">def</span> <span class="nf">eval_optim_crt</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span><span class="n">aircraft</span><span class="p">,</span><span class="n">crit_index</span><span class="p">,</span><span class="n">crit_ref</span><span class="p">,</span><span class="n">mda_type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retreve criteria</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">crit</span><span class="p">,</span><span class="n">cst</span> <span class="o">=</span> <span class="n">eval_optim_data</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span><span class="n">aircraft</span><span class="p">,</span><span class="n">crit_index</span><span class="p">,</span><span class="n">crit_ref</span><span class="p">,</span><span class="n">mda_type</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Design :&quot;</span><span class="p">,</span><span class="n">x_in</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Crit :&quot;</span><span class="p">,</span><span class="n">crit</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">crit</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="mdf_process"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.mdf_process">[docs]</a><span class="k">def</span> <span class="nf">mdf_process</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">search_domain</span><span class="p">,</span><span class="n">criterion</span><span class="p">,</span><span class="n">mda_type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute criterion and constraints</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">SR1</span><span class="p">,</span> <span class="n">NonlinearConstraint</span>
+
+    <span class="n">start_value</span> <span class="o">=</span> <span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">reference_thrust</span><span class="p">,</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">area</span><span class="p">)</span>
+
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">criterion</span><span class="o">==</span><span class="s2">&quot;MTOW&quot;</span><span class="p">):</span>
+        <span class="n">crit_index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">criterion</span><span class="o">==</span><span class="s2">&quot;Block_fuel&quot;</span><span class="p">):</span>
+        <span class="n">crit_index</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">criterion</span><span class="o">==</span><span class="s2">&quot;CO2_metric&quot;</span><span class="p">):</span>
+        <span class="n">crit_index</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">criterion</span><span class="o">==</span><span class="s2">&quot;COC&quot;</span><span class="p">):</span>
+        <span class="n">crit_index</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">criterion</span><span class="o">==</span><span class="s2">&quot;DOC&quot;</span><span class="p">):</span>
+        <span class="n">crit_index</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Criterion name is unknown&quot;</span><span class="p">)</span>
+
+    <span class="n">crit_ref</span><span class="p">,</span><span class="n">cst_ref</span> <span class="o">=</span> <span class="n">eval_optim_data</span><span class="p">(</span><span class="n">start_value</span><span class="p">,</span><span class="n">aircraft</span><span class="p">,</span><span class="n">crit_index</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="n">mda_type</span><span class="p">)</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">eval_optim_crt</span><span class="p">,</span> <span class="n">start_value</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">crit_index</span><span class="p">,</span><span class="n">crit_ref</span><span class="p">,</span><span class="n">mda_type</span><span class="p">,),</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;trust-constr&quot;</span><span class="p">,</span>
+                   <span class="n">jac</span><span class="o">=</span><span class="s2">&quot;3-point&quot;</span><span class="p">,</span> <span class="n">hess</span><span class="o">=</span><span class="n">SR1</span><span class="p">(),</span> <span class="n">hessp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">search_domain</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span>
+                   <span class="n">constraints</span><span class="o">=</span><span class="n">NonlinearConstraint</span><span class="p">(</span><span class="n">fun</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">eval_optim_cst</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">aircraft</span><span class="p">,</span><span class="n">crit_index</span><span class="p">,</span><span class="n">crit_ref</span><span class="p">,</span><span class="n">mda_type</span><span class="p">),</span>
+                                                   <span class="n">lb</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">jac</span><span class="o">=</span><span class="s1">&#39;3-point&#39;</span><span class="p">),</span>
+                   <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;maxiter&#39;</span><span class="p">:</span><span class="mi">500</span><span class="p">,</span><span class="s1">&#39;gtol&#39;</span><span class="p">:</span> <span class="mf">1e-13</span><span class="p">})</span>
+    <span class="c1">#              tol=None, callback=None,</span>
+    <span class="c1">#              options={&#39;grad&#39;: None, &#39;xtol&#39;: 1e-08, &#39;gtol&#39;: 1e-08, &#39;barrier_tol&#39;: 1e-08,</span>
+    <span class="c1">#                       &#39;sparse_jacobian&#39;: None, &#39;maxiter&#39;: 1000, &#39;verbose&#39;: 0,</span>
+    <span class="c1">#                       &#39;finite_diff_rel_step&#39;: None, &#39;initial_constr_penalty&#39;: 1.0,</span>
+    <span class="c1">#                       &#39;initial_tr_radius&#39;: 1.0, &#39;initial_barrier_parameter&#39;: 0.1,</span>
+    <span class="c1">#                       &#39;initial_barrier_tolerance&#39;: 0.1, &#39;factorization_method&#39;: None, &#39;disp&#39;: False})</span>
+
+    <span class="c1"># res = minimize(eval_optim_crt, start_value, args=(aircraft,crit_index,crit_ref,mda_type,), method=&quot;SLSQP&quot;, bounds=search_domain,</span>
+    <span class="c1">#                constraints={&quot;type&quot;:&quot;ineq&quot;,&quot;fun&quot;:eval_optim_cst,&quot;args&quot;:(aircraft,crit_index,crit_ref,mda_type,)},</span>
+    <span class="c1">#                jac=&quot;2-point&quot;,options={&quot;maxiter&quot;:30,&quot;ftol&quot;:1e-14,&quot;eps&quot;:0.01},tol=1e-14)</span>
+
+    <span class="c1">#res = minimize(eval_optim_crt, x_in, args=(aircraft,crit_index,crit_ref,mda_type,), method=&quot;COBYLA&quot;, bounds=((110000,140000),(120,160)),</span>
+    <span class="c1">#               constraints={&quot;type&quot;:&quot;ineq&quot;,&quot;fun&quot;:eval_optim_cst,&quot;args&quot;:(aircraft,crit_index,crit_ref,mda_type,)},</span>
+    <span class="c1">#               options={&quot;maxiter&quot;:100,&quot;tol&quot;:0.1,&quot;catol&quot;:0.0002,&#39;rhobeg&#39;: 1.0})</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="plot_mdf_process"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.plot_mdf_process">[docs]</a><span class="k">def</span> <span class="nf">plot_mdf_process</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">search_domain</span><span class="p">,</span><span class="n">criterion</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute criterion and constraints</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">start_value</span> <span class="o">=</span> <span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">reference_thrust</span><span class="p">,</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">area</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">criterion</span><span class="o">==</span><span class="s2">&quot;MTOW&quot;</span><span class="p">):</span>
+        <span class="n">crit_index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">criterion</span><span class="o">==</span><span class="s2">&quot;Block_fuel&quot;</span><span class="p">):</span>
+        <span class="n">crit_index</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">criterion</span><span class="o">==</span><span class="s2">&quot;CO2_metric&quot;</span><span class="p">):</span>
+        <span class="n">crit_index</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">criterion</span><span class="o">==</span><span class="s2">&quot;COC&quot;</span><span class="p">):</span>
+        <span class="n">crit_index</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">criterion</span><span class="o">==</span><span class="s2">&quot;DOC&quot;</span><span class="p">):</span>
+        <span class="n">crit_index</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Criterion name is unknown&quot;</span><span class="p">)</span>
+
+
+    <span class="c1"># res = minimize(eval_optim_crt, start_value, args=(aircraft,crit_index,), method=&quot;SLSQP&quot;, bounds=search_domain,</span>
+    <span class="c1">#                constraints={&quot;type&quot;:&quot;ineq&quot;,&quot;fun&quot;:eval_optim_cst,&quot;args&quot;:(aircraft,crit_index,)},</span>
+    <span class="c1">#                jac=&quot;2-point&quot;,options={&quot;maxiter&quot;:30,&quot;ftol&quot;:0.0001,&quot;eps&quot;:0.01})</span>
+
+    <span class="k">def</span> <span class="nf">obj_catch</span><span class="p">(</span><span class="n">xval</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">eval_optim_cst</span><span class="p">(</span><span class="n">xval</span><span class="p">,</span><span class="n">aircraft</span><span class="p">,</span><span class="n">crit_index</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="n">pmot</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">search_domain</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">search_domain</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="mi">21</span><span class="p">)</span>
+    <span class="n">sref</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">search_domain</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">search_domain</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="mi">21</span><span class="p">)</span>
+
+    <span class="n">func_vals1</span><span class="o">=</span><span class="p">[</span><span class="n">obj_catch</span><span class="p">([</span><span class="n">pmoti</span><span class="p">,</span><span class="n">sref</span><span class="p">[</span><span class="mi">10</span><span class="p">]])</span> <span class="k">for</span> <span class="n">pmoti</span> <span class="ow">in</span> <span class="n">pmot</span><span class="p">]</span>
+    <span class="n">func_vals2</span><span class="o">=</span><span class="p">[</span><span class="n">obj_catch</span><span class="p">([</span><span class="n">pmot</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span><span class="n">srefi</span><span class="p">])</span> <span class="k">for</span> <span class="n">srefi</span> <span class="ow">in</span> <span class="n">sref</span><span class="p">]</span>
+
+    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span>  <span class="n">pylab</span>
+    <span class="n">pylab</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pmot</span><span class="p">,</span><span class="n">func_vals1</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;pmot obj&quot;</span><span class="p">)</span>
+    <span class="n">pylab</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">pylab</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sref</span><span class="p">,</span><span class="n">func_vals2</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;sref obj&quot;</span><span class="p">)</span>
+    <span class="n">pylab</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="n">pylab</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="explore_design_space"><a class="viewcode-back" href="../../../api/marilib.processes.assembly.html#marilib.processes.assembly.explore_design_space">[docs]</a><span class="k">def</span> <span class="nf">explore_design_space</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">mda_type</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+
+    <span class="n">slst_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mf">1.5</span><span class="o">*</span><span class="n">step</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">step</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mf">0.5</span><span class="o">*</span><span class="n">step</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mf">1.5</span><span class="o">*</span><span class="n">step</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+    <span class="n">area_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mf">1.5</span><span class="o">*</span><span class="n">step</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">step</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mf">0.5</span><span class="o">*</span><span class="n">step</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mf">1.5</span><span class="o">*</span><span class="n">step</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">slst_list</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">area_list</span><span class="p">)</span>
+
+    <span class="n">txt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="s2">&quot;SLST&quot;</span><span class="p">,</span><span class="s2">&quot;daN&quot;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;Wing_area&quot;</span><span class="p">,</span><span class="s2">&quot;m2&quot;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;Wing_span&quot;</span><span class="p">,</span><span class="s2">&quot;m&quot;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;MTOW&quot;</span><span class="p">,</span><span class="s2">&quot;kg&quot;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;MLW&quot;</span><span class="p">,</span><span class="s2">&quot;kg&quot;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;OWE&quot;</span><span class="p">,</span><span class="s2">&quot;kg&quot;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;MWE&quot;</span><span class="p">,</span><span class="s2">&quot;kg&quot;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;Cruise_SFC&quot;</span><span class="p">,</span><span class="s2">&quot;kg/daN/h&quot;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;Cruise_LoD&quot;</span><span class="p">,</span><span class="s2">&quot;no_dim&quot;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;TOFL&quot;</span><span class="p">,</span><span class="s2">&quot;m&quot;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;App_speed&quot;</span><span class="p">,</span><span class="s2">&quot;kt&quot;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;OEI_path&quot;</span><span class="p">,</span><span class="s2">&quot;%&quot;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;Vz_MCL&quot;</span><span class="p">,</span><span class="s2">&quot;ft/min&quot;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;Vz_MCR&quot;</span><span class="p">,</span><span class="s2">&quot;ft/min&quot;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;TTC&quot;</span><span class="p">,</span><span class="s2">&quot;min&quot;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;Fuel_margin&quot;</span><span class="p">,</span><span class="s2">&quot;m3&quot;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;Block_fuel&quot;</span><span class="p">,</span><span class="s2">&quot;kg&quot;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;COC&quot;</span><span class="p">,</span><span class="s2">&quot;$/trip&quot;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;CO2_metric&quot;</span><span class="p">,</span><span class="s2">&quot;10e-3uc&quot;</span><span class="p">]])</span>
+
+    <span class="k">for</span> <span class="n">area</span> <span class="ow">in</span> <span class="n">area_list</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">thrust</span> <span class="ow">in</span> <span class="n">slst_list</span><span class="p">:</span>
+
+            <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">reference_thrust</span> <span class="o">=</span> <span class="n">thrust</span>
+            <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">area</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-------------------------------------------&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Doing case for : thrust = &quot;</span><span class="p">,</span><span class="n">thrust</span><span class="o">/</span><span class="mf">10.</span><span class="p">,</span><span class="s2">&quot; daN    area = &quot;</span><span class="p">,</span><span class="n">area</span><span class="p">,</span> <span class="s2">&quot; m&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Perform MDA</span>
+            <span class="c1">#------------------------------------------------------------------------------------------------------</span>
+
+            <span class="n">eval_mda</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">mda_type</span><span class="p">,[</span><span class="s2">&quot;MDA2&quot;</span><span class="p">,</span><span class="s2">&quot;MDA3&quot;</span><span class="p">])</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Store results</span>
+            <span class="c1">#------------------------------------------------------------------------------------------------------</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="s2">&quot;</span><span class="si">%8.1f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">reference_thrust</span><span class="o">/</span><span class="mf">10.</span><span class="p">)],</span>
+                            <span class="p">[</span><span class="s2">&quot;</span><span class="si">%8.1f</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">area</span><span class="p">],</span>
+                            <span class="p">[</span><span class="s2">&quot;</span><span class="si">%8.1f</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">span</span><span class="p">],</span>
+                            <span class="p">[</span><span class="s2">&quot;</span><span class="si">%8.1f</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mtow</span><span class="p">],</span>
+                            <span class="p">[</span><span class="s2">&quot;</span><span class="si">%8.1f</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mlw</span><span class="p">],</span>
+                            <span class="p">[</span><span class="s2">&quot;</span><span class="si">%8.1f</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">owe</span><span class="p">],</span>
+                            <span class="p">[</span><span class="s2">&quot;</span><span class="si">%8.1f</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">mwe</span><span class="p">],</span>
+                            <span class="p">[</span><span class="s2">&quot;</span><span class="si">%8.4f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">sfc_cruise_ref</span><span class="o">*</span><span class="mi">36000</span><span class="p">)],</span>
+                            <span class="p">[</span><span class="s2">&quot;</span><span class="si">%8.4f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">aerodynamics</span><span class="o">.</span><span class="n">cruise_lod_max</span><span class="p">)],</span>
+                            <span class="p">[</span><span class="s2">&quot;</span><span class="si">%8.1f</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">aircraft</span><span class="o">.</span><span class="n">low_speed</span><span class="o">.</span><span class="n">eff_tofl</span><span class="p">],</span>
+                            <span class="p">[</span><span class="s2">&quot;</span><span class="si">%8.1f</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">unit</span><span class="o">.</span><span class="n">kt_mps</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">low_speed</span><span class="o">.</span><span class="n">eff_app_speed</span><span class="p">)],</span>
+                            <span class="p">[</span><span class="s2">&quot;</span><span class="si">%8.2f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">low_speed</span><span class="o">.</span><span class="n">eff_oei_path</span><span class="o">*</span><span class="mi">100</span><span class="p">)],</span>
+                            <span class="p">[</span><span class="s2">&quot;</span><span class="si">%8.1f</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">unit</span><span class="o">.</span><span class="n">ftpmin_mps</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">high_speed</span><span class="o">.</span><span class="n">eff_vz_climb</span><span class="p">)],</span>
+                            <span class="p">[</span><span class="s2">&quot;</span><span class="si">%8.1f</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">unit</span><span class="o">.</span><span class="n">ftpmin_mps</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">high_speed</span><span class="o">.</span><span class="n">eff_vz_cruise</span><span class="p">)],</span>
+                            <span class="p">[</span><span class="s2">&quot;</span><span class="si">%8.1f</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">unit</span><span class="o">.</span><span class="n">min_s</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">high_speed</span><span class="o">.</span><span class="n">eff_ttc</span><span class="p">)],</span>
+                            <span class="p">[</span><span class="s2">&quot;</span><span class="si">%8.1f</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">aircraft</span><span class="o">.</span><span class="n">nominal_mission</span><span class="o">.</span><span class="n">fuel_margin</span><span class="p">],</span>
+                            <span class="p">[</span><span class="s2">&quot;</span><span class="si">%8.1f</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">aircraft</span><span class="o">.</span><span class="n">cost_mission</span><span class="o">.</span><span class="n">block_fuel</span><span class="p">],</span>
+                            <span class="p">[</span><span class="s2">&quot;</span><span class="si">%8.1f</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">aircraft</span><span class="o">.</span><span class="n">economics</span><span class="o">.</span><span class="n">cash_operating_cost</span><span class="p">],</span>
+                            <span class="p">[</span><span class="s2">&quot;</span><span class="si">%8.1f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">environmental_impact</span><span class="o">.</span><span class="n">CO2_metric</span><span class="o">*</span><span class="mi">1000000</span><span class="p">)]])</span>
+
+            <span class="n">txt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">txt</span><span class="p">,</span><span class="n">res</span><span class="p">])</span>
+
+    <span class="c1">#------------------------------------------------------------------------------------------------------</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="n">txt</span><span class="p">,</span><span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;;&quot;</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%10s</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../marilib.html" >marilib</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,236 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.airplane.propulsion.hybrid_pte1.hybrid_pte1_models &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../../../marilib.html" accesskey="U">marilib</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for marilib.airplane.propulsion.hybrid_pte1.hybrid_pte1_models</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Thu Jan 24 23:22:21 2019</span>
+
+<span class="sd">@author: DRUOT Thierry : original Scilab implementation</span>
+<span class="sd">         ROCHES Pascal : portage to Python</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">marilib</span> <span class="k">import</span> <span class="n">numpy</span>
+<span class="kn">from</span> <span class="nn">marilib</span> <span class="k">import</span> <span class="n">fsolve</span>
+
+<span class="kn">from</span> <span class="nn">marilib.earth</span> <span class="k">import</span> <span class="n">environment</span> <span class="k">as</span> <span class="n">earth</span>
+
+<span class="kn">from</span> <span class="nn">marilib.airplane.propulsion</span> <span class="k">import</span> <span class="n">jet_models</span> <span class="k">as</span> <span class="n">jet</span>
+
+<span class="kn">from</span> <span class="nn">marilib.airplane.propulsion.turbofan.turbofan_models</span> <span class="k">import</span> <span class="n">turbofan_thrust</span>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="pte1_sfc"><a class="viewcode-back" href="../../../../../api/marilib.airplane.propulsion.hybrid_pte1.hybrid_pte1_models.html#marilib.airplane.propulsion.hybrid_pte1.hybrid_pte1_models.pte1_sfc">[docs]</a><span class="k">def</span> <span class="nf">pte1_sfc</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">rating</span><span class="p">,</span><span class="n">thrust</span><span class="p">,</span><span class="n">nei</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    SFC for PTE1 architecture</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#===========================================================================================================</span>
+    <span class="k">def</span> <span class="nf">fct_sfc</span><span class="p">(</span><span class="n">throttle</span><span class="p">,</span><span class="n">aircraft</span><span class="p">,</span><span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">rating</span><span class="p">,</span><span class="n">thrust</span><span class="p">,</span><span class="n">nei</span><span class="p">):</span>
+        <span class="n">fn</span><span class="p">,</span><span class="n">sfc</span><span class="p">,</span><span class="n">sec</span><span class="p">,</span><span class="n">data</span> <span class="o">=</span> <span class="n">pte1_thrust</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">rating</span><span class="p">,</span><span class="n">throttle</span><span class="p">,</span><span class="n">nei</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">thrust</span> <span class="o">-</span> <span class="n">fn</span><span class="p">)</span>
+
+    <span class="n">x_ini</span> <span class="o">=</span> <span class="mf">0.8</span>
+
+    <span class="n">fct_arg</span> <span class="o">=</span> <span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">rating</span><span class="p">,</span><span class="n">thrust</span><span class="p">,</span><span class="n">nei</span><span class="p">)</span>
+
+    <span class="n">output_dict</span> <span class="o">=</span> <span class="n">fsolve</span><span class="p">(</span><span class="n">fct_sfc</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">x_ini</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">fct_arg</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">throttle</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">fn</span><span class="p">,</span><span class="n">sfc</span><span class="p">,</span><span class="n">sec</span><span class="p">,</span><span class="n">data</span> <span class="o">=</span> <span class="n">pte1_thrust</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">rating</span><span class="p">,</span><span class="n">throttle</span><span class="p">,</span><span class="n">nei</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">sfc</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="pte1_sfc_old"><a class="viewcode-back" href="../../../../../api/marilib.airplane.propulsion.hybrid_pte1.hybrid_pte1_models.html#marilib.airplane.propulsion.hybrid_pte1.hybrid_pte1_models.pte1_sfc_old">[docs]</a><span class="k">def</span> <span class="nf">pte1_sfc_old</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">rating</span><span class="p">,</span><span class="n">nei</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Bucket SFC for a turbofan</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">propulsion</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span>
+    <span class="n">engine</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_engine</span>
+    <span class="n">nacelle</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_nacelle</span>
+
+    <span class="n">power_elec</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">pte1_power_elec_chain</span>
+    <span class="n">r_engine</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">rear_electric_engine</span>
+    <span class="n">r_nacelle</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">rear_electric_nacelle</span>
+
+    <span class="n">power_ratio</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;MTO&quot;</span><span class="p">:</span><span class="n">power_elec</span><span class="o">.</span><span class="n">mto_e_power_ratio</span><span class="p">,</span>
+                   <span class="s2">&quot;MCN&quot;</span><span class="p">:</span><span class="n">power_elec</span><span class="o">.</span><span class="n">mcn_e_power_ratio</span><span class="p">,</span>
+                   <span class="s2">&quot;MCL&quot;</span><span class="p">:</span><span class="n">power_elec</span><span class="o">.</span><span class="n">mcl_e_power_ratio</span><span class="p">,</span>
+                   <span class="s2">&quot;MCR&quot;</span><span class="p">:</span><span class="n">power_elec</span><span class="o">.</span><span class="n">mcr_e_power_ratio</span><span class="p">,</span>
+                   <span class="s2">&quot;FID&quot;</span><span class="p">:</span><span class="n">power_elec</span><span class="o">.</span><span class="n">fid_e_power_ratio</span><span class="p">}</span>
+
+    <span class="n">sfc0_ref</span> <span class="o">=</span> <span class="p">(</span> <span class="mf">0.4</span> <span class="o">+</span> <span class="mf">1.</span><span class="o">/</span><span class="n">engine</span><span class="o">.</span><span class="n">bpr</span><span class="o">**</span><span class="mf">0.895</span> <span class="p">)</span><span class="o">/</span><span class="mf">36000.</span>
+
+    <span class="n">sfc0</span> <span class="o">=</span> <span class="n">sfc0_ref</span> <span class="o">*</span> <span class="n">earth</span><span class="o">.</span><span class="n">fuel_heat</span><span class="p">(</span><span class="s2">&quot;Kerosene&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="n">propulsion</span><span class="o">.</span><span class="n">fuel_heat</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">propulsion</span><span class="o">.</span><span class="n">bli_effect</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">kBLIe</span> <span class="o">=</span> <span class="n">propulsion</span><span class="o">.</span><span class="n">bli_r_thrust_factor</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">kBLIe</span> <span class="o">=</span> <span class="mf">1.</span>
+
+    <span class="n">kC</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">core_thrust_ratio</span>
+    <span class="n">kW</span> <span class="o">=</span> <span class="n">power_ratio</span><span class="p">[</span><span class="n">rating</span><span class="p">]</span>
+
+    <span class="n">eff_prop</span> <span class="o">=</span> <span class="n">nacelle</span><span class="o">.</span><span class="n">efficiency_prop</span>
+    <span class="n">eff_e_prop</span> <span class="o">=</span> <span class="n">r_nacelle</span><span class="o">.</span><span class="n">efficiency_prop</span>
+    <span class="n">eff_chain</span> <span class="o">=</span> <span class="n">power_elec</span><span class="o">.</span><span class="n">overall_efficiency</span>
+
+    <span class="n">eff_h</span> <span class="o">=</span> <span class="n">kC</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.</span><span class="o">-</span><span class="n">kC</span><span class="p">)</span><span class="o">*</span><span class="p">(</span> <span class="n">kW</span><span class="o">*</span><span class="n">kBLIe</span><span class="o">*</span><span class="p">(</span><span class="n">eff_e_prop</span><span class="o">/</span><span class="n">eff_prop</span><span class="p">)</span><span class="o">*</span><span class="n">eff_chain</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.</span><span class="o">-</span><span class="n">kW</span><span class="p">)</span> <span class="p">)</span>
+
+    <span class="n">sfc</span> <span class="o">=</span> <span class="n">sfc0</span> <span class="o">/</span> <span class="n">eff_h</span>
+
+    <span class="k">return</span> <span class="n">sfc</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="pte1_thrust"><a class="viewcode-back" href="../../../../../api/marilib.airplane.propulsion.hybrid_pte1.hybrid_pte1_models.html#marilib.airplane.propulsion.hybrid_pte1.hybrid_pte1_models.pte1_thrust">[docs]</a><span class="k">def</span> <span class="nf">pte1_thrust</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">Pamb</span><span class="p">,</span><span class="n">Tamb</span><span class="p">,</span><span class="n">Mach</span><span class="p">,</span><span class="n">rating</span><span class="p">,</span><span class="n">throttle</span><span class="p">,</span><span class="n">nei</span><span class="p">):</span>
+
+    <span class="n">propulsion</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span>
+    <span class="n">engine</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_engine</span>
+    <span class="n">nacelle</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">turbofan_nacelle</span>
+
+    <span class="n">battery</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">pte1_battery</span>
+    <span class="n">power_elec</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">pte1_power_elec_chain</span>
+    <span class="n">r_engine</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">rear_electric_engine</span>
+    <span class="n">r_nacelle</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">rear_electric_nacelle</span>
+
+    <span class="n">rear_shaft_power</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;MTO&quot;</span><span class="p">:</span><span class="n">r_engine</span><span class="o">.</span><span class="n">mto_r_shaft_power</span><span class="p">,</span>
+                        <span class="s2">&quot;MCN&quot;</span><span class="p">:</span><span class="n">r_engine</span><span class="o">.</span><span class="n">mcn_r_shaft_power</span><span class="p">,</span>
+                        <span class="s2">&quot;MCL&quot;</span><span class="p">:</span><span class="n">r_engine</span><span class="o">.</span><span class="n">mcl_r_shaft_power</span><span class="p">,</span>
+                        <span class="s2">&quot;MCR&quot;</span><span class="p">:</span><span class="n">r_engine</span><span class="o">.</span><span class="n">mcr_r_shaft_power</span><span class="p">,</span>
+                        <span class="s2">&quot;FID&quot;</span><span class="p">:</span><span class="n">r_engine</span><span class="o">.</span><span class="n">fid_r_shaft_power</span><span class="p">}</span>
+
+    <span class="c1"># Battery power feed is used in temporary phases only</span>
+    <span class="n">power_factor</span> <span class="o">=</span> <span class="n">battery</span><span class="o">.</span><span class="n">power_feed</span> <span class="o">*</span> <span class="n">r_nacelle</span><span class="o">.</span><span class="n">controller_efficiency</span> <span class="o">*</span> <span class="n">r_nacelle</span><span class="o">.</span><span class="n">motor_efficiency</span>
+    <span class="n">battery_power_feed</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;MTO&quot;</span><span class="p">:</span><span class="n">power_factor</span><span class="p">,</span>
+                          <span class="s2">&quot;MCN&quot;</span><span class="p">:</span><span class="mf">0.</span><span class="p">,</span>
+                          <span class="s2">&quot;MCL&quot;</span><span class="p">:</span><span class="n">power_factor</span><span class="p">,</span>
+                          <span class="s2">&quot;MCR&quot;</span><span class="p">:</span><span class="mf">0.</span><span class="p">,</span>
+                          <span class="s2">&quot;FID&quot;</span><span class="p">:</span><span class="mf">0.</span><span class="p">}</span>
+
+    <span class="n">fn</span><span class="p">,</span><span class="n">sfc0</span><span class="p">,</span><span class="n">data</span> <span class="o">=</span> <span class="n">turbofan_thrust</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">Pamb</span><span class="p">,</span><span class="n">Tamb</span><span class="p">,</span><span class="n">Mach</span><span class="p">,</span><span class="n">rating</span><span class="p">,</span><span class="n">throttle</span><span class="p">,</span><span class="n">nei</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">fn_core</span><span class="p">,</span><span class="n">fn_fan0</span><span class="p">,</span><span class="n">fn0</span><span class="p">,</span><span class="n">shaft_power0</span><span class="p">)</span> <span class="o">=</span> <span class="n">data</span>
+
+    <span class="n">Vsnd</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">sound_speed</span><span class="p">(</span><span class="n">Tamb</span><span class="p">)</span>
+
+    <span class="n">Vair</span> <span class="o">=</span> <span class="n">Vsnd</span><span class="o">*</span><span class="n">Mach</span>
+
+    <span class="n">power_offtake</span> <span class="o">=</span> <span class="n">throttle</span> <span class="o">*</span> <span class="n">rear_shaft_power</span><span class="p">[</span><span class="n">rating</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">nacelle</span><span class="o">.</span><span class="n">n_engine</span><span class="o">-</span><span class="n">nei</span><span class="p">)</span> <span class="o">/</span> <span class="n">power_elec</span><span class="o">.</span><span class="n">overall_efficiency</span>
+
+    <span class="n">shaft_power1</span> <span class="o">=</span> <span class="n">shaft_power0</span> <span class="o">-</span> <span class="n">power_offtake</span>     <span class="c1"># Shaft power dedicated to the fan</span>
+
+    <span class="n">fn_fan1</span> <span class="o">=</span> <span class="n">nacelle</span><span class="o">.</span><span class="n">efficiency_prop</span><span class="o">*</span><span class="n">shaft_power1</span><span class="o">/</span><span class="n">Vair</span>     <span class="c1"># Effective fan thrust</span>
+
+    <span class="n">shaft_power2</span> <span class="o">=</span> <span class="n">power_offtake</span> <span class="o">*</span> <span class="p">(</span><span class="n">nacelle</span><span class="o">.</span><span class="n">n_engine</span> <span class="o">-</span> <span class="n">nei</span><span class="p">)</span>     <span class="c1"># Shaft power dedicated to electric generator</span>
+
+    <span class="c1"># Effective eFan shaft power</span>
+    <span class="n">pw_shaft2</span> <span class="o">=</span>   <span class="n">shaft_power2</span> <span class="o">*</span> <span class="n">power_elec</span><span class="o">.</span><span class="n">overall_efficiency</span> \
+                <span class="o">+</span> <span class="n">r_nacelle</span><span class="o">.</span><span class="n">motor_efficiency</span> <span class="o">*</span> <span class="n">r_nacelle</span><span class="o">.</span><span class="n">controller_efficiency</span> <span class="o">*</span> <span class="n">battery_power_feed</span><span class="p">[</span><span class="n">rating</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">pw_shaft2</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">propulsion</span><span class="o">.</span><span class="n">bli_effect</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">):</span>
+            <span class="p">(</span><span class="n">fn_fan2</span><span class="p">,</span><span class="n">q1</span><span class="p">,</span><span class="n">dVbli</span><span class="p">)</span> <span class="o">=</span> <span class="n">jet</span><span class="o">.</span><span class="n">fan_thrust_with_bli</span><span class="p">(</span><span class="n">r_nacelle</span><span class="p">,</span><span class="n">Pamb</span><span class="p">,</span><span class="n">Tamb</span><span class="p">,</span><span class="n">Mach</span><span class="p">,</span><span class="n">pw_shaft2</span><span class="p">)</span>
+            <span class="n">dVbli_o_V</span> <span class="o">=</span> <span class="n">dVbli</span><span class="o">/</span><span class="n">Vair</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">fn_fan2</span><span class="p">,</span><span class="n">q0</span><span class="p">)</span> <span class="o">=</span> <span class="n">jet</span><span class="o">.</span><span class="n">fan_thrust</span><span class="p">(</span><span class="n">r_nacelle</span><span class="p">,</span><span class="n">Pamb</span><span class="p">,</span><span class="n">Tamb</span><span class="p">,</span><span class="n">Mach</span><span class="p">,</span><span class="n">pw_shaft2</span><span class="p">)</span>
+            <span class="n">dVbli_o_V</span> <span class="o">=</span> <span class="mf">0.</span>
+
+        <span class="n">sec</span> <span class="o">=</span> <span class="p">(</span><span class="n">pw_shaft2</span><span class="o">/</span><span class="p">(</span><span class="n">r_nacelle</span><span class="o">.</span><span class="n">motor_efficiency</span><span class="o">*</span><span class="n">r_nacelle</span><span class="o">.</span><span class="n">controller_efficiency</span><span class="p">))</span><span class="o">/</span><span class="n">fn_fan2</span>
+
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="n">dVbli_o_V</span>  <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">fn_fan2</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">sec</span> <span class="o">=</span> <span class="mf">0.</span>
+
+    <span class="n">sfc</span> <span class="o">=</span> <span class="n">sfc0</span> <span class="o">*</span> <span class="p">(</span><span class="n">fn0</span><span class="o">*</span><span class="p">(</span><span class="n">nacelle</span><span class="o">.</span><span class="n">n_engine</span> <span class="o">-</span> <span class="n">nei</span><span class="p">))</span> <span class="o">/</span> <span class="p">((</span><span class="n">fn_core</span> <span class="o">+</span> <span class="n">fn_fan1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">nacelle</span><span class="o">.</span><span class="n">n_engine</span> <span class="o">-</span> <span class="n">nei</span><span class="p">)</span> <span class="o">+</span> <span class="n">fn_fan2</span><span class="p">)</span>
+
+    <span class="n">fn</span> <span class="o">=</span> <span class="p">(</span><span class="n">fn_core</span> <span class="o">+</span> <span class="n">fn_fan1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">nacelle</span><span class="o">.</span><span class="n">n_engine</span> <span class="o">-</span> <span class="n">nei</span><span class="p">)</span> <span class="o">+</span> <span class="n">fn_fan2</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">fn_core</span><span class="p">,</span><span class="n">fn_fan1</span><span class="p">,</span><span class="n">fn_fan2</span><span class="p">,</span><span class="n">dVbli_o_V</span><span class="p">,</span><span class="n">shaft_power2</span><span class="p">,</span><span class="n">fn0</span><span class="p">,</span><span class="n">shaft_power0</span><span class="p">,</span><span class="n">sfc0</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">fn</span><span class="p">,</span><span class="n">sfc</span><span class="p">,</span><span class="n">sec</span><span class="p">,</span><span class="n">data</span></div>
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../../../marilib.html" >marilib</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.airplane.propulsion.jet_data &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../../marilib.html" accesskey="U">marilib</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for marilib.airplane.propulsion.jet_data</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Thu Jan 24 23:22:21 2019</span>
+
+<span class="sd">@author: DRUOT Thierry</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1">#--------------------------------------------------------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="RearElectricNacelle"><a class="viewcode-back" href="../../../../api/marilib.airplane.propulsion.jet_data.html#marilib.airplane.propulsion.jet_data.RearElectricNacelle">[docs]</a><span class="k">class</span> <span class="nc">RearElectricNacelle</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Electric nacelle data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">INFO</span> <span class="o">=</span> <span class="p">{</span>\
+    <span class="s2">&quot;width&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Maximum width of the electric fan cowl&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;length&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Length of the electric fan cowl&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;x_axe&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e1</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Longitudinal position of the center of the electric nacelle air inlet&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;y_axe&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e1</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Span wise position of the center of the electric nacelle air inlet&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;z_axe&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Vertical position of the center of the electric nacelle air inlet&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;net_wetted_area&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m2&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e1</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Total net wetted area of the electric fan nacelle (fan cowl)&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;efficiency_fan&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;no_dim&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Fan efficiency for turbofan (capability to turn shaft power into kinetic energy)&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;efficiency_prop&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;no_dim&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Propeller like Fan+Cowl efficiency for turbofan (FanThrust.Vair)/(Shaft power)&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;motor_efficiency&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;no_dim&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Motor efficiency&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;controller_efficiency&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;no_dim&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Controller electric efficiency&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;controller_pw_density&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kW/kg&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Power density of controller&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;motor_pw_density&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kW/kg&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Power density of electric motor&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;nacelle_pw_density&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kW/kg&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Power density of e-fan nacelle and mountings&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;hub_width&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Diameter of the hub of the electric nacelle&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;fan_width&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Diameter of the fan of the electric nacelle&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;nozzle_width&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Diameter of the nozzle of the electric nacelle&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;nozzle_area&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m2&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Exhaust nozzle area of the electric nacelle&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;body_length&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Length of the body behind the electric nacelle&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;bnd_layer&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;array&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e0</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Boundary layer thickness law in front of the e-fan, 2d array&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;mass&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kg&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e2</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Equipped mass of the nacelle of the electric fan (including the controller, motor and nacelle)&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;c_g&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e1</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;Longitudinal position of the CG of the electric nacelle&quot;</span><span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">length</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">x_axe</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">y_axe</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">z_axe</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">net_wetted_area</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">efficiency_fan</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">efficiency_prop</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">motor_efficiency</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">controller_efficiency</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">controller_pw_density</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">motor_pw_density</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">nacelle_pw_density</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">hub_width</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">fan_width</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">nozzle_width</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">nozzle_area</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">body_length</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">bnd_layer</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mass</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">c_g</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_axe</span> <span class="o">=</span> <span class="n">x_axe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_axe</span> <span class="o">=</span> <span class="n">y_axe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_axe</span> <span class="o">=</span> <span class="n">z_axe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">net_wetted_area</span> <span class="o">=</span> <span class="n">net_wetted_area</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">efficiency_fan</span> <span class="o">=</span> <span class="n">efficiency_fan</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">efficiency_prop</span> <span class="o">=</span> <span class="n">efficiency_prop</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">motor_efficiency</span> <span class="o">=</span> <span class="n">motor_efficiency</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">controller_efficiency</span> <span class="o">=</span> <span class="n">controller_efficiency</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">controller_pw_density</span> <span class="o">=</span> <span class="n">controller_pw_density</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">motor_pw_density</span> <span class="o">=</span> <span class="n">motor_pw_density</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nacelle_pw_density</span> <span class="o">=</span> <span class="n">nacelle_pw_density</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hub_width</span> <span class="o">=</span> <span class="n">hub_width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fan_width</span> <span class="o">=</span> <span class="n">fan_width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nozzle_width</span> <span class="o">=</span> <span class="n">nozzle_width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nozzle_area</span> <span class="o">=</span> <span class="n">nozzle_area</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body_length</span> <span class="o">=</span> <span class="n">body_length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bnd_layer</span> <span class="o">=</span> <span class="n">bnd_layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="n">mass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c_g</span> <span class="o">=</span> <span class="n">c_g</span></div>
+
+
+<span class="c1">#--------------------------------------------------------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="RearElectricEngine"><a class="viewcode-back" href="../../../../api/marilib.airplane.propulsion.jet_data.html#marilib.airplane.propulsion.jet_data.RearElectricEngine">[docs]</a><span class="k">class</span> <span class="nc">RearElectricEngine</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Electric motor rating power in given conditions</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">INFO</span> <span class="o">=</span> <span class="p">{</span>\
+    <span class="s2">&quot;mto_r_shaft_power&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kW&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e3</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;E-fan shaft power in take off rating (one engine), Sea Level, ISA+15, Mach 0,25&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;mto_r_fan_thrust&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;daN&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e3</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;E-fan thrust in take off rating (one engine), Sea Level, ISA+15, Mach 0,25&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;mcn_r_shaft_power&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kW&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e3</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;E-fan shaft power in maxi continuous rating (one engine), required ceiling altitude, ISA, cruise Mach&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;mcn_r_fan_thrust&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;daN&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e3</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;E-fan thrust in maxi continuous rating (one engine), required ceiling altitude, ISA, cruise Mach&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;mcl_r_shaft_power&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kW&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e3</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;E-fan shaft power in max climb rating (one engine), required Top of Climb altitude, ISA, cruise Mach&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;mcl_r_fan_thrust&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;daN&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e3</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;E-fan thrust in max climb rating (one engine), required Top of Climb altitude, ISA, cruise Mach&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;mcr_r_shaft_power&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kW&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e3</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;E-fan shaft power in max cruise rating (one engine), reference cruise altitude, ISA, cruise Mach&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;mcr_r_fan_thrust&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;daN&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e3</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;E-fan thrust in max cruise rating (one engine), reference cruise altitude, ISA, cruise Mach&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;fid_r_shaft_power&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;kW&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e3</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;E-fan shaft power in flight idle rating (one engine), reference cruise altitude, ISA, cruise Mach&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;fid_r_fan_thrust&quot;</span><span class="p">:{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span><span class="s2">&quot;daN&quot;</span><span class="p">,</span> <span class="s2">&quot;om&quot;</span><span class="p">:</span><span class="mf">1.e3</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">:</span><span class="s2">&quot;E-fan thrust in flight idle rating (one engine), reference cruise altitude, ISA, cruise Mach&quot;</span><span class="p">},</span>
+    <span class="p">}</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mto_r_shaft_power</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mto_r_fan_thrust</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mcn_r_shaft_power</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mcn_r_fan_thrust</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mcl_r_shaft_power</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mcl_r_fan_thrust</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mcr_r_shaft_power</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mcr_r_fan_thrust</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">fid_r_shaft_power</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">fid_r_fan_thrust</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mto_r_shaft_power</span> <span class="o">=</span> <span class="n">mto_r_shaft_power</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mto_r_fan_thrust</span> <span class="o">=</span> <span class="n">mto_r_fan_thrust</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mcn_r_shaft_power</span> <span class="o">=</span> <span class="n">mcn_r_shaft_power</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mcn_r_fan_thrust</span> <span class="o">=</span> <span class="n">mcn_r_fan_thrust</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mcl_r_shaft_power</span> <span class="o">=</span> <span class="n">mcl_r_shaft_power</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mcl_r_fan_thrust</span> <span class="o">=</span> <span class="n">mcl_r_fan_thrust</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mcr_r_shaft_power</span> <span class="o">=</span> <span class="n">mcr_r_shaft_power</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mcr_r_fan_thrust</span> <span class="o">=</span> <span class="n">mcr_r_fan_thrust</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fid_r_shaft_power</span> <span class="o">=</span> <span class="n">fid_r_shaft_power</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fid_r_fan_thrust</span> <span class="o">=</span> <span class="n">fid_r_fan_thrust</span></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../../marilib.html" >marilib</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

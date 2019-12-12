@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.airplane.propulsion.jet_data module &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="marilib.airplane.propulsion.jet_models module" href="marilib.airplane.propulsion.jet_models.html" />
+    <link rel="prev" title="marilib.airplane.propulsion.turbofan.turbofan_models module" href="marilib.airplane.propulsion.turbofan.turbofan_models.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="marilib.airplane.propulsion.jet_models.html" title="marilib.airplane.propulsion.jet_models module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="marilib.airplane.propulsion.turbofan.turbofan_models.html" title="marilib.airplane.propulsion.turbofan.turbofan_models module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="marilib.html" >marilib package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="marilib.airplane.html" >marilib.airplane package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="marilib.airplane.propulsion.html" accesskey="U">marilib.airplane.propulsion package</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/marilib.airplane.propulsion.jet_data.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-marilib.airplane.propulsion.jet_data">
+<span id="marilib-airplane-propulsion-jet-data-module"></span><h1>marilib.airplane.propulsion.jet_data module<a class="headerlink" href="#module-marilib.airplane.propulsion.jet_data" title="Permalink to this headline">¶</a></h1>
+<p>Created on Thu Jan 24 23:22:21 2019</p>
+<p>&#64;author: DRUOT Thierry</p>
+<dl class="class">
+<dt id="marilib.airplane.propulsion.jet_data.RearElectricEngine">
+<em class="property">class </em><code class="sig-prename descclassname">marilib.airplane.propulsion.jet_data.</code><code class="sig-name descname">RearElectricEngine</code><span class="sig-paren">(</span><em class="sig-param">mto_r_shaft_power=None</em>, <em class="sig-param">mto_r_fan_thrust=None</em>, <em class="sig-param">mcn_r_shaft_power=None</em>, <em class="sig-param">mcn_r_fan_thrust=None</em>, <em class="sig-param">mcl_r_shaft_power=None</em>, <em class="sig-param">mcl_r_fan_thrust=None</em>, <em class="sig-param">mcr_r_shaft_power=None</em>, <em class="sig-param">mcr_r_fan_thrust=None</em>, <em class="sig-param">fid_r_shaft_power=None</em>, <em class="sig-param">fid_r_fan_thrust=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/propulsion/jet_data.html#RearElectricEngine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.propulsion.jet_data.RearElectricEngine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Electric motor rating power in given conditions</p>
+<dl class="attribute">
+<dt id="marilib.airplane.propulsion.jet_data.RearElectricEngine.INFO">
+<code class="sig-name descname">INFO</code><em class="property"> = {'fid_r_fan_thrust': {'om': 1000.0, 'txt': 'E-fan thrust in flight idle rating (one engine), reference cruise altitude, ISA, cruise Mach', 'unit': 'daN'}, 'fid_r_shaft_power': {'om': 1000.0, 'txt': 'E-fan shaft power in flight idle rating (one engine), reference cruise altitude, ISA, cruise Mach', 'unit': 'kW'}, 'mcl_r_fan_thrust': {'om': 1000.0, 'txt': 'E-fan thrust in max climb rating (one engine), required Top of Climb altitude, ISA, cruise Mach', 'unit': 'daN'}, 'mcl_r_shaft_power': {'om': 1000.0, 'txt': 'E-fan shaft power in max climb rating (one engine), required Top of Climb altitude, ISA, cruise Mach', 'unit': 'kW'}, 'mcn_r_fan_thrust': {'om': 1000.0, 'txt': 'E-fan thrust in maxi continuous rating (one engine), required ceiling altitude, ISA, cruise Mach', 'unit': 'daN'}, 'mcn_r_shaft_power': {'om': 1000.0, 'txt': 'E-fan shaft power in maxi continuous rating (one engine), required ceiling altitude, ISA, cruise Mach', 'unit': 'kW'}, 'mcr_r_fan_thrust': {'om': 1000.0, 'txt': 'E-fan thrust in max cruise rating (one engine), reference cruise altitude, ISA, cruise Mach', 'unit': 'daN'}, 'mcr_r_shaft_power': {'om': 1000.0, 'txt': 'E-fan shaft power in max cruise rating (one engine), reference cruise altitude, ISA, cruise Mach', 'unit': 'kW'}, 'mto_r_fan_thrust': {'om': 1000.0, 'txt': 'E-fan thrust in take off rating (one engine), Sea Level, ISA+15, Mach 0,25', 'unit': 'daN'}, 'mto_r_shaft_power': {'om': 1000.0, 'txt': 'E-fan shaft power in take off rating (one engine), Sea Level, ISA+15, Mach 0,25', 'unit': 'kW'}}</em><a class="headerlink" href="#marilib.airplane.propulsion.jet_data.RearElectricEngine.INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="marilib.airplane.propulsion.jet_data.RearElectricNacelle">
+<em class="property">class </em><code class="sig-prename descclassname">marilib.airplane.propulsion.jet_data.</code><code class="sig-name descname">RearElectricNacelle</code><span class="sig-paren">(</span><em class="sig-param">width=None</em>, <em class="sig-param">length=None</em>, <em class="sig-param">x_axe=None</em>, <em class="sig-param">y_axe=None</em>, <em class="sig-param">z_axe=None</em>, <em class="sig-param">net_wetted_area=None</em>, <em class="sig-param">efficiency_fan=None</em>, <em class="sig-param">efficiency_prop=None</em>, <em class="sig-param">motor_efficiency=None</em>, <em class="sig-param">controller_efficiency=None</em>, <em class="sig-param">controller_pw_density=None</em>, <em class="sig-param">motor_pw_density=None</em>, <em class="sig-param">nacelle_pw_density=None</em>, <em class="sig-param">hub_width=None</em>, <em class="sig-param">fan_width=None</em>, <em class="sig-param">nozzle_width=None</em>, <em class="sig-param">nozzle_area=None</em>, <em class="sig-param">body_length=None</em>, <em class="sig-param">bnd_layer=None</em>, <em class="sig-param">mass=None</em>, <em class="sig-param">c_g=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/propulsion/jet_data.html#RearElectricNacelle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.propulsion.jet_data.RearElectricNacelle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Electric nacelle data</p>
+<dl class="attribute">
+<dt id="marilib.airplane.propulsion.jet_data.RearElectricNacelle.INFO">
+<code class="sig-name descname">INFO</code><em class="property"> = {'bnd_layer': {'om': 1.0, 'txt': 'Boundary layer thickness law in front of the e-fan, 2d array', 'unit': 'array'}, 'body_length': {'om': 1.0, 'txt': 'Length of the body behind the electric nacelle', 'unit': 'm'}, 'c_g': {'om': 10.0, 'txt': 'Longitudinal position of the CG of the electric nacelle', 'unit': 'm'}, 'controller_efficiency': {'om': 1.0, 'txt': 'Controller electric efficiency', 'unit': 'no_dim'}, 'controller_pw_density': {'om': 1.0, 'txt': 'Power density of controller', 'unit': 'kW/kg'}, 'efficiency_fan': {'om': 1.0, 'txt': 'Fan efficiency for turbofan (capability to turn shaft power into kinetic energy)', 'unit': 'no_dim'}, 'efficiency_prop': {'om': 1.0, 'txt': 'Propeller like Fan+Cowl efficiency for turbofan (FanThrust.Vair)/(Shaft power)', 'unit': 'no_dim'}, 'fan_width': {'om': 1.0, 'txt': 'Diameter of the fan of the electric nacelle', 'unit': 'm'}, 'hub_width': {'om': 1.0, 'txt': 'Diameter of the hub of the electric nacelle', 'unit': 'm'}, 'length': {'om': 1.0, 'txt': 'Length of the electric fan cowl', 'unit': 'm'}, 'mass': {'om': 100.0, 'txt': 'Equipped mass of the nacelle of the electric fan (including the controller, motor and nacelle)', 'unit': 'kg'}, 'motor_efficiency': {'om': 1.0, 'txt': 'Motor efficiency', 'unit': 'no_dim'}, 'motor_pw_density': {'om': 1.0, 'txt': 'Power density of electric motor', 'unit': 'kW/kg'}, 'nacelle_pw_density': {'om': 1.0, 'txt': 'Power density of e-fan nacelle and mountings', 'unit': 'kW/kg'}, 'net_wetted_area': {'om': 10.0, 'txt': 'Total net wetted area of the electric fan nacelle (fan cowl)', 'unit': 'm2'}, 'nozzle_area': {'om': 1.0, 'txt': 'Exhaust nozzle area of the electric nacelle', 'unit': 'm2'}, 'nozzle_width': {'om': 1.0, 'txt': 'Diameter of the nozzle of the electric nacelle', 'unit': 'm'}, 'width': {'om': 1.0, 'txt': 'Maximum width of the electric fan cowl', 'unit': 'm'}, 'x_axe': {'om': 10.0, 'txt': 'Longitudinal position of the center of the electric nacelle air inlet', 'unit': 'm'}, 'y_axe': {'om': 10.0, 'txt': 'Span wise position of the center of the electric nacelle air inlet', 'unit': 'm'}, 'z_axe': {'om': 1.0, 'txt': 'Vertical position of the center of the electric nacelle air inlet', 'unit': 'm'}}</em><a class="headerlink" href="#marilib.airplane.propulsion.jet_data.RearElectricNacelle.INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="marilib.airplane.propulsion.jet_models.html" title="marilib.airplane.propulsion.jet_models module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="marilib.airplane.propulsion.turbofan.turbofan_models.html" title="marilib.airplane.propulsion.turbofan.turbofan_models module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="marilib.html" >marilib package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="marilib.airplane.html" >marilib.airplane package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="marilib.airplane.propulsion.html" >marilib.airplane.propulsion package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

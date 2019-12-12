@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.aircraft_model.airplane.regulation &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../../marilib.html" accesskey="U">marilib</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for marilib.aircraft_model.airplane.regulation</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Thu Jan 24 23:22:21 2019</span>
+
+<span class="sd">.. moduleauthor:: DRUOT Thierry : original Scilab implementation</span>
+<span class="sd">.. moduleauthor:: PETEILH Nicolas : portage to Python</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">from</span> <span class="nn">marilib.tools</span> <span class="k">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">unit</span>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="kvs1g_min_take_off"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.airplane.regulation.html#marilib.aircraft_model.airplane.regulation.kvs1g_min_take_off">[docs]</a><span class="k">def</span> <span class="nf">kvs1g_min_take_off</span><span class="p">():</span>
+    <span class="n">k_vs1g_to</span> <span class="o">=</span> <span class="mf">1.13</span>
+    <span class="k">return</span> <span class="n">k_vs1g_to</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="kvs1g_min_landing"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.airplane.regulation.html#marilib.aircraft_model.airplane.regulation.kvs1g_min_landing">[docs]</a><span class="k">def</span> <span class="nf">kvs1g_min_landing</span><span class="p">():</span>
+    <span class="n">k_vs1g_ld</span> <span class="o">=</span> <span class="mf">1.23</span>
+    <span class="k">return</span> <span class="n">k_vs1g_ld</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="seg2_min_path"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.airplane.regulation.html#marilib.aircraft_model.airplane.regulation.seg2_min_path">[docs]</a><span class="k">def</span> <span class="nf">seg2_min_path</span><span class="p">(</span><span class="n">n_engine</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Regulatory min climb path versus number of engine</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">n_engine</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">seg2_min_path</span> <span class="o">=</span> <span class="mf">0.024</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">n_engine</span> <span class="o">==</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="n">seg2_min_path</span> <span class="o">=</span> <span class="mf">0.027</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">n_engine</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">):</span>
+        <span class="n">seg2_min_path</span> <span class="o">=</span> <span class="mf">0.030</span>
+    <span class="k">return</span> <span class="n">seg2_min_path</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="ceil_oei_min_path"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.airplane.regulation.html#marilib.aircraft_model.airplane.regulation.ceil_oei_min_path">[docs]</a><span class="k">def</span> <span class="nf">ceil_oei_min_path</span><span class="p">(</span><span class="n">n_engine</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Regulatory min climb path depending on the number of engine</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">n_engine</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">oei_min_path</span> <span class="o">=</span> <span class="mf">0.011</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">n_engine</span> <span class="o">==</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="n">oei_min_path</span> <span class="o">=</span> <span class="mf">0.013</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">n_engine</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">):</span>
+        <span class="n">oei_min_path</span> <span class="o">=</span> <span class="mf">0.016</span>
+    <span class="k">return</span> <span class="n">oei_min_path</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="diversion_range"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.airplane.regulation.html#marilib.aircraft_model.airplane.regulation.diversion_range">[docs]</a><span class="k">def</span> <span class="nf">diversion_range</span><span class="p">():</span>
+    <span class="n">diversion_range</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">200.</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">diversion_range</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="holding_time"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.airplane.regulation.html#marilib.aircraft_model.airplane.regulation.holding_time">[docs]</a><span class="k">def</span> <span class="nf">holding_time</span><span class="p">():</span>
+    <span class="n">holding_time</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">s_min</span><span class="p">(</span><span class="mf">30.</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">holding_time</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="reserve_fuel_ratio"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.airplane.regulation.html#marilib.aircraft_model.airplane.regulation.reserve_fuel_ratio">[docs]</a><span class="k">def</span> <span class="nf">reserve_fuel_ratio</span><span class="p">(</span><span class="n">design_range</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">design_range</span><span class="o">&lt;</span><span class="n">unit</span><span class="o">.</span><span class="n">m_NM</span><span class="p">(</span><span class="mf">6500.</span><span class="p">)):</span>
+        <span class="n">reserve_fuel_ratio</span> <span class="o">=</span> <span class="mf">0.05</span> <span class="p">;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">reserve_fuel_ratio</span> <span class="o">=</span> <span class="mf">0.03</span> <span class="p">;</span>
+    <span class="k">return</span> <span class="n">reserve_fuel_ratio</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="static_stability_margin"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.airplane.regulation.html#marilib.aircraft_model.airplane.regulation.static_stability_margin">[docs]</a><span class="k">def</span> <span class="nf">static_stability_margin</span><span class="p">():</span>
+    <span class="n">static_margin</span> <span class="o">=</span> <span class="mf">0.05</span>
+    <span class="k">return</span> <span class="n">static_margin</span></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../../marilib.html" >marilib</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

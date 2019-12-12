@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.airplane.propulsion.propulsion_models module &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="marilib.earth package" href="marilib.earth.html" />
+    <link rel="prev" title="marilib.airplane.propulsion.propulsion_design module" href="marilib.airplane.propulsion.propulsion_design.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="marilib.earth.html" title="marilib.earth package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="marilib.airplane.propulsion.propulsion_design.html" title="marilib.airplane.propulsion.propulsion_design module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="marilib.html" >marilib package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="marilib.airplane.html" >marilib.airplane package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="marilib.airplane.propulsion.html" accesskey="U">marilib.airplane.propulsion package</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/marilib.airplane.propulsion.propulsion_models.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-marilib.airplane.propulsion.propulsion_models">
+<span id="marilib-airplane-propulsion-propulsion-models-module"></span><h1>marilib.airplane.propulsion.propulsion_models module<a class="headerlink" href="#module-marilib.airplane.propulsion.propulsion_models" title="Permalink to this headline">¶</a></h1>
+<p>Created on Thu Jan 24 23:22:21 2019</p>
+<dl class="simple">
+<dt>&#64;author: DRUOT Thierry<span class="classifier">original Scilab implementation</span></dt><dd><p>ROCHES Pascal : portage to Python</p>
+</dd>
+</dl>
+<dl class="function">
+<dt id="marilib.airplane.propulsion.propulsion_models.nacelle_drag">
+<code class="sig-prename descclassname">marilib.airplane.propulsion.propulsion_models.</code><code class="sig-name descname">nacelle_drag</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em>, <em class="sig-param">Re</em>, <em class="sig-param">Mach</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/propulsion/propulsion_models.html#nacelle_drag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.propulsion.propulsion_models.nacelle_drag" title="Permalink to this definition">¶</a></dt>
+<dd><p>All nacelle drag coefficient</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.airplane.propulsion.propulsion_models.oei_drag">
+<code class="sig-prename descclassname">marilib.airplane.propulsion.propulsion_models.</code><code class="sig-name descname">oei_drag</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em>, <em class="sig-param">pamb</em>, <em class="sig-param">tamb</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/propulsion/propulsion_models.html#oei_drag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.propulsion.propulsion_models.oei_drag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inoperative engine drag coefficient</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.airplane.propulsion.propulsion_models.sfc">
+<code class="sig-prename descclassname">marilib.airplane.propulsion.propulsion_models.</code><code class="sig-name descname">sfc</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em>, <em class="sig-param">pamb</em>, <em class="sig-param">tamb</em>, <em class="sig-param">mach</em>, <em class="sig-param">rating</em>, <em class="sig-param">thrust</em>, <em class="sig-param">nei</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/propulsion/propulsion_models.html#sfc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.propulsion.propulsion_models.sfc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bucket SFC for a turbofan
+IMPORTANT REMARK : for EF1 architecture, SFC is in Energy unit per Thrust unit (J/N)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.airplane.propulsion.propulsion_models.tail_cone_drag_effect">
+<code class="sig-prename descclassname">marilib.airplane.propulsion.propulsion_models.</code><code class="sig-name descname">tail_cone_drag_effect</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/propulsion/propulsion_models.html#tail_cone_drag_effect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.propulsion.propulsion_models.tail_cone_drag_effect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Effect of rear fan installation on fuselage tail cone drag</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.airplane.propulsion.propulsion_models.thrust">
+<code class="sig-prename descclassname">marilib.airplane.propulsion.propulsion_models.</code><code class="sig-name descname">thrust</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em>, <em class="sig-param">Pamb</em>, <em class="sig-param">Tamb</em>, <em class="sig-param">Mach</em>, <em class="sig-param">rating</em>, <em class="sig-param">throttle</em>, <em class="sig-param">nei</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/propulsion/propulsion_models.html#thrust"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.propulsion.propulsion_models.thrust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculation of the total thrust of the architecture</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.airplane.propulsion.propulsion_models.thrust_pitch_moment">
+<code class="sig-prename descclassname">marilib.airplane.propulsion.propulsion_models.</code><code class="sig-name descname">thrust_pitch_moment</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em>, <em class="sig-param">fn</em>, <em class="sig-param">pamb</em>, <em class="sig-param">mach</em>, <em class="sig-param">dcx_oei</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/propulsion/propulsion_models.html#thrust_pitch_moment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.propulsion.propulsion_models.thrust_pitch_moment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="marilib.earth.html" title="marilib.earth package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="marilib.airplane.propulsion.propulsion_design.html" title="marilib.airplane.propulsion.propulsion_design module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="marilib.html" >marilib package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="marilib.airplane.html" >marilib.airplane package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="marilib.airplane.propulsion.html" >marilib.airplane.propulsion package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

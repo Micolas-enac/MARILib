@@ -1,0 +1,153 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.aircraft_data.physical_performances module &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="marilib.aircraft_model package" href="marilib.aircraft_model.html" />
+    <link rel="prev" title="marilib.aircraft_data.operational_performances module" href="marilib.aircraft_data.operational_performances.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="marilib.aircraft_model.html" title="marilib.aircraft_model package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="marilib.aircraft_data.operational_performances.html" title="marilib.aircraft_data.operational_performances module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="marilib.html" >marilib package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="marilib.aircraft_data.html" accesskey="U">marilib.aircraft_data package</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/marilib.aircraft_data.physical_performances.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-marilib.aircraft_data.physical_performances">
+<span id="marilib-aircraft-data-physical-performances-module"></span><h1>marilib.aircraft_data.physical_performances module<a class="headerlink" href="#module-marilib.aircraft_data.physical_performances" title="Permalink to this headline">¶</a></h1>
+<p>Created on Thu Jan 24 23:22:21 2019</p>
+<p><em>Module author: DRUOT Thierry : original Scilab implementation</em></p>
+<p><em>Module author: PETEILH Nicolas : portage to Python</em></p>
+<dl class="class">
+<dt id="marilib.aircraft_data.physical_performances.Aerodynamics">
+<em class="property">class </em><code class="sig-prename descclassname">marilib.aircraft_data.physical_performances.</code><code class="sig-name descname">Aerodynamics</code><span class="sig-paren">(</span><em class="sig-param">cruise_lod_max=None</em>, <em class="sig-param">cz_cruise_lod_max=None</em>, <em class="sig-param">hld_conf_clean=None</em>, <em class="sig-param">cz_max_clean=None</em>, <em class="sig-param">hld_conf_to=None</em>, <em class="sig-param">cz_max_to=None</em>, <em class="sig-param">hld_conf_ld=None</em>, <em class="sig-param">cz_max_ld=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/aircraft_data/physical_performances.html#Aerodynamics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.aircraft_data.physical_performances.Aerodynamics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Aerodynamic data</p>
+<dl class="attribute">
+<dt id="marilib.aircraft_data.physical_performances.Aerodynamics.INFO">
+<code class="sig-name descname">INFO</code><em class="property"> = {'cruise_lod_max': {'om': 10.0, 'txt': 'Maximum lift over drag ratio in cruise condition', 'unit': 'no_dim'}, 'cz_cruise_lod_max': {'om': 1.0, 'txt': 'Lift coefficient corresponding to maximum lift over drag', 'unit': 'no_dim'}, 'cz_max_clean': {'om': 1.0, 'txt': 'Maximum lift coefficient in clean wing configuration', 'unit': 'no_dim'}, 'cz_max_ld': {'om': 1.0, 'txt': 'Maximum lift coefficient in landing configuration', 'unit': 'no_dim'}, 'cz_max_to': {'om': 1.0, 'txt': 'Maximum lift coefficient in take off configuration', 'unit': 'no_dim'}, 'hld_conf_clean': {'om': 1.0, 'txt': 'High lift device setting in clean configuration (0 by definition)', 'unit': 'no_dim'}, 'hld_conf_ld': {'om': 1.0, 'txt': 'High lift device setting in landing configuration (nominal value is 1)', 'unit': 'no_dim'}, 'hld_conf_to': {'om': 1.0, 'txt': 'High lift device setting in take off configuration (0 &lt; hld_conf &lt; 0,6)', 'unit': 'no_dim'}}</em><a class="headerlink" href="#marilib.aircraft_data.physical_performances.Aerodynamics.INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="marilib.aircraft_data.physical_performances.CenterOfGravity">
+<em class="property">class </em><code class="sig-prename descclassname">marilib.aircraft_data.physical_performances.</code><code class="sig-name descname">CenterOfGravity</code><span class="sig-paren">(</span><em class="sig-param">cg_range_optimization=None</em>, <em class="sig-param">mwe=None</em>, <em class="sig-param">owe=None</em>, <em class="sig-param">battery=None</em>, <em class="sig-param">max_fwd_mass=None</em>, <em class="sig-param">max_fwd_req_cg=None</em>, <em class="sig-param">max_fwd_trim_cg=None</em>, <em class="sig-param">cg_constraint_1=None</em>, <em class="sig-param">max_bwd_mass=None</em>, <em class="sig-param">max_bwd_req_cg=None</em>, <em class="sig-param">max_bwd_stab_cg=None</em>, <em class="sig-param">cg_constraint_2=None</em>, <em class="sig-param">max_bwd_oei_mass=None</em>, <em class="sig-param">max_bwd_oei_req_cg=None</em>, <em class="sig-param">max_bwd_oei_cg=None</em>, <em class="sig-param">cg_constraint_3=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/aircraft_data/physical_performances.html#CenterOfGravity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.aircraft_data.physical_performances.CenterOfGravity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Operational positions of the center of gravity</p>
+<dl class="attribute">
+<dt id="marilib.aircraft_data.physical_performances.CenterOfGravity.INFO">
+<code class="sig-name descname">INFO</code><em class="property"> = {'battery': {'om': 10.0, 'txt': 'Longitudinal position of battery CG', 'unit': 'm'}, 'cg_constraint_1': {'om': 1.0, 'txt': 'Forward CG constraint n°1, must be kept positive', 'unit': 'no_dim'}, 'cg_constraint_2': {'om': 1.0, 'txt': 'Backward CG constraint n°1, must be kept positive', 'unit': 'no_dim'}, 'cg_constraint_3': {'om': 1.0, 'txt': 'Backward CG constraint n°2, must be kept positive', 'unit': 'no_dim'}, 'cg_range_optimization': {'om': 1.0, 'txt': 'Wing position, HTP area and VTP area optimized according to HQ criteria, 0: no, 1:yes', 'unit': 'int'}, 'max_bwd_mass': {'om': 10000.0, 'txt': 'Aircraft mass at maximum backward payload CG', 'unit': 'kg'}, 'max_bwd_oei_cg': {'om': 10.0, 'txt': 'Maximum backward CG according to OEI control', 'unit': 'm'}, 'max_bwd_oei_mass': {'om': 10000.0, 'txt': 'Aircraft mass for OEI control criterion', 'unit': 'kg'}, 'max_bwd_oei_req_cg': {'om': 10.0, 'txt': 'Required backward CG at max_bwd_oei_mass', 'unit': 'm'}, 'max_bwd_req_cg': {'om': 10.0, 'txt': 'Required maximum backward aircraft CG', 'unit': 'm'}, 'max_bwd_stab_cg': {'om': 10.0, 'txt': 'Maximum backward CG', 'unit': 'm'}, 'max_fwd_mass': {'om': 10000.0, 'txt': 'Aircraft mass at maximum forward CG', 'unit': 'kg'}, 'max_fwd_req_cg': {'om': 10.0, 'txt': 'Required maximum forward aircraft CG', 'unit': 'm'}, 'max_fwd_trim_cg': {'om': 10.0, 'txt': 'Maximum trim-able forward CG', 'unit': 'm'}, 'mwe': {'om': 10.0, 'txt': 'Longitudinal position of MWE CG', 'unit': 'm'}, 'owe': {'om': 10.0, 'txt': 'Longitudinal position of OWE CG', 'unit': 'm'}}</em><a class="headerlink" href="#marilib.aircraft_data.physical_performances.CenterOfGravity.INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="marilib.aircraft_data.physical_performances.CharacteristicWeight">
+<em class="property">class </em><code class="sig-prename descclassname">marilib.aircraft_data.physical_performances.</code><code class="sig-name descname">CharacteristicWeight</code><span class="sig-paren">(</span><em class="sig-param">mwe=None</em>, <em class="sig-param">owe=None</em>, <em class="sig-param">mzfw=None</em>, <em class="sig-param">mass_constraint_1=None</em>, <em class="sig-param">mlw=None</em>, <em class="sig-param">mass_constraint_2=None</em>, <em class="sig-param">mtow=None</em>, <em class="sig-param">mass_constraint_3=None</em>, <em class="sig-param">mfw=None</em>, <em class="sig-param">battery_in_owe=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/aircraft_data/physical_performances.html#CharacteristicWeight"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.aircraft_data.physical_performances.CharacteristicWeight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Aircraft characteristic weights</p>
+<dl class="attribute">
+<dt id="marilib.aircraft_data.physical_performances.CharacteristicWeight.INFO">
+<code class="sig-name descname">INFO</code><em class="property"> = {'battery_in_owe': {'om': 10000.0, 'txt': 'Battery mass in OWE', 'unit': 'kg'}, 'mass_constraint_1': {'om': 1.0, 'txt': 'Constraint on MZFW, must be kept positive', 'unit': 'no_dim'}, 'mass_constraint_2': {'om': 1.0, 'txt': 'Constraint on MLW, must be kept positive', 'unit': 'no_dim'}, 'mass_constraint_3': {'om': 1.0, 'txt': 'Constraint on MTOW, must be kept positive', 'unit': 'no_dim'}, 'mfw': {'om': 10000.0, 'txt': 'Maximum Fuel Weight', 'unit': 'kg'}, 'mlw': {'om': 10000.0, 'txt': 'Maximum Landing Weight (close or equal to 1,07mzfw except for small aircraft where mlw = mtow)', 'unit': 'kg'}, 'mtow': {'om': 10000.0, 'txt': 'Maximum Take Off Weight', 'unit': 'kg'}, 'mwe': {'om': 10000.0, 'txt': 'Manufacturer Weight Empty', 'unit': 'kg'}, 'mzfw': {'om': 10000.0, 'txt': 'Maximum Zero Fuel Weight (= owe + n_pax_ref.m_pax_max)', 'unit': 'kg'}, 'owe': {'om': 10000.0, 'txt': 'Operating Weight Empty (= mwe + m_op_item + m_cont_pallet)', 'unit': 'kg'}}</em><a class="headerlink" href="#marilib.aircraft_data.physical_performances.CharacteristicWeight.INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="marilib.aircraft_data.physical_performances.Propulsion">
+<em class="property">class </em><code class="sig-prename descclassname">marilib.aircraft_data.physical_performances.</code><code class="sig-name descname">Propulsion</code><span class="sig-paren">(</span><em class="sig-param">architecture=None</em>, <em class="sig-param">n_engine=None</em>, <em class="sig-param">nacelle_attachment=None</em>, <em class="sig-param">fuel_type=None</em>, <em class="sig-param">fuel_heat=None</em>, <em class="sig-param">battery_energy_density=None</em>, <em class="sig-param">reference_thrust=None</em>, <em class="sig-param">reference_thrust_effective=None</em>, <em class="sig-param">y_ext_nacelle=None</em>, <em class="sig-param">sfc_cruise_ref=None</em>, <em class="sig-param">sec_cruise_ref=None</em>, <em class="sig-param">bli_effect=None</em>, <em class="sig-param">bli_r_thrust_factor=None</em>, <em class="sig-param">bli_thrust_factor=None</em>, <em class="sig-param">rating_code=None</em>, <em class="sig-param">flight_data=None</em>, <em class="sig-param">mto_thrust_ref=None</em>, <em class="sig-param">mcn_thrust_ref=None</em>, <em class="sig-param">mcl_thrust_ref=None</em>, <em class="sig-param">mcr_thrust_ref=None</em>, <em class="sig-param">fid_thrust_ref=None</em>, <em class="sig-param">mass=None</em>, <em class="sig-param">c_g=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/aircraft_data/physical_performances.html#Propulsion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.aircraft_data.physical_performances.Propulsion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Propulsion data</p>
+<dl class="attribute">
+<dt id="marilib.aircraft_data.physical_performances.Propulsion.INFO">
+<code class="sig-name descname">INFO</code><em class="property"> = {'architecture': {'om': 1.0, 'txt': 'Propulsion architecture, TF:turbofan, PTE1:partial turbo electric n°1, EF1, electric with batteries', 'unit': 'string'}, 'battery_energy_density': {'om': 1000.0, 'txt': 'Battery energy density', 'unit': 'kWh/kg'}, 'bli_effect': {'om': 1.0, 'txt': 'BLI effect switch, 0: without, 1: with', 'unit': 'int'}, 'bli_r_thrust_factor': {'om': 1.0, 'txt': 'Thrust factor at constant power due to boundary layer ingestion of the e-fan in cruise condition', 'unit': 'no_dim'}, 'bli_thrust_factor': {'om': 1.0, 'txt': 'Thrust factor at constant power due to boundary layer ingestion of other fans in cruise condition', 'unit': 'no_dim'}, 'c_g': {'om': 10.0, 'txt': 'Global CG position for the whole propulsion system (pylons, nacelles, engines, ...)', 'unit': 'm'}, 'fid_thrust_ref': {'om': 10000.0, 'txt': 'Turbofan thrust in flight idle rating (one engine), Reference cruise altitude, ISA, cruise Mach', 'unit': 'daN'}, 'flight_data': {'txt': &quot;Dictionary of flying conditions for each rating {'disa':array, 'altp':array, 'mach':array, 'nei':array}&quot;, 'unit': 'dict'}, 'fuel_heat': {'om': 100000000.0, 'txt': 'Fuel heating value', 'unit': 'J/kg'}, 'fuel_type': {'om': 1.0, 'txt': 'Type of fuel, Kerosene, Hydrogene, Methane, Battery', 'unit': 'string'}, 'mass': {'om': 1000.0, 'txt': 'Total mass of the propulsion system (pylons, nacelles, engines, ...)', 'unit': 'kg'}, 'mcl_thrust_ref': {'om': 10000.0, 'txt': 'Turbofan thrust in max climb rating (one engine), Required Top of Climb altitude, ISA, cruise Mach', 'unit': 'daN'}, 'mcn_thrust_ref': {'om': 10000.0, 'txt': 'Turbofan thrust in maxi continuous rating (one engine), Required ceiling altitude, ISA, cruise Mach', 'unit': 'daN'}, 'mcr_thrust_ref': {'om': 10000.0, 'txt': 'Turbofan thrust in max cruise rating (one engine), Reference cruise altitude, ISA, cruise Mach', 'unit': 'daN'}, 'mto_thrust_ref': {'om': 10000.0, 'txt': 'Turbofan thrust in take off rating (one engine), Sea Level, ISA+15, Mach 0,25', 'unit': 'daN'}, 'n_engine': {'om': 1.0, 'txt': 'Number of main engines', 'unit': 'int'}, 'nacelle_attachment': {'om': 1.0, 'txt': 'Main engine nacelle attachment (1= under wing, 2= rear fuselage)', 'unit': 'int'}, 'rating_code': {'om': 1.0, 'txt': 'Array of rating codes [0:MTO, 1:MCN, 2:MCL, 3:MCR, 4:FID]', 'unit': 'int'}, 'reference_thrust': {'om': 100000.0, 'txt': 'Reference_thrust that drives the engine size and assocoated systems', 'unit': 'daN'}, 'reference_thrust_effective': {'om': 100000.0, 'txt': 'Effective reference_thrust computed as max thrust(Mach = 0.25, ISA+15, Sea Level) / 0.8', 'unit': 'daN'}, 'sec_cruise_ref': {'om': 1.0, 'txt': 'Specific Energy Consumption of the electric chain (if any) in cruise condition, isa, ref_cruise_altp, cruise_mach', 'unit': 'kW/daN/h'}, 'sfc_cruise_ref': {'om': 1.0, 'txt': 'Specific Fuel Consumption in cruise condition, isa, ref_cruise_altp, cruise_mach', 'unit': 'kg/daN/h'}, 'y_ext_nacelle': {'om': 10.0, 'txt': 'Span wise position of the out most right engine nacelle', 'unit': 'm'}}</em><a class="headerlink" href="#marilib.aircraft_data.physical_performances.Propulsion.INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="marilib.aircraft_model.html" title="marilib.aircraft_model package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="marilib.aircraft_data.operational_performances.html" title="marilib.aircraft_data.operational_performances module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="marilib.html" >marilib package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="marilib.aircraft_data.html" >marilib.aircraft_data package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

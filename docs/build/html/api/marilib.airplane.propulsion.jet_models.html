@@ -1,0 +1,181 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.airplane.propulsion.jet_models module &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="marilib.airplane.propulsion.propulsion_design module" href="marilib.airplane.propulsion.propulsion_design.html" />
+    <link rel="prev" title="marilib.airplane.propulsion.jet_data module" href="marilib.airplane.propulsion.jet_data.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="marilib.airplane.propulsion.propulsion_design.html" title="marilib.airplane.propulsion.propulsion_design module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="marilib.airplane.propulsion.jet_data.html" title="marilib.airplane.propulsion.jet_data module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="marilib.html" >marilib package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="marilib.airplane.html" >marilib.airplane package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="marilib.airplane.propulsion.html" accesskey="U">marilib.airplane.propulsion package</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/marilib.airplane.propulsion.jet_models.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-marilib.airplane.propulsion.jet_models">
+<span id="marilib-airplane-propulsion-jet-models-module"></span><h1>marilib.airplane.propulsion.jet_models module<a class="headerlink" href="#module-marilib.airplane.propulsion.jet_models" title="Permalink to this headline">¶</a></h1>
+<p>Created on Thu Jan 24 23:22:21 2019</p>
+<p><em>Module author: DRUOT Thierry : original Scilab implementation</em></p>
+<p><em>Module author: ROCHES Pascal : portage to Python</em></p>
+<dl class="function">
+<dt id="marilib.airplane.propulsion.jet_models.air_flows">
+<code class="sig-prename descclassname">marilib.airplane.propulsion.jet_models.</code><code class="sig-name descname">air_flows</code><span class="sig-paren">(</span><em class="sig-param">rho</em>, <em class="sig-param">v_air</em>, <em class="sig-param">r</em>, <em class="sig-param">d</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/propulsion/jet_models.html#air_flows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.propulsion.jet_models.air_flows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Air flows and speeds at rear end of a cylinder of radius rear_radius mouving at v_air in the direction of its axes
+y is the elevation upon the surface of the cylinder : 0 &lt; y &lt; inf</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.airplane.propulsion.jet_models.boundary_layer">
+<code class="sig-prename descclassname">marilib.airplane.propulsion.jet_models.</code><code class="sig-name descname">boundary_layer</code><span class="sig-paren">(</span><em class="sig-param">re</em>, <em class="sig-param">x_length</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/propulsion/jet_models.html#boundary_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.propulsion.jet_models.boundary_layer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thickness of a turbulent boundary layer which developped turbulently from its starting point</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.airplane.propulsion.jet_models.corrected_air_flow">
+<code class="sig-prename descclassname">marilib.airplane.propulsion.jet_models.</code><code class="sig-name descname">corrected_air_flow</code><span class="sig-paren">(</span><em class="sig-param">Ptot</em>, <em class="sig-param">Ttot</em>, <em class="sig-param">Mach</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/propulsion/jet_models.html#corrected_air_flow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.propulsion.jet_models.corrected_air_flow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the corrected air flow per square meter</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.airplane.propulsion.jet_models.efan_nacelle_design">
+<code class="sig-prename descclassname">marilib.airplane.propulsion.jet_models.</code><code class="sig-name descname">efan_nacelle_design</code><span class="sig-paren">(</span><em class="sig-param">this_nacelle</em>, <em class="sig-param">Pamb</em>, <em class="sig-param">Tamb</em>, <em class="sig-param">Mach</em>, <em class="sig-param">shaft_power</em>, <em class="sig-param">hub_width</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/propulsion/jet_models.html#efan_nacelle_design"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.propulsion.jet_models.efan_nacelle_design" title="Permalink to this definition">¶</a></dt>
+<dd><p>Electrofan nacelle design</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.airplane.propulsion.jet_models.fan_thrust">
+<code class="sig-prename descclassname">marilib.airplane.propulsion.jet_models.</code><code class="sig-name descname">fan_thrust</code><span class="sig-paren">(</span><em class="sig-param">nacelle</em>, <em class="sig-param">Pamb</em>, <em class="sig-param">Tamb</em>, <em class="sig-param">Mach</em>, <em class="sig-param">PwShaft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/propulsion/jet_models.html#fan_thrust"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.propulsion.jet_models.fan_thrust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the thrust of a fan of given geometry swallowing free air stream</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.airplane.propulsion.jet_models.fan_thrust_with_bli">
+<code class="sig-prename descclassname">marilib.airplane.propulsion.jet_models.</code><code class="sig-name descname">fan_thrust_with_bli</code><span class="sig-paren">(</span><em class="sig-param">nacelle</em>, <em class="sig-param">Pamb</em>, <em class="sig-param">Tamb</em>, <em class="sig-param">Mach</em>, <em class="sig-param">PwShaft</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/propulsion/jet_models.html#fan_thrust_with_bli"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.propulsion.jet_models.fan_thrust_with_bli" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the thrust of a fan of a given geometry swallowing
+the boundary layer (BL) of a body of a given geometry
+The amount of swallowed BL depends on the given shaft power and flying
+conditions.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.airplane.propulsion.jet_models.nacelle_generic_drag">
+<code class="sig-prename descclassname">marilib.airplane.propulsion.jet_models.</code><code class="sig-name descname">nacelle_generic_drag</code><span class="sig-paren">(</span><em class="sig-param">aircraft</em>, <em class="sig-param">nacelle</em>, <em class="sig-param">Re</em>, <em class="sig-param">Mach</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/propulsion/jet_models.html#nacelle_generic_drag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.propulsion.jet_models.nacelle_generic_drag" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>WARNING</strong> : nacelle drag returned corresponds to the number of engine : nacelle.n_engine</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.airplane.propulsion.jet_models.rear_nacelle_design">
+<code class="sig-prename descclassname">marilib.airplane.propulsion.jet_models.</code><code class="sig-name descname">rear_nacelle_design</code><span class="sig-paren">(</span><em class="sig-param">this_nacelle</em>, <em class="sig-param">Pamb</em>, <em class="sig-param">Tamb</em>, <em class="sig-param">Mach</em>, <em class="sig-param">shaft_power</em>, <em class="sig-param">hub_width</em>, <em class="sig-param">body_length</em>, <em class="sig-param">body_width</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/propulsion/jet_models.html#rear_nacelle_design"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.propulsion.jet_models.rear_nacelle_design" title="Permalink to this definition">¶</a></dt>
+<dd><p>BLI nacelle design</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.airplane.propulsion.jet_models.resize_boundary_layer">
+<code class="sig-prename descclassname">marilib.airplane.propulsion.jet_models.</code><code class="sig-name descname">resize_boundary_layer</code><span class="sig-paren">(</span><em class="sig-param">body_width</em>, <em class="sig-param">hub_width</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/propulsion/jet_models.html#resize_boundary_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.propulsion.jet_models.resize_boundary_layer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the relation between d0 and d1:</p>
+<ul class="simple">
+<li><p>d0 : boundary layer thickness around a tube of constant diameter</p></li>
+<li><p>d1 : boundary layer thickness around a the tapered part of the tube</p></li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="marilib.airplane.propulsion.jet_models.specific_air_flows">
+<code class="sig-prename descclassname">marilib.airplane.propulsion.jet_models.</code><code class="sig-name descname">specific_air_flows</code><span class="sig-paren">(</span><em class="sig-param">r</em>, <em class="sig-param">d</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/marilib/airplane/propulsion/jet_models.html#specific_air_flows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#marilib.airplane.propulsion.jet_models.specific_air_flows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specific air flows and speeds at rear end of a cylinder of radius <img class="math" src="../_images/math/1ebe654cc7b8f2a0d8100aa5825cf2b9021adbbc.png" alt="R"/>
+mouving at <img class="math" src="../_images/math/d4f3369bd584ef7941f134776a97e03a457a1d33.png" alt="V_{air}"/> in the direction of <img class="math" src="../_images/math/eb99ff3ce3796934af583f81c2cff61a533e205a.png" alt="Q_s = \frac{Q}{\rho V_{air}} V_s = \frac{V}{V_{air}}"/>
+its axes, <img class="math" src="../_images/math/1b5e577d6216dca3af7d87aa122a0b9b360d6cb3.png" alt="y"/> is the elevation upon the surface of the cylinder :</p>
+<div class="math">
+<p><img src="../_images/math/3e88f101b610ad308d7bd2ce81030e85ce4956c7.png" alt="0 &lt; y &lt; \infty"/></p>
+</div><p><strong>WARNING</strong> : even if all mass flows are positive,
+Q0 and Q1 are going backward in fuselage frame, Q2 is going forward in ground frame.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="marilib.airplane.propulsion.propulsion_design.html" title="marilib.airplane.propulsion.propulsion_design module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="marilib.airplane.propulsion.jet_data.html" title="marilib.airplane.propulsion.jet_data module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="marilib.html" >marilib package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="marilib.airplane.html" >marilib.airplane package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="marilib.airplane.propulsion.html" >marilib.airplane.propulsion package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

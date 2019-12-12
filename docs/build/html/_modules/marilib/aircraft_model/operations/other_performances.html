@@ -1,0 +1,416 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.aircraft_model.operations.other_performances &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../../marilib.html" accesskey="U">marilib</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for marilib.aircraft_model.operations.other_performances</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Thu Jan 24 23:22:21 2019</span>
+
+<span class="sd">@author: DRUOT Thierry : original Scilab implementation</span>
+<span class="sd">         PETEILH Nicolas : portage to Python</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">from</span> <span class="nn">marilib</span> <span class="k">import</span> <span class="n">numpy</span>
+<span class="kn">from</span> <span class="nn">marilib.tools.math</span> <span class="k">import</span> <span class="n">maximize_1d</span><span class="p">,</span> <span class="n">trinome</span><span class="p">,</span> <span class="n">vander3</span>
+<span class="kn">from</span> <span class="nn">marilib.tools</span> <span class="k">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">unit</span>
+
+<span class="kn">from</span> <span class="nn">marilib.earth</span> <span class="k">import</span> <span class="n">environment</span> <span class="k">as</span> <span class="n">earth</span>
+<span class="kn">from</span> <span class="nn">marilib.aircraft_model.airplane</span> <span class="k">import</span> <span class="n">aerodynamics</span> <span class="k">as</span> <span class="n">airplane_aero</span><span class="p">,</span> <span class="n">regulation</span> <span class="k">as</span> <span class="n">regul</span>
+<span class="kn">from</span> <span class="nn">marilib.airplane.propulsion</span> <span class="k">import</span> <span class="n">propulsion_models</span> <span class="k">as</span> <span class="n">propu</span>
+<span class="kn">from</span> <span class="nn">marilib.aircraft_model.operations</span> <span class="k">import</span> <span class="n">flight_mechanics</span> <span class="k">as</span> <span class="n">flight</span>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="climb_speeds"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.operations.other_performances.html#marilib.aircraft_model.operations.other_performances.climb_speeds">[docs]</a><span class="k">def</span> <span class="nf">climb_speeds</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">altp</span><span class="p">,</span><span class="n">mach</span><span class="p">):</span>
+
+    <span class="n">design_driver</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">design_driver</span>
+    <span class="n">propulsion</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span>
+
+    <span class="p">(</span><span class="n">MTO</span><span class="p">,</span><span class="n">MCN</span><span class="p">,</span><span class="n">MCL</span><span class="p">,</span><span class="n">MCR</span><span class="p">,</span><span class="n">FID</span><span class="p">)</span> <span class="o">=</span> <span class="n">propulsion</span><span class="o">.</span><span class="n">rating_code</span>
+
+    <span class="n">nei</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">speed_mode</span> <span class="o">=</span> <span class="mi">2</span>                      <span class="c1"># WARNING : iso Mach climb mode</span>
+
+    <span class="n">mass</span> <span class="o">=</span> <span class="mf">0.97</span><span class="o">*</span><span class="n">weights</span><span class="o">.</span><span class="n">mtow</span>
+
+    <span class="n">rating</span> <span class="o">=</span> <span class="n">MCL</span>    <span class="c1"># Max Climb</span>
+
+    <span class="n">slope</span><span class="p">,</span> <span class="n">vz_clb</span> <span class="o">=</span> <span class="n">flight</span><span class="o">.</span><span class="n">air_path</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">nei</span><span class="p">,</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">speed_mode</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">rating</span><span class="p">)</span>
+
+    <span class="n">rating</span> <span class="o">=</span> <span class="n">MCR</span>    <span class="c1"># Max Cruise</span>
+
+    <span class="n">slope</span><span class="p">,</span> <span class="n">vz_crz</span> <span class="o">=</span> <span class="n">flight</span><span class="o">.</span><span class="n">air_path</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">nei</span><span class="p">,</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">speed_mode</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">rating</span><span class="p">)</span>
+
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+    <span class="k">return</span> <span class="n">vz_clb</span><span class="p">,</span><span class="n">vz_crz</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="oei_max_path"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.operations.other_performances.html#marilib.aircraft_model.operations.other_performances.oei_max_path">[docs]</a><span class="k">def</span> <span class="nf">oei_max_path</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">oei_ceil</span><span class="p">):</span>
+
+    <span class="n">propulsion</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span>
+
+    <span class="p">(</span><span class="n">MTO</span><span class="p">,</span><span class="n">MCN</span><span class="p">,</span><span class="n">MCL</span><span class="p">,</span><span class="n">MCR</span><span class="p">,</span><span class="n">FID</span><span class="p">)</span> <span class="o">=</span> <span class="n">propulsion</span><span class="o">.</span><span class="n">rating_code</span>
+
+    <span class="n">nei</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">altp</span> <span class="o">=</span> <span class="n">oei_ceil</span>
+    <span class="n">speed_mode</span> <span class="o">=</span> <span class="mi">2</span>                      <span class="c1"># WARNING : iso Mach climb mode</span>
+
+    <span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">,</span><span class="n">tstd</span><span class="p">,</span><span class="n">dtodz</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">atmosphere</span><span class="p">(</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">)</span>
+
+    <span class="n">mass</span> <span class="o">=</span> <span class="mf">0.95</span><span class="o">*</span><span class="n">weights</span><span class="o">.</span><span class="n">mtow</span>
+
+    <span class="n">rating</span> <span class="o">=</span> <span class="n">MCN</span>
+
+    <span class="n">oei_slope</span><span class="p">,</span><span class="n">vz</span><span class="p">,</span><span class="n">oei_mach</span><span class="p">,</span><span class="n">cz</span> <span class="o">=</span> <span class="n">flight</span><span class="o">.</span><span class="n">max_path</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">nei</span><span class="p">,</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">speed_mode</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">rating</span><span class="p">)</span>
+
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+    <span class="k">return</span> <span class="n">oei_slope</span><span class="p">,</span><span class="n">oei_mach</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="oei_path"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.operations.other_performances.html#marilib.aircraft_model.operations.other_performances.oei_path">[docs]</a><span class="k">def</span> <span class="nf">oei_path</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">oei_ceil</span><span class="p">,</span><span class="n">oei_mach</span><span class="p">):</span>
+
+    <span class="n">propulsion</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span>
+
+    <span class="p">(</span><span class="n">MTO</span><span class="p">,</span><span class="n">MCN</span><span class="p">,</span><span class="n">MCL</span><span class="p">,</span><span class="n">MCR</span><span class="p">,</span><span class="n">FID</span><span class="p">)</span> <span class="o">=</span> <span class="n">propulsion</span><span class="o">.</span><span class="n">rating_code</span>
+
+    <span class="n">nei</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">altp</span> <span class="o">=</span> <span class="n">oei_ceil</span>
+    <span class="n">speed_mode</span> <span class="o">=</span> <span class="mi">2</span>                      <span class="c1"># WARNING : iso Mach climb mode</span>
+
+    <span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">,</span><span class="n">tstd</span><span class="p">,</span><span class="n">dtodz</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">atmosphere</span><span class="p">(</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">)</span>
+
+    <span class="n">mass</span> <span class="o">=</span> <span class="mf">0.95</span><span class="o">*</span><span class="n">weights</span><span class="o">.</span><span class="n">mtow</span>
+
+    <span class="n">rating</span> <span class="o">=</span> <span class="n">MCN</span>
+
+    <span class="n">speed</span> <span class="o">=</span> <span class="n">flight</span><span class="o">.</span><span class="n">get_speed</span><span class="p">(</span><span class="n">pamb</span><span class="p">,</span><span class="n">speed_mode</span><span class="p">,</span><span class="n">oei_mach</span><span class="p">)</span>
+    <span class="n">oei_slope</span><span class="p">,</span><span class="n">vz</span> <span class="o">=</span> <span class="n">flight</span><span class="o">.</span><span class="n">air_path</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">nei</span><span class="p">,</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">speed_mode</span><span class="p">,</span><span class="n">speed</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">rating</span><span class="p">)</span>
+
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+    <span class="k">return</span> <span class="n">oei_slope</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="time_to_climb"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.operations.other_performances.html#marilib.aircraft_model.operations.other_performances.time_to_climb">[docs]</a><span class="k">def</span> <span class="nf">time_to_climb</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">toc</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">vcas1</span><span class="p">,</span><span class="n">vcas2</span><span class="p">,</span><span class="n">mach</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Time to climb to initial cruise altitude</span>
+<span class="sd">    For simplicity reasons, airplane mass is supposed constant</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">propulsion</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span>
+
+    <span class="p">(</span><span class="n">MTO</span><span class="p">,</span><span class="n">MCN</span><span class="p">,</span><span class="n">MCL</span><span class="p">,</span><span class="n">MCR</span><span class="p">,</span><span class="n">FID</span><span class="p">)</span> <span class="o">=</span> <span class="n">propulsion</span><span class="o">.</span><span class="n">rating_code</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">vcas1</span><span class="o">&gt;</span><span class="n">unit</span><span class="o">.</span><span class="n">mps_kt</span><span class="p">(</span><span class="mf">250.</span><span class="p">)):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;vcas1 = &quot;</span><span class="p">,</span><span class="n">unit</span><span class="o">.</span><span class="n">kt_mps</span><span class="p">(</span><span class="n">vcas1</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;time_to_climb_, vcas1 must be lower than or equal to 250kt&quot;</span><span class="p">)</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">vcas1</span><span class="o">&gt;</span><span class="n">vcas2</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;vcas1 = &quot;</span><span class="p">,</span><span class="n">unit</span><span class="o">.</span><span class="n">kt_mps</span><span class="p">(</span><span class="n">vcas1</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;vcas2 = &quot;</span><span class="p">,</span><span class="n">unit</span><span class="o">.</span><span class="n">kt_mps</span><span class="p">(</span><span class="n">vcas2</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;time_to_climb_, vcas1 must be lower than or equal to vcas2&quot;</span><span class="p">)</span>
+
+    <span class="n">cross_over_altp</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">cross_over_altp</span><span class="p">(</span><span class="n">vcas2</span><span class="p">,</span><span class="n">mach</span><span class="p">)</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">cross_over_altp</span><span class="o">&lt;</span><span class="n">unit</span><span class="o">.</span><span class="n">m_ft</span><span class="p">(</span><span class="mf">1500.</span><span class="p">)):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;time_to_climb_, cross over altitude is too low&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">toc</span><span class="o">&lt;</span><span class="n">cross_over_altp</span><span class="p">):</span>
+        <span class="n">cross_over_altp</span> <span class="o">=</span> <span class="n">toc</span>
+
+    <span class="c1"># Duration of initial climb</span>
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+    <span class="n">altp0</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_ft</span><span class="p">(</span><span class="mf">1500.</span><span class="p">)</span>
+    <span class="n">altp2</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_ft</span><span class="p">(</span><span class="mf">10000.</span><span class="p">)</span>
+    <span class="n">altp1</span> <span class="o">=</span> <span class="p">(</span><span class="n">altp0</span><span class="o">+</span><span class="n">altp2</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span>
+    <span class="n">altp</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">altp0</span><span class="p">,</span> <span class="n">altp1</span><span class="p">,</span> <span class="n">altp2</span><span class="p">])</span>
+
+    <span class="n">nei</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">speed_mode</span> <span class="o">=</span> <span class="mi">1</span>    <span class="c1"># Constant CAS</span>
+    <span class="n">rating</span> <span class="o">=</span> <span class="n">MCL</span>
+
+    <span class="p">[</span><span class="n">slope</span><span class="p">,</span><span class="n">v_z0</span><span class="p">]</span> <span class="o">=</span> <span class="n">flight</span><span class="o">.</span><span class="n">air_path</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">nei</span><span class="p">,</span><span class="n">altp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">disa</span><span class="p">,</span><span class="n">speed_mode</span><span class="p">,</span><span class="n">vcas1</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">rating</span><span class="p">)</span>
+    <span class="p">[</span><span class="n">slope</span><span class="p">,</span><span class="n">v_z1</span><span class="p">]</span> <span class="o">=</span> <span class="n">flight</span><span class="o">.</span><span class="n">air_path</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">nei</span><span class="p">,</span><span class="n">altp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">disa</span><span class="p">,</span><span class="n">speed_mode</span><span class="p">,</span><span class="n">vcas1</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">rating</span><span class="p">)</span>
+    <span class="p">[</span><span class="n">slope</span><span class="p">,</span><span class="n">v_z2</span><span class="p">]</span> <span class="o">=</span> <span class="n">flight</span><span class="o">.</span><span class="n">air_path</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">nei</span><span class="p">,</span><span class="n">altp</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">disa</span><span class="p">,</span><span class="n">speed_mode</span><span class="p">,</span><span class="n">vcas1</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">rating</span><span class="p">)</span>
+    <span class="n">v_z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v_z0</span><span class="p">,</span> <span class="n">v_z1</span><span class="p">,</span> <span class="n">v_z2</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">v_z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&lt;</span><span class="mf">0.</span> <span class="ow">or</span> <span class="n">v_z</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">&lt;</span><span class="mf">0.</span> <span class="ow">or</span> <span class="n">v_z</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">&lt;</span><span class="mf">0.</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;time_to_climb_, Climb to acceleration altitude is not possible&quot;</span><span class="p">)</span>
+
+    <span class="n">A</span> <span class="o">=</span> <span class="n">vander3</span><span class="p">(</span><span class="n">altp</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">v_z</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">trinome</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+
+    <span class="n">time1</span> <span class="o">=</span> <span class="p">((</span><span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">altp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="mf">3.</span> <span class="o">+</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">altp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">*</span><span class="n">altp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">time1</span> <span class="o">=</span> <span class="n">time1</span> <span class="o">-</span> <span class="p">((</span><span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">altp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mf">3.</span> <span class="o">+</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">altp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">*</span><span class="n">altp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Acceleration</span>
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+    <span class="n">vc0</span> <span class="o">=</span> <span class="n">vcas1</span>
+    <span class="n">vc2</span> <span class="o">=</span> <span class="n">vcas2</span>
+    <span class="n">vc1</span> <span class="o">=</span> <span class="p">(</span><span class="n">vc0</span><span class="o">+</span><span class="n">vc2</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span>
+    <span class="n">vcas</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">vc0</span><span class="p">,</span> <span class="n">vc1</span><span class="p">,</span> <span class="n">vc2</span><span class="p">])</span>
+
+    <span class="n">acc0</span> <span class="o">=</span> <span class="n">flight</span><span class="o">.</span><span class="n">acceleration</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">nei</span><span class="p">,</span><span class="n">altp</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">disa</span><span class="p">,</span><span class="n">speed_mode</span><span class="p">,</span><span class="n">vcas</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">mass</span><span class="p">,</span><span class="n">rating</span><span class="p">)</span>
+    <span class="n">acc1</span> <span class="o">=</span> <span class="n">flight</span><span class="o">.</span><span class="n">acceleration</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">nei</span><span class="p">,</span><span class="n">altp</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">disa</span><span class="p">,</span><span class="n">speed_mode</span><span class="p">,</span><span class="n">vcas</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">mass</span><span class="p">,</span><span class="n">rating</span><span class="p">)</span>
+    <span class="n">acc2</span> <span class="o">=</span> <span class="n">flight</span><span class="o">.</span><span class="n">acceleration</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">nei</span><span class="p">,</span><span class="n">altp</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">disa</span><span class="p">,</span><span class="n">speed_mode</span><span class="p">,</span><span class="n">vcas</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">mass</span><span class="p">,</span><span class="n">rating</span><span class="p">)</span>
+    <span class="n">acc</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">acc0</span><span class="p">,</span> <span class="n">acc1</span><span class="p">,</span> <span class="n">acc2</span><span class="p">])</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">acc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&lt;</span><span class="mf">0.</span> <span class="ow">or</span> <span class="n">acc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">&lt;</span><span class="mf">0.</span> <span class="ow">or</span> <span class="n">acc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">&lt;</span><span class="mf">0.</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;time_to_climb_, acceleration is not possible&quot;</span><span class="p">)</span>
+
+    <span class="n">A</span> <span class="o">=</span> <span class="n">vander3</span><span class="p">(</span><span class="n">vcas</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">acc</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">trinome</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+
+    <span class="n">time2</span> <span class="o">=</span> <span class="p">((</span><span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">vcas</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="mf">3.</span> <span class="o">+</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">vcas</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">*</span><span class="n">vcas</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">time2</span> <span class="o">=</span> <span class="n">time2</span> <span class="o">-</span> <span class="p">((</span><span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">vcas</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mf">3.</span> <span class="o">+</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">vcas</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">*</span><span class="n">vcas</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Duration of climb to cross over</span>
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+    <span class="n">altp0</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">m_ft</span><span class="p">(</span><span class="mf">10000.</span><span class="p">)</span>
+    <span class="n">altp2</span> <span class="o">=</span> <span class="n">cross_over_altp</span>
+    <span class="n">altp1</span> <span class="o">=</span> <span class="p">(</span><span class="n">altp0</span><span class="o">+</span><span class="n">altp2</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span>
+    <span class="n">altp</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">altp0</span><span class="p">,</span> <span class="n">altp1</span><span class="p">,</span> <span class="n">altp2</span><span class="p">])</span>
+
+    <span class="p">[</span><span class="n">slope</span><span class="p">,</span><span class="n">v_z0</span><span class="p">]</span> <span class="o">=</span> <span class="n">flight</span><span class="o">.</span><span class="n">air_path</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">nei</span><span class="p">,</span><span class="n">altp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">disa</span><span class="p">,</span><span class="n">speed_mode</span><span class="p">,</span><span class="n">vcas2</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">rating</span><span class="p">)</span>
+    <span class="p">[</span><span class="n">slope</span><span class="p">,</span><span class="n">v_z1</span><span class="p">]</span> <span class="o">=</span> <span class="n">flight</span><span class="o">.</span><span class="n">air_path</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">nei</span><span class="p">,</span><span class="n">altp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">disa</span><span class="p">,</span><span class="n">speed_mode</span><span class="p">,</span><span class="n">vcas2</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">rating</span><span class="p">)</span>
+    <span class="p">[</span><span class="n">slope</span><span class="p">,</span><span class="n">v_z2</span><span class="p">]</span> <span class="o">=</span> <span class="n">flight</span><span class="o">.</span><span class="n">air_path</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">nei</span><span class="p">,</span><span class="n">altp</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">disa</span><span class="p">,</span><span class="n">speed_mode</span><span class="p">,</span><span class="n">vcas2</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">rating</span><span class="p">)</span>
+    <span class="n">v_z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v_z0</span><span class="p">,</span> <span class="n">v_z1</span><span class="p">,</span> <span class="n">v_z2</span><span class="p">])</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">v_z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&lt;</span><span class="mf">0.</span> <span class="ow">or</span> <span class="n">v_z</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">&lt;</span><span class="mf">0.</span> <span class="ow">or</span> <span class="n">v_z</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">&lt;</span><span class="mf">0.</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;time_to_climb_, Climb to cross over altitude is not possible&quot;</span><span class="p">)</span>
+
+    <span class="n">A</span> <span class="o">=</span> <span class="n">vander3</span><span class="p">(</span><span class="n">altp</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">v_z</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">trinome</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+
+    <span class="n">time3</span> <span class="o">=</span> <span class="p">((</span><span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">altp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="mf">3.</span> <span class="o">+</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">altp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">*</span><span class="n">altp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">time3</span> <span class="o">=</span> <span class="n">time3</span> <span class="o">-</span> <span class="p">((</span><span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">altp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mf">3.</span> <span class="o">+</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">altp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">*</span><span class="n">altp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Duration of climb to altp</span>
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">cross_over_altp</span><span class="o">&lt;</span><span class="n">toc</span><span class="p">):</span>
+        <span class="n">altp0</span> <span class="o">=</span> <span class="n">cross_over_altp</span>
+        <span class="n">altp2</span> <span class="o">=</span> <span class="n">toc</span>
+        <span class="n">altp1</span> <span class="o">=</span> <span class="p">(</span><span class="n">altp0</span><span class="o">+</span><span class="n">altp2</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span>
+        <span class="n">altp</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">altp0</span><span class="p">,</span> <span class="n">altp1</span><span class="p">,</span> <span class="n">altp2</span><span class="p">])</span>
+
+        <span class="n">speed_mode</span> <span class="o">=</span> <span class="mi">2</span>    <span class="c1"># mach</span>
+
+        <span class="p">[</span><span class="n">slope</span><span class="p">,</span><span class="n">v_z0</span><span class="p">]</span> <span class="o">=</span> <span class="n">flight</span><span class="o">.</span><span class="n">air_path</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">nei</span><span class="p">,</span><span class="n">altp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">disa</span><span class="p">,</span><span class="n">speed_mode</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">rating</span><span class="p">)</span>
+        <span class="p">[</span><span class="n">slope</span><span class="p">,</span><span class="n">v_z1</span><span class="p">]</span> <span class="o">=</span> <span class="n">flight</span><span class="o">.</span><span class="n">air_path</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">nei</span><span class="p">,</span><span class="n">altp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">disa</span><span class="p">,</span><span class="n">speed_mode</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">rating</span><span class="p">)</span>
+        <span class="p">[</span><span class="n">slope</span><span class="p">,</span><span class="n">v_z2</span><span class="p">]</span> <span class="o">=</span> <span class="n">flight</span><span class="o">.</span><span class="n">air_path</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">nei</span><span class="p">,</span><span class="n">altp</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">disa</span><span class="p">,</span><span class="n">speed_mode</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">rating</span><span class="p">)</span>
+        <span class="n">v_z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v_z0</span><span class="p">,</span> <span class="n">v_z1</span><span class="p">,</span> <span class="n">v_z2</span><span class="p">])</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="n">v_z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&lt;</span><span class="mf">0.</span> <span class="ow">or</span> <span class="n">v_z</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">&lt;</span><span class="mf">0.</span> <span class="ow">or</span> <span class="n">v_z</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">&lt;</span><span class="mf">0.</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;time_to_climb_, Climb to top of climb is not possible&quot;</span><span class="p">)</span>
+
+        <span class="n">A</span> <span class="o">=</span> <span class="n">vander3</span><span class="p">(</span><span class="n">altp</span><span class="p">)</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">v_z</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">trinome</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+
+        <span class="n">time4</span> <span class="o">=</span>  <span class="p">((</span><span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">altp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="mf">3.</span> <span class="o">+</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">altp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">*</span><span class="n">altp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> \
+               <span class="o">-</span> <span class="p">((</span><span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">altp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mf">3.</span> <span class="o">+</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">altp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">*</span><span class="n">altp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">time4</span> <span class="o">=</span> <span class="mf">0.</span>
+
+    <span class="c1">#    Total time</span>
+    <span class="c1">#-----------------------------------------------------------------------------------------------------------</span>
+    <span class="n">ttc</span> <span class="o">=</span> <span class="n">time1</span> <span class="o">+</span> <span class="n">time2</span> <span class="o">+</span> <span class="n">time3</span> <span class="o">+</span> <span class="n">time4</span>
+
+    <span class="k">return</span> <span class="n">ttc</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="take_off"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.operations.other_performances.html#marilib.aircraft_model.operations.other_performances.take_off">[docs]</a><span class="k">def</span> <span class="nf">take_off</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">kvs1g</span><span class="p">,</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">hld_conf</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Take off field length and climb path at 35 ft depending on stall margin (kVs1g)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">wing</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span>
+    <span class="n">propulsion</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span>
+
+    <span class="p">(</span><span class="n">MTO</span><span class="p">,</span><span class="n">MCN</span><span class="p">,</span><span class="n">MCL</span><span class="p">,</span><span class="n">MCR</span><span class="p">,</span><span class="n">FID</span><span class="p">)</span> <span class="o">=</span> <span class="n">propulsion</span><span class="o">.</span><span class="n">rating_code</span>
+
+    <span class="n">czmax</span><span class="p">,</span><span class="n">cz_0</span> <span class="o">=</span> <span class="n">airplane_aero</span><span class="o">.</span><span class="n">high_lift</span><span class="p">(</span><span class="n">wing</span><span class="p">,</span><span class="n">hld_conf</span><span class="p">)</span>
+
+    <span class="n">rating</span> <span class="o">=</span> <span class="n">MTO</span>
+
+    <span class="p">[</span><span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">,</span><span class="n">tstd</span><span class="p">,</span><span class="n">dtodz</span><span class="p">]</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">atmosphere</span><span class="p">(</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">)</span>
+
+    <span class="p">[</span><span class="n">rho</span><span class="p">,</span><span class="n">sig</span><span class="p">]</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">air_density</span><span class="p">(</span><span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">)</span>
+
+    <span class="n">cz_to</span> <span class="o">=</span> <span class="n">czmax</span> <span class="o">/</span> <span class="n">kvs1g</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="n">mach</span> <span class="o">=</span> <span class="n">flight</span><span class="o">.</span><span class="n">speed_from_lift</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">,</span><span class="n">cz_to</span><span class="p">,</span><span class="n">mass</span><span class="p">)</span>
+
+    <span class="n">throttle</span> <span class="o">=</span> <span class="mf">1.</span>
+
+    <span class="n">nei</span> <span class="o">=</span> <span class="mi">0</span>    <span class="c1"># For Magic Line factor computation</span>
+
+    <span class="n">fn</span><span class="p">,</span><span class="n">sfc</span><span class="p">,</span><span class="n">sec</span><span class="p">,</span><span class="n">data</span> <span class="o">=</span> <span class="n">propu</span><span class="o">.</span><span class="n">thrust</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">rating</span><span class="p">,</span><span class="n">throttle</span><span class="p">,</span><span class="n">nei</span><span class="p">)</span>
+
+    <span class="n">ml_factor</span> <span class="o">=</span> <span class="n">mass</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">cz_to</span><span class="o">*</span><span class="n">fn</span><span class="o">*</span><span class="n">wing</span><span class="o">.</span><span class="n">area</span><span class="o">*</span><span class="n">sig</span><span class="o">**</span><span class="mf">0.8</span> <span class="p">)</span>  <span class="c1"># Magic Line factor</span>
+
+    <span class="n">tofl</span> <span class="o">=</span> <span class="mf">15.5</span><span class="o">*</span><span class="n">ml_factor</span> <span class="o">+</span> <span class="mf">100.</span>    <span class="c1"># Magic line</span>
+
+    <span class="n">nei</span> <span class="o">=</span> <span class="mi">1</span>    <span class="c1"># For 2nd segment computation</span>
+    <span class="n">speed_mode</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">speed</span> <span class="o">=</span> <span class="n">flight</span><span class="o">.</span><span class="n">get_speed</span><span class="p">(</span><span class="n">pamb</span><span class="p">,</span><span class="n">speed_mode</span><span class="p">,</span><span class="n">mach</span><span class="p">)</span>
+
+    <span class="n">seg2path</span><span class="p">,</span><span class="n">vz</span> <span class="o">=</span> <span class="n">flight</span><span class="o">.</span><span class="n">air_path</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">nei</span><span class="p">,</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">speed_mode</span><span class="p">,</span><span class="n">speed</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">rating</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">seg2path</span><span class="p">,</span><span class="n">tofl</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="take_off_field_length"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.operations.other_performances.html#marilib.aircraft_model.operations.other_performances.take_off_field_length">[docs]</a><span class="k">def</span> <span class="nf">take_off_field_length</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">hld_conf</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Take off field length and climb path with eventual kVs1g increase to recover min regulatory slope</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">kvs1g</span> <span class="o">=</span> <span class="n">regul</span><span class="o">.</span><span class="n">kvs1g_min_take_off</span><span class="p">()</span>
+
+    <span class="p">[</span><span class="n">seg2_path</span><span class="p">,</span><span class="n">tofl</span><span class="p">]</span> <span class="o">=</span> <span class="n">take_off</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">kvs1g</span><span class="p">,</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">hld_conf</span><span class="p">)</span>
+
+    <span class="n">n_engine</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">n_engine</span>
+
+    <span class="n">seg2_min_path</span> <span class="o">=</span> <span class="n">regul</span><span class="o">.</span><span class="n">seg2_min_path</span><span class="p">(</span><span class="n">n_engine</span><span class="p">)</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">seg2_min_path</span><span class="o">&lt;</span><span class="n">seg2_path</span><span class="p">):</span>
+        <span class="n">limitation</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dkvs1g</span> <span class="o">=</span> <span class="mf">0.005</span>
+        <span class="n">kvs1g_</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">])</span>
+        <span class="n">kvs1g_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">kvs1g</span>
+        <span class="n">kvs1g_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">kvs1g_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">dkvs1g</span>
+
+        <span class="n">seg2_path_</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">])</span>
+        <span class="n">seg2_path_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">seg2_path</span>
+        <span class="n">seg2_path_</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">trash</span> <span class="o">=</span> <span class="n">take_off</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">kvs1g_</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">hld_conf</span><span class="p">)</span>
+
+        <span class="k">while</span><span class="p">(</span><span class="n">seg2_path_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&lt;</span><span class="n">seg2_path_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">seg2_path_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">&lt;</span><span class="n">seg2_min_path</span><span class="p">):</span>
+            <span class="n">kvs1g_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">kvs1g_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">kvs1g_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">kvs1g_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">dkvs1g</span>
+            <span class="n">seg2_path_</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">trash</span> <span class="o">=</span> <span class="n">take_off</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">kvs1g_</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">hld_conf</span><span class="p">)</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="n">seg2_min_path</span><span class="o">&lt;</span><span class="n">seg2_path_</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">kvs1g</span> <span class="o">=</span> <span class="n">kvs1g_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">((</span><span class="n">kvs1g_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">kvs1g_</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">seg2_path_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">seg2_path_</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="o">*</span><span class="p">(</span><span class="n">seg2_min_path</span><span class="o">-</span><span class="n">seg2_path_</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="p">[</span><span class="n">seg2_path</span><span class="p">,</span><span class="n">tofl</span><span class="p">]</span> <span class="o">=</span> <span class="n">take_off</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">kvs1g</span><span class="p">,</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">hld_conf</span><span class="p">)</span>
+            <span class="n">seg2_path</span> <span class="o">=</span> <span class="n">seg2_min_path</span>
+            <span class="n">limitation</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tofl</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+            <span class="n">kvs1g</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+            <span class="n">seg2_path</span> <span class="o">=</span> <span class="mf">0.</span>
+            <span class="n">limitation</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">return</span> <span class="n">tofl</span><span class="p">,</span><span class="n">seg2_path</span><span class="p">,</span><span class="n">kvs1g</span><span class="p">,</span><span class="n">limitation</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="approach_speed"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.operations.other_performances.html#marilib.aircraft_model.operations.other_performances.approach_speed">[docs]</a><span class="k">def</span> <span class="nf">approach_speed</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">hld_conf</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Minimum approach speed (VLS)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">wing</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span>
+
+    <span class="n">g</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">gravity</span><span class="p">()</span>
+
+    <span class="n">czmax</span><span class="p">,</span><span class="n">trash</span> <span class="o">=</span> <span class="n">airplane_aero</span><span class="o">.</span><span class="n">high_lift</span><span class="p">(</span><span class="n">wing</span><span class="p">,</span><span class="n">hld_conf</span><span class="p">)</span>
+
+    <span class="n">stall_margin</span> <span class="o">=</span> <span class="n">regul</span><span class="o">.</span><span class="n">kvs1g_min_landing</span><span class="p">()</span>
+
+    <span class="p">[</span><span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">,</span><span class="n">tstd</span><span class="p">,</span><span class="n">dtodz</span><span class="p">]</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">atmosphere</span><span class="p">(</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">)</span>
+
+    <span class="p">[</span><span class="n">rho</span><span class="p">,</span><span class="n">sig</span><span class="p">]</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">air_density</span><span class="p">(</span><span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">)</span>
+
+    <span class="n">vapp</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">mass</span><span class="o">*</span><span class="n">g</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">rho</span><span class="o">*</span><span class="n">wing</span><span class="o">.</span><span class="n">area</span><span class="o">*</span><span class="p">(</span><span class="n">czmax</span> <span class="o">/</span> <span class="n">stall_margin</span><span class="o">**</span><span class="mi">2</span><span class="p">)))</span>
+
+    <span class="k">return</span> <span class="n">vapp</span></div>
+
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../../marilib.html" >marilib</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

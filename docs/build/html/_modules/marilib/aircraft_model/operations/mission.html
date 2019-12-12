@@ -1,0 +1,222 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.aircraft_model.operations.mission &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../../marilib.html" accesskey="U">marilib</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for marilib.aircraft_model.operations.mission</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Thu Jan 24 23:22:21 2019</span>
+
+<span class="sd">@author: DRUOT Thierry : original Scilab implementation</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">from</span> <span class="nn">marilib.tools.math</span> <span class="k">import</span> <span class="n">maximize_1d</span>
+
+<span class="kn">from</span> <span class="nn">marilib.earth</span> <span class="k">import</span> <span class="n">environment</span> <span class="k">as</span> <span class="n">earth</span>
+
+<span class="kn">from</span> <span class="nn">marilib.aircraft_model.operations</span> <span class="k">import</span> <span class="n">mission_b</span><span class="p">,</span> <span class="n">mission_f</span>
+
+<span class="kn">from</span> <span class="nn">marilib.aircraft_model.operations</span> <span class="k">import</span> <span class="n">other_performances</span> <span class="k">as</span> <span class="n">perfo</span>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_payload_range_missions"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.operations.mission.html#marilib.aircraft_model.operations.mission.eval_payload_range_missions">[docs]</a><span class="k">def</span> <span class="nf">eval_payload_range_missions</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute Payload - Range diagram corner points</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">fuel_type</span><span class="o">==</span><span class="s2">&quot;Battery&quot;</span><span class="p">):</span>
+        <span class="n">mission_b</span><span class="o">.</span><span class="n">payload_range_b_missions</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mission_f</span><span class="o">.</span><span class="n">payload_range_f_missions</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_nominal_climb_constraints"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.operations.mission.html#marilib.aircraft_model.operations.mission.eval_nominal_climb_constraints">[docs]</a><span class="k">def</span> <span class="nf">eval_nominal_climb_constraints</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Nominal mission climb constraints evaluation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">disa</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">altp</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">nominal_mission</span><span class="o">.</span><span class="n">nominal_cruise_altp</span>
+    <span class="n">mach</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">nominal_mission</span><span class="o">.</span><span class="n">nominal_cruise_mach</span>
+
+    <span class="n">vz_clb</span><span class="p">,</span><span class="n">vz_crz</span> <span class="o">=</span> <span class="n">perfo</span><span class="o">.</span><span class="n">climb_speeds</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">altp</span><span class="p">,</span><span class="n">mach</span><span class="p">)</span>
+
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">nominal_mission</span><span class="o">.</span><span class="n">vz_cruise_margin</span> <span class="o">=</span> <span class="n">vz_crz</span> <span class="o">-</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">high_speed</span><span class="o">.</span><span class="n">req_vz_cruise</span>
+    <span class="n">aircraft</span><span class="o">.</span><span class="n">nominal_mission</span><span class="o">.</span><span class="n">vz_climb_margin</span> <span class="o">=</span> <span class="n">vz_clb</span> <span class="o">-</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">high_speed</span><span class="o">.</span><span class="n">req_vz_climb</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_nominal_mission"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.operations.mission.html#marilib.aircraft_model.operations.mission.eval_nominal_mission">[docs]</a><span class="k">def</span> <span class="nf">eval_nominal_mission</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Nominal mission evaluation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">fuel_type</span><span class="o">==</span><span class="s2">&quot;Battery&quot;</span><span class="p">):</span>
+        <span class="n">mission_b</span><span class="o">.</span><span class="n">nominal_b_mission</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mission_f</span><span class="o">.</span><span class="n">nominal_f_mission</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span></div>
+
+<span class="c1">#===========================================================================================================</span>
+<span class="k">def</span> <span class="nf">eval_mission_coupling</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Nominal mission evaluation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">fuel_type</span><span class="o">==</span><span class="s2">&quot;Battery&quot;</span><span class="p">):</span>
+        <span class="n">mission_b</span><span class="o">.</span><span class="n">eval_b_mission_coupling</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mission_f</span><span class="o">.</span><span class="n">eval_f_mission_coupling</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_mission_coupling"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.operations.mission.html#marilib.aircraft_model.operations.mission.eval_mission_coupling">[docs]</a><span class="k">def</span> <span class="nf">eval_mission_coupling</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mass-Mission coupling</span>
+<span class="sd">    This relation is put apart from nominal_mission because GEMS does not manage functions that compute their own input</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">fuel_type</span><span class="o">==</span><span class="s2">&quot;Battery&quot;</span><span class="p">):</span>
+        <span class="n">mission_b</span><span class="o">.</span><span class="n">b_mission_coupling</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mission_f</span><span class="o">.</span><span class="n">f_mission_coupling</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="eval_cost_mission"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.operations.mission.html#marilib.aircraft_model.operations.mission.eval_cost_mission">[docs]</a><span class="k">def</span> <span class="nf">eval_cost_mission</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cost mission evaluation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">fuel_type</span><span class="o">==</span><span class="s2">&quot;Battery&quot;</span><span class="p">):</span>
+        <span class="n">mission_b</span><span class="o">.</span><span class="n">cost_b_mission</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mission_f</span><span class="o">.</span><span class="n">cost_f_mission</span><span class="p">(</span><span class="n">aircraft</span><span class="p">)</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="mission_tow"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.operations.mission.html#marilib.aircraft_model.operations.mission.mission_tow">[docs]</a><span class="k">def</span> <span class="nf">mission_tow</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">payload</span><span class="p">,</span><span class="nb">range</span><span class="p">,</span><span class="n">altp</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">disa</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mission simulation (take off weight is output)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">fuel_type</span><span class="o">==</span><span class="s2">&quot;Battery&quot;</span><span class="p">):</span>
+        <span class="n">tow</span><span class="p">,</span><span class="n">block_enrg</span><span class="p">,</span><span class="n">block_time</span><span class="p">,</span><span class="n">total_enrg</span> <span class="o">=</span> <span class="n">mission_b</span><span class="o">.</span><span class="n">b_mission_tow</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">payload</span><span class="p">,</span><span class="nb">range</span><span class="p">,</span><span class="n">altp</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">disa</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tow</span><span class="p">,</span><span class="n">block_enrg</span><span class="p">,</span><span class="n">block_time</span><span class="p">,</span><span class="n">total_enrg</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tow</span><span class="p">,</span><span class="n">block_fuel</span><span class="p">,</span><span class="n">block_time</span><span class="p">,</span><span class="n">total_fuel</span> <span class="o">=</span> <span class="n">mission_f</span><span class="o">.</span><span class="n">f_mission_tow</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">payload</span><span class="p">,</span><span class="nb">range</span><span class="p">,</span><span class="n">altp</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">disa</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tow</span><span class="p">,</span><span class="n">block_fuel</span><span class="p">,</span><span class="n">block_time</span><span class="p">,</span><span class="n">total_fuel</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="specific_air_range"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.operations.mission.html#marilib.aircraft_model.operations.mission.specific_air_range">[docs]</a><span class="k">def</span> <span class="nf">specific_air_range</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">altp</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">disa</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">fuel_type</span><span class="o">==</span><span class="s2">&quot;Battery&quot;</span><span class="p">):</span>
+        <span class="n">sar</span> <span class="o">=</span> <span class="n">mission_b</span><span class="o">.</span><span class="n">b_specific_air_range</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">altp</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">disa</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sar</span> <span class="o">=</span> <span class="n">mission_f</span><span class="o">.</span><span class="n">f_specific_air_range</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">altp</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">disa</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sar</span></div>
+
+
+<span class="c1">#===========================================================================================================</span>
+<div class="viewcode-block" id="sar_max"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.operations.mission.html#marilib.aircraft_model.operations.mission.sar_max">[docs]</a><span class="k">def</span> <span class="nf">sar_max</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">disa</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">fct_sar_max</span><span class="p">(</span><span class="n">altp</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="c1">#=======================================================================================</span>
+        <span class="n">sar</span> <span class="o">=</span> <span class="n">specific_air_range</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span><span class="n">altp</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">disa</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sar</span>
+    <span class="c1">#---------------------------------------------------------------------------------------</span>
+
+    <span class="n">altp_ini</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">design_driver</span><span class="o">.</span><span class="n">ref_cruise_altp</span>
+
+    <span class="n">d_altp</span> <span class="o">=</span> <span class="mf">250.</span>
+
+    <span class="n">fct</span> <span class="o">=</span> <span class="p">[</span><span class="n">fct_sar_max</span><span class="p">,</span> <span class="n">mass</span><span class="p">,</span><span class="n">mach</span><span class="p">,</span><span class="n">disa</span><span class="p">,</span><span class="n">aircraft</span><span class="p">]</span>
+
+    <span class="p">(</span><span class="n">altp_sar_max</span><span class="p">,</span><span class="n">sar_max</span><span class="p">,</span><span class="n">rc</span><span class="p">)</span> <span class="o">=</span> <span class="n">maximize_1d</span><span class="p">(</span><span class="n">altp_ini</span><span class="p">,</span><span class="n">d_altp</span><span class="p">,</span><span class="n">fct</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">sar_max</span><span class="p">,</span><span class="n">altp_sar_max</span></div>
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../../marilib.html" >marilib</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,292 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>marilib.aircraft_model.airplane.airplane_design &#8212; MARILib 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../../marilib.html" accesskey="U">marilib</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for marilib.aircraft_model.airplane.airplane_design</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Thu Jan 24 23:22:21 2019</span>
+
+<span class="sd">.. moduleauthor:: DRUOT Thierry for original Scilab implementation</span>
+<span class="sd">.. moduleauthor:: PETEILH Nicolas for portage to Python</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">marilib.earth</span> <span class="k">import</span> <span class="n">environment</span> <span class="k">as</span> <span class="n">earth</span>
+
+<span class="kn">from</span> <span class="nn">marilib.aircraft_model.airplane</span> <span class="k">import</span> <span class="n">aerodynamics</span> <span class="k">as</span> <span class="n">airplane_aero</span>
+
+
+<span class="c1"># ===========================================================================================================</span>
+<div class="viewcode-block" id="eval_payload_mass"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.airplane.airplane_design.html#marilib.aircraft_model.airplane.airplane_design.eval_payload_mass">[docs]</a><span class="k">def</span> <span class="nf">eval_payload_mass</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Payload mass &amp; CG estimation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cabin</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">cabin</span>
+    <span class="n">fuselage</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">fuselage</span>
+    <span class="n">wing</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span>
+
+    <span class="n">payload</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">payload</span>
+
+    <span class="n">payload</span><span class="o">.</span><span class="n">m_container_pallet</span> <span class="o">=</span> <span class="mf">4.36</span><span class="o">*</span><span class="n">fuselage</span><span class="o">.</span><span class="n">width</span><span class="o">*</span><span class="n">fuselage</span><span class="o">.</span><span class="n">length</span>        <span class="c1"># Containers and pallets</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">fuel_type</span><span class="o">==</span><span class="s2">&quot;Battery&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">ef1_battery</span><span class="o">.</span><span class="n">stacking</span><span class="o">==</span><span class="s2">&quot;Variable&quot;</span><span class="p">):</span>
+            <span class="n">payload</span><span class="o">.</span><span class="n">maximum</span> <span class="o">=</span> <span class="n">cabin</span><span class="o">.</span><span class="n">n_pax_ref</span><span class="o">*</span><span class="n">payload</span><span class="o">.</span><span class="n">m_pax_max</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">payload</span><span class="o">.</span><span class="n">maximum</span> <span class="o">=</span> <span class="n">cabin</span><span class="o">.</span><span class="n">n_pax_ref</span><span class="o">*</span><span class="n">payload</span><span class="o">.</span><span class="n">m_pax_nominal</span> <span class="c1"># Because in this case, MZFW = MTOW</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">payload</span><span class="o">.</span><span class="n">maximum</span> <span class="o">=</span> <span class="n">cabin</span><span class="o">.</span><span class="n">n_pax_ref</span><span class="o">*</span><span class="n">payload</span><span class="o">.</span><span class="n">m_pax_max</span>
+
+    <span class="n">payload</span><span class="o">.</span><span class="n">nominal</span> <span class="o">=</span> <span class="n">cabin</span><span class="o">.</span><span class="n">n_pax_ref</span><span class="o">*</span><span class="n">payload</span><span class="o">.</span><span class="n">m_pax_nominal</span>
+
+    <span class="n">payload</span><span class="o">.</span><span class="n">max_fwd_req_cg</span> <span class="o">=</span> <span class="n">cabin</span><span class="o">.</span><span class="n">fwd_limit</span> <span class="o">+</span> <span class="mf">0.35</span><span class="o">*</span><span class="n">cabin</span><span class="o">.</span><span class="n">length</span>        <span class="c1"># Payload max forward CG</span>
+    <span class="n">payload</span><span class="o">.</span><span class="n">max_fwd_mass</span> <span class="o">=</span> <span class="mf">0.60</span><span class="o">*</span><span class="n">cabin</span><span class="o">.</span><span class="n">n_pax_ref</span><span class="o">*</span><span class="n">payload</span><span class="o">.</span><span class="n">m_pax_max</span>       <span class="c1"># Payload mass for max forward CG</span>
+
+    <span class="n">payload</span><span class="o">.</span><span class="n">max_bwd_req_cg</span> <span class="o">=</span> <span class="n">cabin</span><span class="o">.</span><span class="n">fwd_limit</span> <span class="o">+</span> <span class="mf">0.70</span><span class="o">*</span><span class="n">cabin</span><span class="o">.</span><span class="n">length</span>        <span class="c1"># Payload max backward CG</span>
+    <span class="n">payload</span><span class="o">.</span><span class="n">max_bwd_mass</span> <span class="o">=</span> <span class="mf">0.70</span><span class="o">*</span><span class="n">cabin</span><span class="o">.</span><span class="n">n_pax_ref</span><span class="o">*</span><span class="n">payload</span><span class="o">.</span><span class="n">m_pax_max</span>       <span class="c1"># Payload mass for max backward CG</span>
+
+    <span class="n">payload</span><span class="o">.</span><span class="n">cg_container_pallet</span> <span class="o">=</span> <span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="n">cabin</span><span class="o">.</span><span class="n">fwd_limit</span> <span class="o">+</span> <span class="n">wing</span><span class="o">.</span><span class="n">x_root</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="n">wing</span><span class="o">.</span><span class="n">x_root</span>  <span class="o">+</span><span class="n">wing</span><span class="o">.</span><span class="n">c_root</span><span class="o">+</span><span class="n">cabin</span><span class="o">.</span><span class="n">fwd_limit</span><span class="o">+</span><span class="n">cabin</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1"># ===========================================================================================================</span>
+<div class="viewcode-block" id="eval_system_mass"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.airplane.airplane_design.html#marilib.aircraft_model.airplane.airplane_design.eval_system_mass">[docs]</a><span class="k">def</span> <span class="nf">eval_system_mass</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Systems mass &amp; CG estimation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">fuselage</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">fuselage</span>
+    <span class="n">wing</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span>
+    <span class="n">ldg</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">landing_gears</span>
+    <span class="n">vtp</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">vertical_tail</span>
+    <span class="n">htp</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">horizontal_tail</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span>
+
+    <span class="n">systems</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">systems</span>
+
+    <span class="n">propulsion</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span>
+
+    <span class="n">systems</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="mf">0.545</span><span class="o">*</span><span class="n">weights</span><span class="o">.</span><span class="n">mtow</span><span class="o">**</span><span class="mf">0.8</span>    <span class="c1"># global mass of all systems</span>
+
+    <span class="n">systems</span><span class="o">.</span><span class="n">c_g</span> <span class="o">=</span> <span class="mf">0.50</span><span class="o">*</span><span class="n">fuselage</span><span class="o">.</span><span class="n">c_g</span> <span class="o">+</span> <span class="mf">0.20</span><span class="o">*</span><span class="n">wing</span><span class="o">.</span><span class="n">c_g</span> <span class="o">+</span> <span class="mf">0.10</span><span class="o">*</span><span class="n">ldg</span><span class="o">.</span><span class="n">c_g</span> <span class="o">+</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">propulsion</span><span class="o">.</span><span class="n">c_g</span> <span class="o">+</span> <span class="mf">0.05</span><span class="o">*</span><span class="n">htp</span><span class="o">.</span><span class="n">c_g</span> <span class="o">+</span> <span class="mf">0.05</span><span class="o">*</span><span class="n">vtp</span><span class="o">.</span><span class="n">c_g</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1"># ===========================================================================================================</span>
+<div class="viewcode-block" id="eval_aircraft_weights"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.airplane.airplane_design.html#marilib.aircraft_model.airplane.airplane_design.eval_aircraft_weights">[docs]</a><span class="k">def</span> <span class="nf">eval_aircraft_weights</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Weights estimation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cabin</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">cabin</span>
+    <span class="n">fuselage</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">fuselage</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">payload</span>
+    <span class="n">wing</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span>
+    <span class="n">htp</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">horizontal_tail</span>
+    <span class="n">vtp</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">vertical_tail</span>
+    <span class="n">ldg</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">landing_gears</span>
+    <span class="n">systems</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">systems</span>
+    <span class="n">propulsion</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span>
+    <span class="n">tanks</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">tanks</span>
+
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span>
+
+    <span class="n">weights</span><span class="o">.</span><span class="n">mwe</span> <span class="o">=</span>  <span class="n">cabin</span><span class="o">.</span><span class="n">m_furnishing</span> <span class="o">+</span> <span class="n">fuselage</span><span class="o">.</span><span class="n">mass</span> <span class="o">+</span> <span class="n">wing</span><span class="o">.</span><span class="n">mass</span> <span class="o">+</span> <span class="n">htp</span><span class="o">.</span><span class="n">mass</span> <span class="o">+</span> <span class="n">vtp</span><span class="o">.</span><span class="n">mass</span> \
+                 <span class="o">+</span> <span class="n">ldg</span><span class="o">.</span><span class="n">mass</span> <span class="o">+</span> <span class="n">systems</span><span class="o">.</span><span class="n">mass</span> <span class="o">+</span> <span class="n">propulsion</span><span class="o">.</span><span class="n">mass</span> <span class="o">+</span> <span class="n">tanks</span><span class="o">.</span><span class="n">pod_mass</span>
+
+    <span class="n">weights</span><span class="o">.</span><span class="n">owe</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">mwe</span> <span class="o">+</span> <span class="n">cabin</span><span class="o">.</span><span class="n">m_op_item</span> <span class="o">+</span> <span class="n">payload</span><span class="o">.</span><span class="n">m_container_pallet</span> <span class="o">+</span> <span class="n">weights</span><span class="o">.</span><span class="n">battery_in_owe</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">propulsion</span><span class="o">.</span><span class="n">fuel_type</span><span class="o">==</span><span class="s2">&quot;Battery&quot;</span><span class="p">):</span>
+        <span class="n">mzfw</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">mtow</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mzfw</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">owe</span> <span class="o">+</span> <span class="n">payload</span><span class="o">.</span><span class="n">maximum</span>
+
+    <span class="n">weights</span><span class="o">.</span><span class="n">mass_constraint_1</span> <span class="o">=</span> <span class="p">(</span><span class="n">weights</span><span class="o">.</span><span class="n">mzfw</span> <span class="o">-</span> <span class="n">mzfw</span><span class="p">)</span> <span class="o">/</span> <span class="n">weights</span><span class="o">.</span><span class="n">mzfw</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">propulsion</span><span class="o">.</span><span class="n">fuel_type</span><span class="o">==</span><span class="s2">&quot;Battery&quot;</span><span class="p">):</span>
+        <span class="n">mlw</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">mtow</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">cabin</span><span class="o">.</span><span class="n">n_pax_ref</span><span class="o">&gt;</span><span class="mi">100</span><span class="p">):</span>
+            <span class="n">mlw</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">weights</span><span class="o">.</span><span class="n">mtow</span> <span class="p">,</span> <span class="p">(</span><span class="mf">1.07</span><span class="o">*</span><span class="n">weights</span><span class="o">.</span><span class="n">mzfw</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mlw</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">mtow</span>
+
+    <span class="n">weights</span><span class="o">.</span><span class="n">mass_constraint_2</span> <span class="o">=</span> <span class="p">(</span><span class="n">weights</span><span class="o">.</span><span class="n">mlw</span> <span class="o">-</span> <span class="n">mlw</span><span class="p">)</span> <span class="o">/</span> <span class="n">weights</span><span class="o">.</span><span class="n">mlw</span>
+
+    <span class="c1"># WARNING : for EF1 architecture, MFW corresponds to max battery weight</span>
+    <span class="n">weights</span><span class="o">.</span><span class="n">mfw</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">tanks</span><span class="o">.</span><span class="n">mfw_volume_limited</span><span class="p">,</span> <span class="n">weights</span><span class="o">.</span><span class="n">mtow</span> <span class="o">-</span> <span class="n">weights</span><span class="o">.</span><span class="n">owe</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1"># ===========================================================================================================</span>
+<div class="viewcode-block" id="eval_mass_coupling"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.airplane.airplane_design.html#marilib.aircraft_model.airplane.airplane_design.eval_mass_coupling">[docs]</a><span class="k">def</span> <span class="nf">eval_mass_coupling</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Weights estimation internal coupling</span>
+<span class="sd">    This relation is put apart from aircraft_weights because GEMS does not manage functions that compute their own input</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cabin</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">cabin</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">payload</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">fuel_type</span><span class="o">!=</span><span class="s2">&quot;Battery&quot;</span><span class="p">):</span>
+
+        <span class="n">weights</span><span class="o">.</span><span class="n">mzfw</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">owe</span> <span class="o">+</span> <span class="n">payload</span><span class="o">.</span><span class="n">maximum</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">cabin</span><span class="o">.</span><span class="n">n_pax_ref</span><span class="o">&gt;</span><span class="mi">100</span><span class="p">):</span>
+            <span class="n">weights</span><span class="o">.</span><span class="n">mlw</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">weights</span><span class="o">.</span><span class="n">mtow</span> <span class="p">,</span> <span class="p">(</span><span class="mf">1.07</span><span class="o">*</span><span class="n">weights</span><span class="o">.</span><span class="n">mzfw</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">weights</span><span class="o">.</span><span class="n">mlw</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">mtow</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1"># ===========================================================================================================</span>
+<div class="viewcode-block" id="eval_aircraft_cg"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.airplane.airplane_design.html#marilib.aircraft_model.airplane.airplane_design.eval_aircraft_cg">[docs]</a><span class="k">def</span> <span class="nf">eval_aircraft_cg</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Center of gravity estimation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cabin</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">cabin</span>
+    <span class="n">fuselage</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">fuselage</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">payload</span>
+    <span class="n">wing</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span>
+    <span class="n">htp</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">horizontal_tail</span>
+    <span class="n">vtp</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">vertical_tail</span>
+    <span class="n">ldg</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">landing_gears</span>
+    <span class="n">systems</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">systems</span>
+    <span class="n">propulsion</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">propulsion</span>
+    <span class="n">tanks</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">tanks</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">weights</span>
+
+    <span class="n">c_g</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">center_of_gravity</span>
+
+    <span class="n">c_g</span><span class="o">.</span><span class="n">mwe</span> <span class="o">=</span> <span class="p">(</span>  <span class="n">fuselage</span><span class="o">.</span><span class="n">c_g</span><span class="o">*</span><span class="n">fuselage</span><span class="o">.</span><span class="n">mass</span> <span class="o">+</span> <span class="n">cabin</span><span class="o">.</span><span class="n">cg_furnishing</span><span class="o">*</span><span class="n">cabin</span><span class="o">.</span><span class="n">m_furnishing</span> <span class="o">+</span> <span class="n">wing</span><span class="o">.</span><span class="n">c_g</span><span class="o">*</span><span class="n">wing</span><span class="o">.</span><span class="n">mass</span>
+               <span class="o">+</span> <span class="n">ldg</span><span class="o">.</span><span class="n">c_g</span><span class="o">*</span><span class="n">ldg</span><span class="o">.</span><span class="n">mass</span> <span class="o">+</span> <span class="n">propulsion</span><span class="o">.</span><span class="n">c_g</span><span class="o">*</span><span class="n">propulsion</span><span class="o">.</span><span class="n">mass</span> <span class="o">+</span> <span class="n">htp</span><span class="o">.</span><span class="n">c_g</span><span class="o">*</span><span class="n">htp</span><span class="o">.</span><span class="n">mass</span>
+               <span class="o">+</span> <span class="n">vtp</span><span class="o">.</span><span class="n">c_g</span><span class="o">*</span><span class="n">vtp</span><span class="o">.</span><span class="n">mass</span> <span class="o">+</span> <span class="n">systems</span><span class="o">.</span><span class="n">c_g</span><span class="o">*</span><span class="n">systems</span><span class="o">.</span><span class="n">mass</span>
+               <span class="o">+</span> <span class="n">tanks</span><span class="o">.</span><span class="n">pod_cg</span><span class="o">*</span><span class="n">tanks</span><span class="o">.</span><span class="n">pod_mass</span>
+               <span class="p">)</span><span class="o">/</span><span class="n">weights</span><span class="o">.</span><span class="n">mwe</span>
+
+    <span class="n">c_g</span><span class="o">.</span><span class="n">owe</span> <span class="o">=</span> <span class="p">(</span>  <span class="n">c_g</span><span class="o">.</span><span class="n">mwe</span><span class="o">*</span><span class="n">weights</span><span class="o">.</span><span class="n">mwe</span> <span class="o">+</span> <span class="n">cabin</span><span class="o">.</span><span class="n">cg_op_item</span><span class="o">*</span><span class="n">cabin</span><span class="o">.</span><span class="n">m_op_item</span> <span class="o">+</span> <span class="n">c_g</span><span class="o">.</span><span class="n">battery</span><span class="o">*</span><span class="n">weights</span><span class="o">.</span><span class="n">battery_in_owe</span>
+               <span class="o">+</span> <span class="n">payload</span><span class="o">.</span><span class="n">cg_container_pallet</span><span class="o">*</span><span class="n">payload</span><span class="o">.</span><span class="n">m_container_pallet</span>
+               <span class="p">)</span> <span class="o">/</span> <span class="n">weights</span><span class="o">.</span><span class="n">owe</span>
+
+    <span class="n">c_g</span><span class="o">.</span><span class="n">max_fwd_mass</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">owe</span> <span class="o">+</span> <span class="n">tanks</span><span class="o">.</span><span class="n">fuel_max_fwd_mass</span> <span class="o">+</span> <span class="n">payload</span><span class="o">.</span><span class="n">max_fwd_mass</span>
+    <span class="n">c_g</span><span class="o">.</span><span class="n">max_fwd_req_cg</span> <span class="o">=</span>  <span class="p">(</span>  <span class="n">c_g</span><span class="o">.</span><span class="n">owe</span><span class="o">*</span><span class="n">weights</span><span class="o">.</span><span class="n">owe</span> <span class="o">+</span> <span class="n">tanks</span><span class="o">.</span><span class="n">fuel_max_fwd_cg</span><span class="o">*</span><span class="n">tanks</span><span class="o">.</span><span class="n">fuel_max_fwd_mass</span>
+                           <span class="o">+</span> <span class="n">payload</span><span class="o">.</span><span class="n">max_fwd_req_cg</span><span class="o">*</span><span class="n">payload</span><span class="o">.</span><span class="n">max_fwd_mass</span>
+                           <span class="p">)</span><span class="o">/</span><span class="n">c_g</span><span class="o">.</span><span class="n">max_fwd_mass</span>
+
+    <span class="n">c_g</span><span class="o">.</span><span class="n">max_bwd_mass</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">owe</span> <span class="o">+</span> <span class="n">tanks</span><span class="o">.</span><span class="n">fuel_max_bwd_mass</span> <span class="o">+</span> <span class="n">payload</span><span class="o">.</span><span class="n">max_bwd_mass</span>
+    <span class="n">c_g</span><span class="o">.</span><span class="n">max_bwd_req_cg</span> <span class="o">=</span> <span class="p">(</span>  <span class="n">c_g</span><span class="o">.</span><span class="n">owe</span><span class="o">*</span><span class="n">weights</span><span class="o">.</span><span class="n">owe</span> <span class="o">+</span> <span class="n">tanks</span><span class="o">.</span><span class="n">fuel_max_bwd_cg</span><span class="o">*</span><span class="n">tanks</span><span class="o">.</span><span class="n">fuel_max_bwd_mass</span>
+                          <span class="o">+</span> <span class="n">payload</span><span class="o">.</span><span class="n">max_bwd_req_cg</span><span class="o">*</span><span class="n">payload</span><span class="o">.</span><span class="n">max_bwd_mass</span>
+                          <span class="p">)</span><span class="o">/</span><span class="n">c_g</span><span class="o">.</span><span class="n">max_bwd_mass</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="c1"># ===========================================================================================================</span>
+<div class="viewcode-block" id="eval_aerodynamics_design"><a class="viewcode-back" href="../../../../api/marilib.aircraft_model.airplane.airplane_design.html#marilib.aircraft_model.airplane.airplane_design.eval_aerodynamics_design">[docs]</a><span class="k">def</span> <span class="nf">eval_aerodynamics_design</span><span class="p">(</span><span class="n">aircraft</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Defines high lift movable deflection settings</span>
+<span class="sd">    HLDconf varies from 0 (clean) to 1 (full deflected)</span>
+<span class="sd">    Typically :</span>
+
+<span class="sd">    * HLDconf = 1 ==&gt; CzmaxLD</span>
+<span class="sd">    * HLDconf = 0.1 to 0.5 ==&gt; CzmaxTO</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">design_driver</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">design_driver</span>
+    <span class="n">wing</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">wing</span>
+
+    <span class="n">aerodynamics</span> <span class="o">=</span> <span class="n">aircraft</span><span class="o">.</span><span class="n">aerodynamics</span>
+
+    <span class="n">mach</span> <span class="o">=</span> <span class="n">design_driver</span><span class="o">.</span><span class="n">cruise_mach</span>
+    <span class="n">altp</span> <span class="o">=</span> <span class="n">design_driver</span><span class="o">.</span><span class="n">ref_cruise_altp</span>
+    <span class="n">disa</span> <span class="o">=</span> <span class="mf">0.</span>
+
+    <span class="n">pamb</span><span class="p">,</span><span class="n">tamb</span><span class="p">,</span><span class="n">tstd</span><span class="p">,</span><span class="n">dtodz</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">atmosphere</span><span class="p">(</span><span class="n">altp</span><span class="p">,</span><span class="n">disa</span><span class="p">)</span>
+
+    <span class="n">aerodynamics</span><span class="o">.</span><span class="n">cruise_lod_max</span><span class="p">,</span> <span class="n">aerodynamics</span><span class="o">.</span><span class="n">cz_cruise_lod_max</span> <span class="o">=</span> <span class="n">airplane_aero</span><span class="o">.</span><span class="n">lod_max</span><span class="p">(</span><span class="n">aircraft</span><span class="p">,</span> <span class="n">pamb</span><span class="p">,</span> <span class="n">tamb</span><span class="p">,</span> <span class="n">mach</span><span class="p">)</span>
+
+    <span class="n">aerodynamics</span><span class="o">.</span><span class="n">cz_max_clean</span><span class="p">,</span><span class="n">Cz0</span> <span class="o">=</span> <span class="n">airplane_aero</span><span class="o">.</span><span class="n">high_lift</span><span class="p">(</span><span class="n">wing</span><span class="p">,</span> <span class="n">aerodynamics</span><span class="o">.</span><span class="n">hld_conf_clean</span><span class="p">)</span>
+
+    <span class="n">aerodynamics</span><span class="o">.</span><span class="n">cz_max_to</span><span class="p">,</span><span class="n">Cz0</span> <span class="o">=</span> <span class="n">airplane_aero</span><span class="o">.</span><span class="n">high_lift</span><span class="p">(</span><span class="n">wing</span><span class="p">,</span> <span class="n">aerodynamics</span><span class="o">.</span><span class="n">hld_conf_to</span><span class="p">)</span>
+
+    <span class="n">aerodynamics</span><span class="o">.</span><span class="n">cz_max_ld</span><span class="p">,</span><span class="n">Cz0</span> <span class="o">=</span> <span class="n">airplane_aero</span><span class="o">.</span><span class="n">high_lift</span><span class="p">(</span><span class="n">wing</span><span class="p">,</span> <span class="n">aerodynamics</span><span class="o">.</span><span class="n">hld_conf_ld</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MARILib 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../../marilib.html" >marilib</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, T. Druot et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>
